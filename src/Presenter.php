@@ -17,6 +17,7 @@ class Presenter extends Nette\Object {
 	/** @var Nette\Application\UI\Presenter */
 	private $presenter;
 	private $presName;
+	private $code;
 
 	const GET = 'GET';
 	const POST = 'POST';
@@ -48,8 +49,14 @@ class Presenter extends Nette\Object {
 	public function test($action, $method = self::GET, $params = [], $post = []) {
 		$params['action'] = $action;
 		$request = new Nette\Application\Request($this->presName, $method, $params, $post);
-		$response = $this->presenter->run($request);
-		return $response;
+		try {
+			$this->code = 200;
+			$response = $this->presenter->run($request);
+			return $response;
+		} catch (\Exception $exc) {
+			$this->code = $exc->getCode();
+		}
+		return NULL;
 	}
 
 	/**
@@ -61,16 +68,16 @@ class Presenter extends Nette\Object {
 	 */
 	public function testAction($action, $method = self::GET, $params = [], $post = []) {
 		$response = $this->test($action, $method, $params, $post);
+		if ($response) {
+			Tester\Assert::true($response instanceof Nette\Application\Responses\TextResponse);
+			Tester\Assert::true($response->getSource() instanceof Nette\Application\UI\ITemplate);
 
-		Tester\Assert::true($response instanceof Nette\Application\Responses\TextResponse);
-		Tester\Assert::true($response->getSource() instanceof Nette\Application\UI\ITemplate);
-
-		$html = (string)$response->getSource();
-		$dom = @Tester\DomQuery::fromHtml($html);
-		Tester\Assert::true($dom->has('html'));
-		Tester\Assert::true($dom->has('title'));
-		Tester\Assert::true($dom->has('body'));
-
+			$html = (string)$response->getSource();
+			$dom = @Tester\DomQuery::fromHtml($html);
+			Tester\Assert::true($dom->has('html'));
+			Tester\Assert::true($dom->has('title'));
+			Tester\Assert::true($dom->has('body'));
+		}
 		return $response;
 	}
 
@@ -104,23 +111,30 @@ class Presenter extends Nette\Object {
 	 * @param int $id
 	 * @param null $roles
 	 * @param null $data
+	 * @return object
 	 */
 	public function logIn($id = 1, $roles = NULL, $data = NULL) {
 		$identity = new Nette\Security\Identity($id, $roles, $data);
 		$user = $this->container->getByType('Nette\Security\User');
 		$user->login($identity);
+		return $user;
 	}
 
 	public function logOut() {
 		$user = $this->container->getByType('Nette\Security\User');
 		$user->logout();
-		//TODO:
-		//$response = $this->tester->test($this->action);
-		//Tester\Assert::true($response instanceof Nette\Application\Responses\RedirectResponse);
+		return $user;
 	}
 
+	/**
+	 * @return Nette\Application\UI\Presenter
+	 */
 	public function getPresenter() {
 		return $this->presenter;
+	}
+
+	public function getReturnCode() {
+		return $this->code;
 	}
 
 }
