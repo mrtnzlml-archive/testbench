@@ -29,9 +29,10 @@ foreach ($loader->getIndexedClasses() as $class => $filename) {
 				$class->addMethod('test' . ucfirst($method->getName()))
 					->setBody('$this->tester->testAction(\'' . strtolower($matches[1]) . '\');');
 			}
+			//FIXME: action
 			if (preg_match('/^createComponent([a-z]+)/i', $method->getName(), $matches)) {
 				$class->addMethod('testComponent' . ucfirst($matches[1]))
-					->setBody('$this->tester->testForm(\'' . strtolower($matches[1]) . '\', array('
+					->setBody('$this->tester->testForm(\'TODO:action-name\', \'' . strtolower($matches[1]) . '\', array('
 						. "\n\t//TODO: input => value\n"
 						. '));');
 			}
@@ -40,7 +41,7 @@ foreach ($loader->getIndexedClasses() as $class => $filename) {
 		$output .= '$container = require __DIR__ . \'/../bootstrap.php\';' . "\n\n";
 		$output .= (string)$class;
 		$output .= "\n" . '$test = new ' . $refl->getShortName() . 'Test($container);';
-		$output .= "\n\n" . '$test->run();' . "\n";
+		$output .= "\n" . '$test->run();' . "\n";
 		if ($refl->inNamespace()) {
 			$dir = preg_replace('/\\\/', '', $refl->getNamespaceName());
 			@mkdir(__DIR__ . '/../../../../tests/' . $dir);
