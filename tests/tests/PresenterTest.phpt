@@ -5,7 +5,7 @@ namespace Test;
 use Nette;
 use Tester;
 
-$container = require __DIR__ . '/bootstrap.php';
+$container = require __DIR__ . '/../bootstrap.php';
 
 /**
  * @testCase
@@ -15,30 +15,38 @@ class PresenterTest extends Tester\TestCase {
 	private $tester;
 
 	public function __construct(Nette\DI\Container $container) {
-		$this->tester = new Presenter($container);
-	}
-
-	public function setUp() {
-		$this->tester->init('Presenter');
+		$this->tester = new PresenterTester($container, 'Presenter');
 	}
 
 	public function testClassicRender() {
 		$this->tester->testAction('default');
-		Tester\Assert::same(200, $this->tester->getReturnCode());
 	}
 
 	public function test404Render() {
-		$this->tester->testAction('404'); //FIXME: maybe special method in testBench?
+		$this->tester->testAction('404');
 		Tester\Assert::same(404, $this->tester->getReturnCode());
 	}
 
 	public function test500Render() {
-		$this->tester->testAction('fail'); //FIXME: maybe special method in testBench?
+		$this->tester->testAction('fail');
 		Tester\Assert::same(500, $this->tester->getReturnCode());
+	}
+
+	public function testRenderException() {
+		$this->tester->testAction('exception');
+		Tester\Assert::type('Latte\CompileException', $this->tester->getException());
 	}
 
 	public function testJsonOutput() {
 		$this->tester->testJson('json');
+	}
+
+	public function testRss() {
+		$this->tester->testRss('rss');
+	}
+
+	public function testSitemap() {
+		$this->tester->testSitemap('sitemap');
 	}
 
 	public function testUserLogIn() {
@@ -74,18 +82,14 @@ class PresenterTest extends Tester\TestCase {
 	}
 
 	public function testPresenterInstance() {
-		Tester\Assert::true($this->tester->getPresenter() instanceof Nette\Application\UI\Presenter);
+		Tester\Assert::type('Nette\Application\UI\Presenter', $this->tester->getPresenter());
 	}
 
-	//TODO:
-//	public function testForm() {
-//		$response = $this->tester->test('default', 'POST', array(
-//			'do' => 'form-submit',
-//		), array(
-//			'test' => 'test',
-//		));
-//		Tester\Assert::true($response instanceof Nette\Application\Responses\RedirectResponse);
-//	}
+	public function testForm() {
+		$this->tester->testForm('default', 'form', array(
+			'test' => 'test',
+		));
+	}
 
 }
 

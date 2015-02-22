@@ -2,4 +2,4 @@
 vendor
 composer.lock
 coverage.html
-tests/temp
+temp

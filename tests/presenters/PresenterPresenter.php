@@ -14,6 +14,27 @@ class PresenterPresenter extends Nette\Application\UI\Presenter {
 		$this->error(NULL, \Nette\Http\IResponse::S500_INTERNAL_SERVER_ERROR);
 	}
 
+	public function renderException() {
+		throw new \Latte\CompileException;
+	}
+
+	public function renderRss() {
+		$this->template->posts = [
+			\Nette\Utils\ArrayHash::from([
+				'title' => 'title 1',
+				'content' => 'content 1',
+			]),
+			\Nette\Utils\ArrayHash::from([
+				'title' => 'title 1',
+				'content' => 'content 1',
+			])
+		];
+	}
+
+	public function renderSitemap() {
+		$this->template->sitemap = [0, 1, 2]; //dumb
+	}
+
 	protected function createComponentForm() {
 		$form = new \Nette\Application\UI\Form();
 		$form->addText('test');

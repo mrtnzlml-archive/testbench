@@ -8,13 +8,17 @@ if (!class_exists('Tester\Assert')) {
 }
 
 Tester\Environment::setup();
+date_default_timezone_set('Europe/Prague');
 
-@mkdir(__DIR__ . '/temp');
+@mkdir(__DIR__ . '/../temp');
 
 $configurator = new Nette\Configurator;
-$configurator->setTempDirectory(__DIR__ . '/temp');
+$configurator->setTempDirectory(__DIR__ . '/../temp');
 $configurator->createRobotLoader()
 	->addDirectory(__DIR__ . '/../src')
 	->register();
 
-return $configurator->createContainer();
+$container = $configurator->createContainer();
+$container->router[] = new Nette\Application\Routers\Route('<presenter>/<action>[/<id>]', 'Presenter:default');
+
+return $container;

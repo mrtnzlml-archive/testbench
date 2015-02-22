@@ -1,0 +1,14 @@
+{contentType application/xml; charset=utf-8}
+<<?php ?>?xml version="1.0" encoding="UTF-8"?>
+
+<rss version="2.0">
+	<channel>
+		<title>TITLE</title>
+		<link>{link //:Presenter:default}</link>
+
+		<item n:foreach="$posts as $post">
+			<title>{$post->title}</title>
+			<description>{$post->content}</description>
+		</item>
+	</channel>
+</rss>
