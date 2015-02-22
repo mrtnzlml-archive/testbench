@@ -13,7 +13,7 @@
     "nette/tester": "~1.3.2"
   },
   "autoload": {
-    "files": ["src/Presenter.php"]
+    "files": ["src/PresenterTester.php"]
   },
   "bin": ["src/TestGenerator"]
 }
