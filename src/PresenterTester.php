@@ -17,7 +17,7 @@ class PresenterTester extends Nette\Object {
 	private $presenter;
 	private $presName;
 
-	private $code;
+	private $httpCode;
 	/** @var \Exception */
 	private $exception;
 
@@ -62,12 +62,12 @@ class PresenterTester extends Nette\Object {
 		$params['action'] = $action;
 		$request = new Nette\Application\Request($this->presName, $method, $params, $post);
 		try {
-			$this->code = 200;
+			$this->httpCode = 200;
 			$response = $this->presenter->run($request);
 			return $response;
 		} catch (\Exception $exc) {
 			$this->exception = $exc;
-			$this->code = $exc->getCode();
+			$this->httpCode = $exc->getCode();
 		}
 		return NULL;
 	}
@@ -86,7 +86,7 @@ class PresenterTester extends Nette\Object {
 			Tester\Assert::type('Nette\Application\Responses\TextResponse', $response);
 			Tester\Assert::type('Nette\Application\UI\ITemplate', $response->getSource());
 
-			$dom = Tester\DomQuery::fromHtml($response->getSource());
+			$dom = @Tester\DomQuery::fromHtml($response->getSource()); // @ - not valid HTML
 			Tester\Assert::true($dom->has('html'));
 			Tester\Assert::true($dom->has('title'));
 			Tester\Assert::true($dom->has('body'));
@@ -203,7 +203,7 @@ class PresenterTester extends Nette\Object {
 	}
 
 	public function getReturnCode() {
-		return $this->code;
+		return $this->httpCode;
 	}
 
 	/**

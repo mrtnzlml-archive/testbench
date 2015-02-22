@@ -14,5 +14,6 @@
   },
   "autoload": {
     "files": ["src/Presenter.php"]
-  }
+  },
+  "bin": ["src/TestGenerator"]
 }
