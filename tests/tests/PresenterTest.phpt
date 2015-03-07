@@ -37,6 +37,10 @@ class PresenterTest extends Tester\TestCase {
 		Tester\Assert::type('Latte\CompileException', $this->tester->getException());
 	}
 
+	public function testRedirect() {
+		$this->tester->testRedirect('redirect');
+	}
+
 	public function testJsonOutput() {
 		$this->tester->testJson('json');
 	}

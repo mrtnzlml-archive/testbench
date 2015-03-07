@@ -99,6 +99,22 @@ class PresenterTester extends Nette\Object {
 	 * @param string $method
 	 * @param array $params
 	 * @param array $post
+	 * @return Nette\Application\IResponse|null
+	 * @throws \Exception
+	 */
+	public function testRedirect($action, $method = self::GET, $params = [], $post = []) {
+		$response = $this->test($action, $method, $params, $post);
+		if ($response) {
+			Tester\Assert::type('Nette\Application\Responses\RedirectResponse', $response);
+		}
+		return $response;
+	}
+
+	/**
+	 * @param $action
+	 * @param string $method
+	 * @param array $params
+	 * @param array $post
 	 * @return mixed
 	 */
 	public function testJson($action, $method = self::GET, $params = [], $post = []) {

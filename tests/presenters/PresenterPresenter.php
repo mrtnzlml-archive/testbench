@@ -18,6 +18,10 @@ class PresenterPresenter extends Nette\Application\UI\Presenter {
 		throw new \Latte\CompileException;
 	}
 
+	public function renderRedirect() {
+		$this->redirect('default');
+	}
+
 	public function renderRss() {
 		$this->template->posts = [
 			\Nette\Utils\ArrayHash::from([
