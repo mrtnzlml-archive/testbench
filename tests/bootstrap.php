@@ -1,6 +1,8 @@
 <?php
 
 require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/presenters/PresenterPresenter.php';
+require __DIR__ . '/ModuleModule/presenters/PresenterPresenter.php';
 
 if (!class_exists('Tester\Assert')) {
 	echo "Install Nette Tester using `composer update --dev`\n";
@@ -19,6 +21,8 @@ $configurator->createRobotLoader()
 	->register();
 
 $container = $configurator->createContainer();
-$container->router[] = new Nette\Application\Routers\Route('<presenter>/<action>[/<id>]', 'Presenter:default');
+/** @var Nette\Application\Routers\RouteList $routeList */
+$routeList = $container->getService('router');
+$routeList[] = new Nette\Application\Routers\Route('<presenter>/<action>[/<id>]', 'Presenter:default');
 
 return $container;
