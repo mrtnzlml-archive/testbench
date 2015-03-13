@@ -68,8 +68,8 @@ class PresenterTester extends Nette\Object {
 		} catch (\Exception $exc) {
 			$this->exception = $exc;
 			$this->httpCode = $exc->getCode();
+			return $exc;
 		}
-		return NULL;
 	}
 
 	/**
@@ -81,7 +81,7 @@ class PresenterTester extends Nette\Object {
 	 */
 	public function testAction($action, $method = self::GET, $params = [], $post = []) {
 		$response = $this->test($action, $method, $params, $post);
-		if ($response) {
+		if (!$this->exception) {
 			Tester\Assert::same(200, $this->getReturnCode());
 			Tester\Assert::type('Nette\Application\Responses\TextResponse', $response);
 			Tester\Assert::type('Nette\Application\UI\ITemplate', $response->getSource());
@@ -104,7 +104,7 @@ class PresenterTester extends Nette\Object {
 	 */
 	public function testRedirect($action, $method = self::GET, $params = [], $post = []) {
 		$response = $this->test($action, $method, $params, $post);
-		if ($response) {
+		if (!$this->exception) {
 			Tester\Assert::type('Nette\Application\Responses\RedirectResponse', $response);
 		}
 		return $response;
@@ -119,7 +119,7 @@ class PresenterTester extends Nette\Object {
 	 */
 	public function testJson($action, $method = self::GET, $params = [], $post = []) {
 		$response = $this->test($action, $method, $params, $post);
-		if ($response) {
+		if (!$this->exception) {
 			Tester\Assert::same(200, $this->getReturnCode());
 			Tester\Assert::type('Nette\Application\Responses\JsonResponse', $response);
 			Tester\Assert::same('application/json', $response->getContentType());
@@ -139,8 +139,10 @@ class PresenterTester extends Nette\Object {
 		$response = $this->test($action, $method, array(
 			'do' => $formName . '-submit',
 		), $post);
-		Tester\Assert::same(200, $this->getReturnCode());
-		Tester\Assert::type('Nette\Application\Responses\RedirectResponse', $response);
+		if (!$this->exception) {
+			Tester\Assert::same(200, $this->getReturnCode());
+			Tester\Assert::type('Nette\Application\Responses\RedirectResponse', $response);
+		}
 		return $response;
 	}
 
@@ -154,7 +156,7 @@ class PresenterTester extends Nette\Object {
 	 */
 	public function testRss($action, $method = self::GET, $params = [], $post = []) {
 		$response = $this->test($action, $method, $params, $post);
-		if ($response) {
+		if (!$this->exception) {
 			Tester\Assert::same(200, $this->getReturnCode());
 			Tester\Assert::type('Nette\Application\Responses\TextResponse', $response);
 			Tester\Assert::type('Nette\Application\UI\ITemplate', $response->getSource());
@@ -179,7 +181,7 @@ class PresenterTester extends Nette\Object {
 	 */
 	public function testSitemap($action, $method = self::GET, $params = [], $post = []) {
 		$response = $this->test($action, $method, $params, $post);
-		if ($response) {
+		if (!$this->exception) {
 			Tester\Assert::same(200, $this->getReturnCode());
 			Tester\Assert::type('Nette\Application\Responses\TextResponse', $response);
 			Tester\Assert::type('Nette\Application\UI\ITemplate', $response->getSource());
@@ -218,6 +220,9 @@ class PresenterTester extends Nette\Object {
 		return $this->presenter;
 	}
 
+	/**
+	 * @return integer
+	 */
 	public function getReturnCode() {
 		return $this->httpCode;
 	}
