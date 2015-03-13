@@ -53,7 +53,8 @@ class PresenterTester extends Nette\Object {
 	 * @param string $method
 	 * @param array $params
 	 * @param array $post
-	 * @return Nette\Application\IResponse|null
+	 * @return Nette\Application\IResponse
+	 * @throws \Exception
 	 */
 	public function test($action, $method = self::GET, $params = [], $post = []) {
 		if (!$this->presenter) {
@@ -68,7 +69,7 @@ class PresenterTester extends Nette\Object {
 		} catch (\Exception $exc) {
 			$this->exception = $exc;
 			$this->httpCode = $exc->getCode();
-			return $exc;
+			throw $exc;
 		}
 	}
 

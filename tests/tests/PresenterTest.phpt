@@ -23,18 +23,23 @@ class PresenterTest extends Tester\TestCase {
 	}
 
 	public function test404Render() {
-		$this->tester->testAction('404');
+		Tester\Assert::exception(function () {
+			$this->tester->testAction('404');
+		}, 'Nette\Application\BadRequestException');
 		Tester\Assert::same(404, $this->tester->getReturnCode());
 	}
 
 	public function test500Render() {
-		$this->tester->testAction('fail');
+		Tester\Assert::exception(function () {
+			$this->tester->testAction('fail');
+		}, 'Nette\Application\BadRequestException');
 		Tester\Assert::same(500, $this->tester->getReturnCode());
 	}
 
 	public function testRenderException() {
-		$this->tester->testAction('exception');
-		Tester\Assert::type('Latte\CompileException', $this->tester->getException());
+		Tester\Assert::exception(function () {
+			$this->tester->testAction('exception');
+		}, 'Latte\CompileException');
 	}
 
 	public function testRedirect() {
