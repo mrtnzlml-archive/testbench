@@ -20,6 +20,7 @@ class Bootstrap extends Nette\Object {
 		umask(0);
 		Tester\Environment::setup();
 		date_default_timezone_set('Europe/Prague');
+		@mkdir($root_dir . '/temp/');
 		define('TEMP_DIR', $root_dir . '/temp/');
 		//Tester\Helpers::purge(TEMP_DIR);
 		@chmod(TEMP_DIR, 0777);
