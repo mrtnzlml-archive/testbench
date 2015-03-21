@@ -56,7 +56,7 @@ class PresenterTester extends Nette\Object {
 	 * @return Nette\Application\IResponse
 	 * @throws \Exception
 	 */
-	public function test($action, $method = self::GET, $params = [], $post = []) {
+	public function test($action, $method = self::GET, $params = array(), $post = array()) {
 		if (!$this->presenter) {
 			throw new \LogicException('Presenter is not set. Use init method or second parameter in constructor.');
 		}
@@ -80,7 +80,7 @@ class PresenterTester extends Nette\Object {
 	 * @param array $post
 	 * @return mixed
 	 */
-	public function testAction($action, $method = self::GET, $params = [], $post = []) {
+	public function testAction($action, $method = self::GET, $params = array(), $post = array()) {
 		$response = $this->test($action, $method, $params, $post);
 		if (!$this->exception) {
 			Tester\Assert::same(200, $this->getReturnCode());
@@ -103,7 +103,7 @@ class PresenterTester extends Nette\Object {
 	 * @return Nette\Application\IResponse|null
 	 * @throws \Exception
 	 */
-	public function testRedirect($action, $method = self::GET, $params = [], $post = []) {
+	public function testRedirect($action, $method = self::GET, $params = array(), $post = array()) {
 		$response = $this->test($action, $method, $params, $post);
 		if (!$this->exception) {
 			Tester\Assert::type('Nette\Application\Responses\RedirectResponse', $response);
@@ -118,7 +118,7 @@ class PresenterTester extends Nette\Object {
 	 * @param array $post
 	 * @return mixed
 	 */
-	public function testJson($action, $method = self::GET, $params = [], $post = []) {
+	public function testJson($action, $method = self::GET, $params = array(), $post = array()) {
 		$response = $this->test($action, $method, $params, $post);
 		if (!$this->exception) {
 			Tester\Assert::same(200, $this->getReturnCode());
@@ -136,7 +136,7 @@ class PresenterTester extends Nette\Object {
 	 * @return Nette\Application\IResponse|null
 	 * @throws \Exception
 	 */
-	public function testForm($action, $formName, $post = [], $method = self::POST) {
+	public function testForm($action, $formName, $post = array(), $method = self::POST) {
 		$response = $this->test($action, $method, array(
 			'do' => $formName . '-submit',
 		), $post);
@@ -155,7 +155,7 @@ class PresenterTester extends Nette\Object {
 	 * @return Nette\Application\IResponse|null
 	 * @throws \Exception
 	 */
-	public function testRss($action, $method = self::GET, $params = [], $post = []) {
+	public function testRss($action, $method = self::GET, $params = array(), $post = array()) {
 		$response = $this->test($action, $method, $params, $post);
 		if (!$this->exception) {
 			Tester\Assert::same(200, $this->getReturnCode());
@@ -180,7 +180,7 @@ class PresenterTester extends Nette\Object {
 	 * @return Nette\Application\IResponse|null
 	 * @throws \Exception
 	 */
-	public function testSitemap($action, $method = self::GET, $params = [], $post = []) {
+	public function testSitemap($action, $method = self::GET, $params = array(), $post = array()) {
 		$response = $this->test($action, $method, $params, $post);
 		if (!$this->exception) {
 			Tester\Assert::same(200, $this->getReturnCode());
