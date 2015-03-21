@@ -23,22 +23,25 @@ class PresenterTest extends Tester\TestCase {
 	}
 
 	public function test404Render() {
-		Tester\Assert::exception(function () {
-			$this->tester->testAction('404');
+		$_this = $this;
+		Tester\Assert::exception(function () use ($_this) {
+			$_this->tester->testAction('404');
 		}, 'Nette\Application\BadRequestException');
 		Tester\Assert::same(404, $this->tester->getReturnCode());
 	}
 
 	public function test500Render() {
-		Tester\Assert::exception(function () {
-			$this->tester->testAction('fail');
+		$_this = $this;
+		Tester\Assert::exception(function () use ($_this) {
+			$_this->tester->testAction('fail');
 		}, 'Nette\Application\BadRequestException');
 		Tester\Assert::same(500, $this->tester->getReturnCode());
 	}
 
 	public function testRenderException() {
-		Tester\Assert::exception(function () {
-			$this->tester->testAction('exception');
+		$_this = $this;
+		Tester\Assert::exception(function () use ($_this) {
+			$_this->tester->testAction('exception');
 		}, 'Latte\CompileException');
 	}
 
@@ -77,7 +80,7 @@ class PresenterTest extends Tester\TestCase {
 	}
 
 	public function testUserLogInWithIdRoles() {
-		$user = $this->tester->logIn(1, ['test1', 'test2']);
+		$user = $this->tester->logIn(1, array('test1', 'test2'));
 		Tester\Assert::true($user->isLoggedIn());
 		Tester\Assert::same(1, $user->identity->id);
 		Tester\Assert::true($user->isInRole('test1'));
