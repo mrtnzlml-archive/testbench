@@ -3,7 +3,7 @@
 class PresenterPresenter extends Nette\Application\UI\Presenter {
 
 	public function actionJson() {
-		$this->sendResponse(new \Nette\Application\Responses\JsonResponse(['OK']));
+		$this->sendResponse(new \Nette\Application\Responses\JsonResponse(array('OK')));
 	}
 
 	public function renderDefault() {
@@ -23,20 +23,20 @@ class PresenterPresenter extends Nette\Application\UI\Presenter {
 	}
 
 	public function renderRss() {
-		$this->template->posts = [
-			\Nette\Utils\ArrayHash::from([
+		$this->template->posts = array(
+			\Nette\Utils\ArrayHash::from(array(
 				'title' => 'title 1',
 				'content' => 'content 1',
-			]),
-			\Nette\Utils\ArrayHash::from([
+			)),
+			\Nette\Utils\ArrayHash::from(array(
 				'title' => 'title 1',
 				'content' => 'content 1',
-			])
-		];
+			)),
+		);
 	}
 
 	public function renderSitemap() {
-		$this->template->sitemap = [0, 1, 2]; //dumb
+		$this->template->sitemap = array(0, 1, 2); //dumb
 	}
 
 	protected function createComponentForm() {
