@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mrtnzlml/testbench.svg?branch=master)](https://travis-ci.org/mrtnzlml/testbench)
+
 Simple test bench for Nette Framework projects
 ==============================================
 Write tests as simple as possible. This project helps you to write tests very quickly. DRY!
