@@ -20,10 +20,15 @@ class Bootstrap extends Nette\Object {
 		umask(0);
 		Tester\Environment::setup();
 		date_default_timezone_set('Europe/Prague');
-		@mkdir($root_dir . '/temp/');
-		define('TEMP_DIR', $root_dir . '/temp/');
+
+		if (!is_dir($root_dir . '/temp/')) {
+			mkdir($root_dir . '/temp/');
+		}
+		define('TEMP_DIR', $root_dir . '/temp/' . getmypid());
+		Tester\Helpers::purge(TEMP_DIR);
 		@chmod(TEMP_DIR, 0777);
 		Tracy\Debugger::$logDirectory = TEMP_DIR;
+
 		$_ENV = $_GET = $_POST = $_FILES = array();
 		$configurator = new Nette\Configurator;
 		$configurator->setTempDirectory(TEMP_DIR);

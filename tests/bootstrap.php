@@ -11,6 +11,7 @@ $configurator->createRobotLoader()
 	->register();
 
 $container = $configurator->createContainer();
+
 /** @var Nette\Application\Routers\RouteList $routeList */
 $routeList = $container->getService('router');
 $routeList[] = new Nette\Application\Routers\Route('<presenter>/<action>[/<id>]', 'Presenter:default');
