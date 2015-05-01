@@ -51,4 +51,9 @@ class PresenterPresenter extends Nette\Application\UI\Presenter {
 		$this->redirect('this');
 	}
 
+	public function handleSignal() {
+		$this->flashMessage('OK');
+		$this->redirect('this');
+	}
+
 }

@@ -15,6 +15,7 @@ class PresenterTester extends Nette\Object {
 	private $container;
 	/** @var Nette\Application\UI\Presenter */
 	private $presenter;
+	/** @var string Presenter name. */
 	private $presName;
 
 	private $httpCode;
@@ -26,6 +27,7 @@ class PresenterTester extends Nette\Object {
 
 	/**
 	 * @param Nette\DI\Container $container
+	 * @param null $presName string Presenter name.
 	 */
 	public function __construct(Nette\DI\Container $container, $presName = NULL) {
 		$this->container = $container;
@@ -35,12 +37,15 @@ class PresenterTester extends Nette\Object {
 	}
 
 	/**
-	 * @param $presName string Fully qualified presenter name.
+	 * @param $presName string Presenter name.
 	 */
 	public function init($presName) {
 		$this->setUpPresenter($presName);
 	}
 
+	/**
+	 * @param $presName string Presenter name.
+	 */
 	private function setUpPresenter($presName) {
 		$presenterFactory = $this->container->getByType('Nette\Application\IPresenterFactory');
 		$this->presenter = $presenterFactory->createPresenter($presName);
@@ -78,7 +83,8 @@ class PresenterTester extends Nette\Object {
 	 * @param string $method
 	 * @param array $params
 	 * @param array $post
-	 * @return mixed
+	 * @return Nette\Application\IResponse
+	 * @throws \Exception
 	 */
 	public function testAction($action, $method = self::GET, $params = array(), $post = array()) {
 		$response = $this->test($action, $method, $params, $post);
@@ -97,10 +103,24 @@ class PresenterTester extends Nette\Object {
 
 	/**
 	 * @param $action
+	 * @param $signal
 	 * @param string $method
 	 * @param array $params
 	 * @param array $post
-	 * @return Nette\Application\IResponse|null
+	 * @return Nette\Application\IResponse
+	 */
+	public function testSignal($action, $signal, $method = self::GET, $params = array(), $post = array()) {
+		return $this->testRedirect($action, $method, [
+				'do' => $signal,
+			] + $params, $post);
+	}
+
+	/**
+	 * @param $action
+	 * @param string $method
+	 * @param array $params
+	 * @param array $post
+	 * @return Nette\Application\IResponse
 	 * @throws \Exception
 	 */
 	public function testRedirect($action, $method = self::GET, $params = array(), $post = array()) {
@@ -116,7 +136,8 @@ class PresenterTester extends Nette\Object {
 	 * @param string $method
 	 * @param array $params
 	 * @param array $post
-	 * @return mixed
+	 * @return Nette\Application\IResponse
+	 * @throws \Exception
 	 */
 	public function testJson($action, $method = self::GET, $params = array(), $post = array()) {
 		$response = $this->test($action, $method, $params, $post);
@@ -133,7 +154,7 @@ class PresenterTester extends Nette\Object {
 	 * @param $formName
 	 * @param array $post
 	 * @param string $method
-	 * @return Nette\Application\IResponse|null
+	 * @return Nette\Application\IResponse
 	 * @throws \Exception
 	 */
 	public function testForm($action, $formName, $post = array(), $method = self::POST) {
@@ -152,7 +173,7 @@ class PresenterTester extends Nette\Object {
 	 * @param string $method
 	 * @param array $params
 	 * @param array $post
-	 * @return Nette\Application\IResponse|null
+	 * @return Nette\Application\IResponse
 	 * @throws \Exception
 	 */
 	public function testRss($action, $method = self::GET, $params = array(), $post = array()) {
@@ -177,7 +198,7 @@ class PresenterTester extends Nette\Object {
 	 * @param string $method
 	 * @param array $params
 	 * @param array $post
-	 * @return Nette\Application\IResponse|null
+	 * @return Nette\Application\IResponse
 	 * @throws \Exception
 	 */
 	public function testSitemap($action, $method = self::GET, $params = array(), $post = array()) {
@@ -199,16 +220,21 @@ class PresenterTester extends Nette\Object {
 	 * @param int $id
 	 * @param null $roles
 	 * @param null $data
-	 * @return object
+	 * @return Nette\Security\User
 	 */
 	public function logIn($id = 1, $roles = NULL, $data = NULL) {
 		$identity = new Nette\Security\Identity($id, $roles, $data);
+		/** @var Nette\Security\User $user */
 		$user = $this->container->getByType('Nette\Security\User');
 		$user->login($identity);
 		return $user;
 	}
 
+	/**
+	 * @return Nette\Security\User
+	 */
 	public function logOut() {
+		/** @var Nette\Security\User $user */
 		$user = $this->container->getByType('Nette\Security\User');
 		$user->logout();
 		return $user;

@@ -12,6 +12,9 @@ $container = require __DIR__ . '/../bootstrap.php';
  */
 class PresenterTest extends Tester\TestCase {
 
+	/**
+	 * @var PresenterTester
+	 */
 	private $tester;
 
 	public function __construct(Nette\DI\Container $container) {
@@ -43,6 +46,7 @@ class PresenterTest extends Tester\TestCase {
 		Tester\Assert::exception(function () use ($_this) {
 			$_this->tester->testAction('exception');
 		}, 'Latte\CompileException');
+		Tester\Assert::type('Latte\CompileException', $this->tester->getException());
 	}
 
 	public function testRedirect() {
@@ -103,7 +107,10 @@ class PresenterTest extends Tester\TestCase {
 		));
 	}
 
+	public function testSignal() {
+		$this->tester->testSignal('default', 'signal');
+	}
+
 }
 
-$test = new PresenterTest($container);
-$test->run();
+(new PresenterTest($container))->run();

@@ -10,11 +10,6 @@ Minimal code
 ```php
 <?php //HomepagePresenterTest.phpt
 
-namespace Test;
-
-use Nette;
-use Tester;
-
 $container = require __DIR__ . '/../bootstrap.php';
 
 /**
@@ -34,8 +29,7 @@ class HomepagePresenterTest extends Tester\TestCase {
 
 }
 
-$test = new HomepagePresenterTest($container);
-$test->run();
+(new HomepagePresenterTest($container))->run();
 ```
 
 There is also `init` function so you can init tester with presenter name in the `setUp` function like this:
@@ -68,7 +62,9 @@ Testing restricted areas
 public function setUp() {
 	$this->tester->init('Admin:Presenter'); //init bench with the module:presenter name
 	$this->tester->logIn();
+	
 	// OR:
+	
 	$this->tester->logIn(1); //with user ID
 	$this->tester->logIn(1, 'role'); //with user ID and role
 	$this->tester->logIn(1, ['role1', 'role2']); //with user ID and roles
@@ -80,6 +76,14 @@ You can use logout as well:
 ```php
 public function tearDown() {
 	$this->tester->logOut();
+}
+```
+
+Testing signals
+===============
+```php
+public function testSignal() {
+	$this->tester->testSignal('action-name', 'signal-name');
 }
 ```
 
@@ -110,6 +114,12 @@ Testing return codes
 public function test404Render() {
 	$this->tester->testAction('404');
 	Tester\Assert::same(404, $this->tester->getReturnCode());
+	
+	// OR:
+	
+	Tester\Assert::exception(function () {
+        $this->tester->testAction('404');
+    }, 'Nette\Application\BadRequestException');
 }
 ```
 
@@ -120,6 +130,15 @@ I don't think this is very useful, but:
 public function testRenderException() {
 	$this->tester->testAction('exception');
 	Tester\Assert::type('Latte\CompileException', $this->tester->getException());
+}
+```
+
+It's better to use classic exception test:
+```php
+public function testRenderException() {
+	Tester\Assert::exception(function () {
+        $this->tester->testAction('exception');
+    }, 'Latte\CompileException');
 }
 ```
 
@@ -176,3 +195,4 @@ And Sitemap:
 
 Give it a shot!
 ===============
+Look at the tests in this project. You'll see how to use it properly.
