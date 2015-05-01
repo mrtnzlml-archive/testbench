@@ -26,25 +26,25 @@ class PresenterTest extends Tester\TestCase {
 	}
 
 	public function test404Render() {
-		$_this = $this;
-		Tester\Assert::exception(function () use ($_this) {
-			$_this->tester->testAction('404');
+		$tester = $this->tester; // PHP 5.3
+		Tester\Assert::exception(function () use ($tester) {
+			$tester->testAction('404');
 		}, 'Nette\Application\BadRequestException');
 		Tester\Assert::same(404, $this->tester->getReturnCode());
 	}
 
 	public function test500Render() {
-		$_this = $this;
-		Tester\Assert::exception(function () use ($_this) {
-			$_this->tester->testAction('fail');
+		$tester = $this->tester; // PHP 5.3
+		Tester\Assert::exception(function () use ($tester) {
+			$tester->testAction('fail');
 		}, 'Nette\Application\BadRequestException');
 		Tester\Assert::same(500, $this->tester->getReturnCode());
 	}
 
 	public function testRenderException() {
-		$_this = $this;
-		Tester\Assert::exception(function () use ($_this) {
-			$_this->tester->testAction('exception');
+		$tester = $this->tester; // PHP 5.3
+		Tester\Assert::exception(function () use ($tester) {
+			$tester->testAction('exception');
 		}, 'Latte\CompileException');
 		Tester\Assert::type('Latte\CompileException', $this->tester->getException());
 	}

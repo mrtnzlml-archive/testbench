@@ -19,9 +19,9 @@ class PresenterTest extends Tester\TestCase {
 	}
 
 	public function testClassicRender() {
-		$_this = $this;
-		Tester\Assert::exception(function () use ($_this) {
-			$_this->tester->testAction('default');
+		$tester = $this->tester; // PHP 5.3
+		Tester\Assert::exception(function () use ($tester) {
+			$tester->testAction('default');
 		}, 'LogicException', 'Presenter is not set. Use init method or second parameter in constructor.');
 	}
 
