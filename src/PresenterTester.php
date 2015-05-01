@@ -110,9 +110,9 @@ class PresenterTester extends Nette\Object {
 	 * @return Nette\Application\IResponse
 	 */
 	public function testSignal($action, $signal, $method = self::GET, $params = array(), $post = array()) {
-		return $this->testRedirect($action, $method, [
+		return $this->testRedirect($action, $method, array(
 				'do' => $signal,
-			] + $params, $post);
+			) + $params, $post);
 	}
 
 	/**

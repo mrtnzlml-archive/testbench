@@ -113,4 +113,5 @@ class PresenterTest extends Tester\TestCase {
 
 }
 
-(new PresenterTest($container))->run();
+$test = new PresenterTest($container);
+$test->run();
