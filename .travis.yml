@@ -16,7 +16,7 @@ matrix:
 
 before_script:
   - composer selfupdate
-  - composer install --prefer-dist --no-dev
+  - composer install --prefer-dist --dev
 
 script:
   - vendor/bin/tester tests -p php -s -c tests/php.ini
