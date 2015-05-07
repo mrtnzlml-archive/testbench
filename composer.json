@@ -26,6 +26,8 @@
     "nette/robot-loader": ">=2.2.0"
   },
   "autoload": {
-    "files": ["src/PresenterTester.php"]
+    "classmap": [
+      "src/"
+    ]
   }
 }
