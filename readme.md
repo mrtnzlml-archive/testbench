@@ -6,6 +6,27 @@ Write tests as simple as possible. This project helps you to write tests very qu
 
 Minimal code
 ============
+At first you need classic bootstrap file:
+
+```php
+<?php
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$configurator = Test\Bootstrap::setup(__DIR__);
+$configurator->createRobotLoader()
+	->addDirectory(__DIR__ . '/../app')
+	->register();
+
+// if needed:
+$configurator->addConfig(__DIR__ . '/../app/config/config.neon');
+$configurator->addConfig(__DIR__ . '/../app/config/config.local.neon');
+
+return $configurator->createContainer();
+```
+
+It's actually quite heavy configuration now, but we are testing presenters very intensively.
+Testbench actually tries to run whole application and even check generated HTML output.
 
 ```php
 <?php //HomepagePresenterTest.phpt
