@@ -4,6 +4,7 @@ namespace Test;
 
 use Nette;
 use Tester;
+use Nette\Http\Request as HttpRequest;
 
 /**
  * Class PresenterTester
@@ -47,8 +48,22 @@ class PresenterTester extends Nette\Object {
 	 * @param $presName string Presenter name.
 	 */
 	private function setUpPresenter($presName) {
+		/** @var Nette\Application\IPresenterFactory $presenterFactory */
 		$presenterFactory = $this->container->getByType('Nette\Application\IPresenterFactory');
-		$this->presenter = $presenterFactory->createPresenter($presName);
+
+		$fakeUrl = new Nette\Http\UrlScript('localhost');
+		$this->container->removeService('httpRequest');
+		$this->container->addService('httpRequest', new HttpRequest($fakeUrl, NULL, [], [], [], [], PHP_SAPI, '127.0.0.1', '127.0.0.1'));
+		$class = $presenterFactory->getPresenterClass($presName);
+		if (!class_exists($overriddenPresenter = $class)) {
+			eval(
+				'namespace Test; class ' . $class . ' extends \\' . $class . ' { '
+				. 'protected function startup() { if ($this->getParameter("__terminate") == TRUE) { $this->terminate(); } parent::startup(); } '
+				. '}'
+			);
+		}
+		$this->presenter = $this->container->createInstance($overriddenPresenter);
+		$this->container->callInjects($this->presenter);
 		$this->presenter->autoCanonicalize = FALSE;
 		$this->presName = $presName;
 	}
@@ -65,7 +80,10 @@ class PresenterTester extends Nette\Object {
 		if (!$this->presenter) {
 			throw new \LogicException('Presenter is not set. Use init method or second parameter in constructor.');
 		}
-		$params['action'] = $action;
+		$params = [
+			'action' => $action,
+			'__terminate' => TRUE,
+		] + $params;
 		$request = new Nette\Application\Request($this->presName, $method, $params, $post);
 		try {
 			$this->httpCode = 200;
