@@ -10,9 +10,11 @@ use Tracy;
  * Class Bootstrap
  * @package Test
  */
-class Bootstrap extends Nette\Object {
+class Bootstrap extends Nette\Object
+{
 
-	public static function setup($root_dir) {
+	public static function setup($root_dir)
+	{
 		if (!class_exists('Tester\Assert')) {
 			echo "Install Nette Tester using `composer update --dev`\n";
 			exit(1);
@@ -29,7 +31,7 @@ class Bootstrap extends Nette\Object {
 		@chmod(TEMP_DIR, 0777);
 		Tracy\Debugger::$logDirectory = TEMP_DIR;
 
-		$_ENV = $_GET = $_POST = $_FILES = array();
+		$_ENV = $_GET = $_POST = $_FILES = [];
 		$configurator = new Nette\Configurator;
 		$configurator->setTempDirectory(TEMP_DIR);
 		return $configurator;
