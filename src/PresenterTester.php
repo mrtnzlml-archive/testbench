@@ -2,6 +2,8 @@
 
 namespace Test;
 
+use Kdyby;
+use Kdyby\TesterExtras\CompiledContainer;
 use Nette;
 use Nette\Http\Request as HttpRequest;
 use Tester;
@@ -10,66 +12,46 @@ use Tester;
  * Class PresenterTester
  * @package Test
  */
-class PresenterTester extends Nette\Object
+trait PresenterTester
 {
 
-	/** @var \Nette\DI\Container */
-	private $container;
-	/** @var Nette\Application\UI\Presenter */
+	/** @var Nette\Application\IPresenter */
 	private $presenter;
-	/** @var string Presenter name. */
-	private $presName;
 
 	private $httpCode;
-	/** @var \Exception */
 	private $exception;
 
-	const GET = 'GET';
-	const POST = 'POST';
-
-	/**
-	 * @param Nette\DI\Container $container
-	 * @param null $presName string Presenter name.
-	 */
-	public function __construct(Nette\DI\Container $container, $presName = NULL)
+	protected function openPresenter($fqa)
 	{
-		$this->container = $container;
-		if ($presName !== NULL) {
-			$this->setUpPresenter($presName);
-		}
-	}
-
-	/**
-	 * @param $presName string Presenter name.
-	 */
-	public function init($presName)
-	{
-		$this->setUpPresenter($presName);
-	}
-
-	/**
-	 * @param $presName string Presenter name.
-	 */
-	private function setUpPresenter($presName)
-	{
+		/**
+		 * @var Nette\DI\Container $container
+		 * @var CompiledContainer $this
+		 */
+		$container = $this->getContainer();
+		$params = $container->getParameters();
+		$fakeUrl = new Nette\Http\UrlScript(isset($params['console']['url']) ? $params['console']['url'] : 'localhost');
+		$container->removeService('httpRequest');
+		$container->addService('httpRequest', new HttpRequest($fakeUrl, NULL, [], [], [], [], PHP_SAPI, '127.0.0.1', '127.0.0.1'));
 		/** @var Nette\Application\IPresenterFactory $presenterFactory */
-		$presenterFactory = $this->container->getByType('Nette\Application\IPresenterFactory');
-
-		$fakeUrl = new Nette\Http\UrlScript('localhost');
-		$this->container->removeService('httpRequest');
-		$this->container->addService('httpRequest', new HttpRequest($fakeUrl, NULL, [], [], [], [], PHP_SAPI, '127.0.0.1', '127.0.0.1'));
-		$class = $presenterFactory->getPresenterClass($presName);
-		if (!class_exists($overriddenPresenter = $class)) {
-			eval(
-				'namespace Test; class ' . $class . ' extends \\' . $class . ' { '
+		$presenterFactory = $container->getByType('Nette\Application\IPresenterFactory');
+		$name = substr($fqa, 0, $namePos = strrpos($fqa, ':'));
+		$class = $presenterFactory->getPresenterClass($name);
+		if (!class_exists($overriddenPresenter = 'AutomaticTests\\' . $class)) {
+//			$classPos = strrpos($class, '\\');
+//			eval('namespace AutomaticTests' . substr($class, 0, $classPos) . '; class ' . substr($class, $classPos + 1) . ' extends \\' . $class . ' { '
+			eval('namespace AutomaticTests; class ' . $class . ' extends \\' . $class . ' { '
 				. 'protected function startup() { if ($this->getParameter("__terminate") == TRUE) { $this->terminate(); } parent::startup(); } '
-				. '}'
-			);
+				. 'public static function getReflection() { return parent::getReflection()->getParentClass(); } '
+				. '}');
 		}
-		$this->presenter = $this->container->createInstance($overriddenPresenter);
-		$this->container->callInjects($this->presenter);
+		$this->presenter = $container->createInstance($overriddenPresenter);
+		$container->callInjects($this->presenter);
+		$app = $this->getService('Nette\Application\Application');
+		$appRefl = new \ReflectionProperty($app, 'presenter');
+		$appRefl->setAccessible(TRUE);
+		$appRefl->setValue($app, $this->presenter);
 		$this->presenter->autoCanonicalize = FALSE;
-		$this->presName = $presName;
+		$this->presenter->run(new Nette\Application\Request($name, 'GET', ['action' => substr($fqa, $namePos + 1) ?: 'default', '__terminate' => TRUE]));
 	}
 
 	/**
@@ -81,16 +63,12 @@ class PresenterTester extends Nette\Object
 	 * @return Nette\Application\IResponse
 	 * @throws \Exception
 	 */
-	public function test($action, $method = self::GET, $params = [], $post = [])
+	public function check($action, $method = 'GET', $params = [], $post = [])
 	{
 		if (!$this->presenter) {
-			throw new \LogicException('Presenter is not set. Use init method or second parameter in constructor.');
+			throw new \LogicException("You have to open the presenter using \$this->openPresenter(\$name); before calling actions");
 		}
-		$params = [
-				'action' => $action,
-				'__terminate' => TRUE,
-			] + $params;
-		$request = new Nette\Application\Request($this->presName, $method, $params, $post);
+		$request = new Nette\Application\Request($this->presenter->getName(), $method, ['action' => $action] + $params, $post);
 		try {
 			$this->httpCode = 200;
 			$response = $this->presenter->run($request);
@@ -111,9 +89,9 @@ class PresenterTester extends Nette\Object
 	 * @return Nette\Application\IResponse
 	 * @throws \Exception
 	 */
-	public function testAction($action, $method = self::GET, $params = [], $post = [])
+	public function checkAction($action, $method = 'GET', $params = [], $post = [])
 	{
-		$response = $this->test($action, $method, $params, $post);
+		$response = $this->check($action, $method, $params, $post);
 		if (!$this->exception) {
 			Tester\Assert::same(200, $this->getReturnCode());
 			Tester\Assert::type('Nette\Application\Responses\TextResponse', $response);
@@ -130,15 +108,14 @@ class PresenterTester extends Nette\Object
 	/**
 	 * @param $action
 	 * @param $signal
-	 * @param string $method
 	 * @param array $params
 	 * @param array $post
 	 *
 	 * @return Nette\Application\IResponse
 	 */
-	public function testSignal($action, $signal, $method = self::GET, $params = [], $post = [])
+	public function checkSignal($action, $signal, $params = [], $post = [])
 	{
-		return $this->testRedirect($action, $method, [
+		return $this->checkRedirect($action, $post ? 'POST' : 'GET', [
 				'do' => $signal,
 			] + $params, $post);
 	}
@@ -152,9 +129,9 @@ class PresenterTester extends Nette\Object
 	 * @return Nette\Application\IResponse
 	 * @throws \Exception
 	 */
-	public function testRedirect($action, $method = self::GET, $params = [], $post = [])
+	public function checkRedirect($action, $method = 'GET', $params = [], $post = [])
 	{
-		$response = $this->test($action, $method, $params, $post);
+		$response = $this->check($action, $method, $params, $post);
 		if (!$this->exception) {
 			Tester\Assert::type('Nette\Application\Responses\RedirectResponse', $response);
 		}
@@ -170,9 +147,9 @@ class PresenterTester extends Nette\Object
 	 * @return Nette\Application\IResponse
 	 * @throws \Exception
 	 */
-	public function testJson($action, $method = self::GET, $params = [], $post = [])
+	public function checkJson($action, $method = 'GET', $params = [], $post = [])
 	{
-		$response = $this->test($action, $method, $params, $post);
+		$response = $this->check($action, $method, $params, $post);
 		if (!$this->exception) {
 			Tester\Assert::same(200, $this->getReturnCode());
 			Tester\Assert::type('Nette\Application\Responses\JsonResponse', $response);
@@ -190,9 +167,9 @@ class PresenterTester extends Nette\Object
 	 * @return Nette\Application\IResponse
 	 * @throws \Exception
 	 */
-	public function testForm($action, $formName, $post = [], $method = self::POST)
+	public function checkForm($action, $formName, $post = [], $method = 'POST')
 	{
-		$response = $this->test($action, $method, [
+		$response = $this->check($action, $method, [
 			'do' => $formName . '-submit',
 		], $post);
 		if (!$this->exception) {
@@ -211,9 +188,9 @@ class PresenterTester extends Nette\Object
 	 * @return Nette\Application\IResponse
 	 * @throws \Exception
 	 */
-	public function testRss($action, $method = self::GET, $params = [], $post = [])
+	public function checkRss($action, $method = 'GET', $params = [], $post = [])
 	{
-		$response = $this->test($action, $method, $params, $post);
+		$response = $this->check($action, $method, $params, $post);
 		if (!$this->exception) {
 			Tester\Assert::same(200, $this->getReturnCode());
 			Tester\Assert::type('Nette\Application\Responses\TextResponse', $response);
@@ -238,9 +215,9 @@ class PresenterTester extends Nette\Object
 	 * @return Nette\Application\IResponse
 	 * @throws \Exception
 	 */
-	public function testSitemap($action, $method = self::GET, $params = [], $post = [])
+	public function checkSitemap($action, $method = 'GET', $params = [], $post = [])
 	{
-		$response = $this->test($action, $method, $params, $post);
+		$response = $this->check($action, $method, $params, $post);
 		if (!$this->exception) {
 			Tester\Assert::same(200, $this->getReturnCode());
 			Tester\Assert::type('Nette\Application\Responses\TextResponse', $response);

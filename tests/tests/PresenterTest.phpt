@@ -5,86 +5,95 @@ namespace Test;
 use Nette;
 use Tester;
 
-$container = require __DIR__ . '/../bootstrap.php';
+require_once __DIR__ . '/../bootstrap.php';
 
 /**
  * @testCase
  */
-class PresenterTest extends Tester\TestCase {
+class PresenterTest extends Tester\TestCase
+{
 
-	/**
-	 * @var PresenterTester
-	 */
-	private $tester;
+	use \Test\PresenterTester;
+	use \Kdyby\TesterExtras\CompiledContainer; //FIXME: přesunout (nefunguje?)
 
-	public function __construct(Nette\DI\Container $container) {
-		$this->tester = new PresenterTester($container, 'Presenter');
+	public function setUp()
+	{
+		$this->openPresenter('Presenter:');
 	}
 
-	public function testClassicRender() {
-		$this->tester->testAction('default');
+	public function testClassicRender()
+	{
+		$this->checkAction('default');
 	}
 
-	public function test404Render() {
-		$tester = $this->tester; // PHP 5.3
-		Tester\Assert::exception(function () use ($tester) {
-			$tester->testAction('404');
+	public function test404Render()
+	{
+		Tester\Assert::exception(function () {
+			$this->checkAction('404');
 		}, 'Nette\Application\BadRequestException');
-		Tester\Assert::same(404, $this->tester->getReturnCode());
+		Tester\Assert::same(404, $this->getReturnCode());
 	}
 
-	public function test500Render() {
-		$tester = $this->tester; // PHP 5.3
-		Tester\Assert::exception(function () use ($tester) {
-			$tester->testAction('fail');
+	public function test500Render()
+	{
+		Tester\Assert::exception(function () {
+			$this->checkAction('fail');
 		}, 'Nette\Application\BadRequestException');
-		Tester\Assert::same(500, $this->tester->getReturnCode());
+		Tester\Assert::same(500, $this->getReturnCode());
 	}
 
-	public function testRenderException() {
-		$tester = $this->tester; // PHP 5.3
-		Tester\Assert::exception(function () use ($tester) {
-			$tester->testAction('exception');
+	public function testRenderException()
+	{
+		Tester\Assert::exception(function () {
+			$this->checkAction('exception');
 		}, 'Latte\CompileException');
-		Tester\Assert::type('Latte\CompileException', $this->tester->getException());
+		Tester\Assert::type('Latte\CompileException', $this->getException());
 	}
 
-	public function testRedirect() {
-		$this->tester->testRedirect('redirect');
+	public function testRedirect()
+	{
+		$this->checkRedirect('redirect');
 	}
 
-	public function testJsonOutput() {
-		$this->tester->testJson('json');
+	public function testJsonOutput()
+	{
+		$this->checkJson('json');
 	}
 
-	public function testRss() {
-		$this->tester->testRss('rss');
+	public function testRss()
+	{
+		$this->checkRss('rss');
 	}
 
-	public function testSitemap() {
-		$this->tester->testSitemap('sitemap');
+	public function testSitemap()
+	{
+		$this->checkSitemap('sitemap');
 	}
 
-	public function testUserLogIn() {
-		$user = $this->tester->logIn();
+	public function testUserLogIn()
+	{
+		$user = $this->logIn();
 		Tester\Assert::true($user->isLoggedIn());
 	}
 
-	public function testUserLogInWithId() {
-		$user = $this->tester->logIn(1);
+	public function testUserLogInWithId()
+	{
+		$user = $this->logIn(1);
 		Tester\Assert::true($user->isLoggedIn());
 		Tester\Assert::same(1, $user->identity->id);
 	}
 
-	public function testUserLogInWithIdRole() {
-		$user = $this->tester->logIn(1, 'admin');
+	public function testUserLogInWithIdRole()
+	{
+		$user = $this->logIn(1, 'admin');
 		Tester\Assert::true($user->isLoggedIn());
 		Tester\Assert::same(1, $user->identity->id);
 		Tester\Assert::true($user->isInRole('admin'));
 	}
 
-	public function testUserLogInWithIdRoles() {
-		$user = $this->tester->logIn(1, array('test1', 'test2'));
+	public function testUserLogInWithIdRoles()
+	{
+		$user = $this->logIn(1, ['test1', 'test2']);
 		Tester\Assert::true($user->isLoggedIn());
 		Tester\Assert::same(1, $user->identity->id);
 		Tester\Assert::true($user->isInRole('test1'));
@@ -92,26 +101,29 @@ class PresenterTest extends Tester\TestCase {
 		Tester\Assert::false($user->isInRole('admin'));
 	}
 
-	public function testUserLogOut() {
-		$user = $this->tester->logOut();
+	public function testUserLogOut()
+	{
+		$user = $this->logOut();
 		Tester\Assert::false($user->isLoggedIn());
 	}
 
-	public function testPresenterInstance() {
-		Tester\Assert::type('Nette\Application\UI\Presenter', $this->tester->getPresenter());
+	public function testPresenterInstance()
+	{
+		Tester\Assert::type('Nette\Application\UI\Presenter', $this->getPresenter());
 	}
 
-	public function testForm() {
-		$this->tester->testForm('default', 'form', array(
+	public function testForm()
+	{
+		$this->checkForm('default', 'form', [
 			'test' => 'test',
-		));
+		]);
 	}
 
-	public function testSignal() {
-		$this->tester->testSignal('default', 'signal');
+	public function testSignal()
+	{
+		$this->checkSignal('default', 'signal');
 	}
 
 }
 
-$test = new PresenterTest($container);
-$test->run();
+(new PresenterTest())->run();

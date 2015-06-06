@@ -5,28 +5,27 @@ namespace Test;
 use Nette;
 use Tester;
 
-$container = require __DIR__ . '/../bootstrap.php';
+require __DIR__ . '/../bootstrap.php';
 
 /**
  * @testCase
  */
-class PresenterTest extends Tester\TestCase {
+class PresenterModuleTest extends Tester\TestCase
+{
 
-	private $tester;
+	use \Test\PresenterTester;
+	use \Kdyby\TesterExtras\CompiledContainer; //FIXME: přesunout (nefunguje?)
 
-	public function __construct(Nette\DI\Container $container) {
-		$this->tester = new PresenterTester($container);
+	public function setUp()
+	{
+		$this->openPresenter('Module:Presenter:');
 	}
 
-	public function setUp() {
-		$this->tester->init('Module:Presenter');
-	}
-
-	public function testClassicRender() {
-		$this->tester->testAction('default');
+	public function testClassicRender()
+	{
+		$this->checkAction('default');
 	}
 
 }
 
-$test = new PresenterTest($container);
-$test->run();
+(new PresenterModuleTest())->run();

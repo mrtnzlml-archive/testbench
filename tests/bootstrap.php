@@ -2,18 +2,16 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../src/Bootstrap.php';
-require __DIR__ . '/presenters/PresenterPresenter.php';
-require __DIR__ . '/ModuleModule/presenters/PresenterPresenter.php';
 
-$configurator = Test\Bootstrap::setup(__DIR__);
-$configurator->createRobotLoader()
-	->addDirectory(__DIR__ . '/../src')
-	->register();
+Test\Bootstrap::setup(__DIR__);
 
-$container = $configurator->createContainer();
+$loader = new Nette\Loaders\RobotLoader;
+$loader->setCacheStorage(new Nette\Caching\Storages\FileStorage(TEMP_DIR));
+//$loader->setCacheStorage(new Nette\Caching\Storages\MemoryStorage());
+$loader->autoRebuild = TRUE;
+$loader->addDirectory(__DIR__ . '/../src');
+$loader->addDirectory(__DIR__ . '/../tests/ModuleModule');
+$loader->addDirectory(__DIR__ . '/../tests/presenters');
+$loader->register();
 
-/** @var Nette\Application\Routers\RouteList $routeList */
-$routeList = $container->getService('router');
-$routeList[] = new Nette\Application\Routers\Route('<presenter>/<action>[/<id>]', 'Presenter:default');
-
-return $container;
+Test\Bootstrap::cleanup(__DIR__);

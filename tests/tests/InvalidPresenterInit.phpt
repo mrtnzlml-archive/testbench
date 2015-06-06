@@ -10,22 +10,19 @@ $container = require __DIR__ . '/../bootstrap.php';
 /**
  * @testCase
  */
-class PresenterTest extends Tester\TestCase {
+class InvalidPresenterInit extends Tester\TestCase
+{
 
-	private $tester;
+	use \Test\PresenterTester;
+	use \Kdyby\TesterExtras\CompiledContainer; //FIXME: přesunout (nefunguje?)
 
-	public function __construct(Nette\DI\Container $container) {
-		$this->tester = new PresenterTester($container);
-	}
-
-	public function testClassicRender() {
-		$tester = $this->tester; // PHP 5.3
-		Tester\Assert::exception(function () use ($tester) {
-			$tester->testAction('default');
-		}, 'LogicException', 'Presenter is not set. Use init method or second parameter in constructor.');
+	public function testClassicRender()
+	{
+		Tester\Assert::exception(function () {
+			$this->checkAction('default');
+		}, 'LogicException');
 	}
 
 }
 
-$test = new PresenterTest($container);
-$test->run();
+(new InvalidPresenterInit($container))->run();
