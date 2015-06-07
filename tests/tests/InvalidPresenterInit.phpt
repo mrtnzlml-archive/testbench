@@ -13,8 +13,7 @@ $container = require __DIR__ . '/../bootstrap.php';
 class InvalidPresenterInit extends Tester\TestCase
 {
 
-	use \Test\PresenterTester;
-	use \Kdyby\TesterExtras\CompiledContainer; //FIXME: přesunout (nefunguje?)
+	use PresenterTester;
 
 	public function testClassicRender()
 	{

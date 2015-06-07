@@ -34,25 +34,4 @@ class Bootstrap extends Nette\Object
 		$_ENV = $_GET = $_POST = $_FILES = [];
 	}
 
-	public static function cleanup($root_dir)
-	{
-		if (self::is_dir_empty($root_dir . '/temp/' . getmypid())) {
-			rmdir($root_dir . '/temp/' . getmypid());
-		}
-	}
-
-	private static function is_dir_empty($dir)
-	{
-		if (!is_readable($dir)) {
-			return NULL;
-		}
-		$handle = opendir($dir);
-		while (FALSE !== ($entry = readdir($handle))) {
-			if ($entry != "." && $entry != "..") {
-				return FALSE;
-			}
-		}
-		return TRUE;
-	}
-
 }

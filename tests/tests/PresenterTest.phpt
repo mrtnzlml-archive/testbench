@@ -2,7 +2,6 @@
 
 namespace Test;
 
-use Nette;
 use Tester;
 
 require_once __DIR__ . '/../bootstrap.php';
@@ -13,10 +12,9 @@ require_once __DIR__ . '/../bootstrap.php';
 class PresenterTest extends Tester\TestCase
 {
 
-	use \Test\PresenterTester;
-	use \Kdyby\TesterExtras\CompiledContainer; //FIXME: přesunout (nefunguje?)
+	use PresenterTester;
 
-	public function setUp()
+	public function __construct()
 	{
 		$this->openPresenter('Presenter:');
 	}

@@ -2,18 +2,14 @@
 
 namespace Test;
 
-use Kdyby;
-use Kdyby\TesterExtras\CompiledContainer;
 use Nette;
 use Nette\Http\Request as HttpRequest;
 use Tester;
 
-/**
- * Class PresenterTester
- * @package Test
- */
 trait PresenterTester
 {
+
+	use CompiledContainer;
 
 	/** @var Nette\Application\IPresenter */
 	private $presenter;
@@ -37,19 +33,17 @@ trait PresenterTester
 		$name = substr($fqa, 0, $namePos = strrpos($fqa, ':'));
 		$class = $presenterFactory->getPresenterClass($name);
 		if (!class_exists($overriddenPresenter = 'AutomaticTests\\' . $class)) {
-//			$classPos = strrpos($class, '\\');
-//			eval('namespace AutomaticTests' . substr($class, 0, $classPos) . '; class ' . substr($class, $classPos + 1) . ' extends \\' . $class . ' { '
-			eval('namespace AutomaticTests; class ' . $class . ' extends \\' . $class . ' { '
+			$classPos = strrpos($class, '\\');
+			$namespace = substr($class, 0, $classPos);
+			$namespace = $namespace ? '\\' . $namespace : '';
+			$className = substr($class, $namespace ? $classPos + 1 : $classPos);
+			eval('namespace AutomaticTests' . $namespace . '; class ' . $className . ' extends \\' . $class . ' { '
 				. 'protected function startup() { if ($this->getParameter("__terminate") == TRUE) { $this->terminate(); } parent::startup(); } '
 				. 'public static function getReflection() { return parent::getReflection()->getParentClass(); } '
 				. '}');
 		}
 		$this->presenter = $container->createInstance($overriddenPresenter);
 		$container->callInjects($this->presenter);
-		$app = $this->getService('Nette\Application\Application');
-		$appRefl = new \ReflectionProperty($app, 'presenter');
-		$appRefl->setAccessible(TRUE);
-		$appRefl->setValue($app, $this->presenter);
 		$this->presenter->autoCanonicalize = FALSE;
 		$this->presenter->run(new Nette\Application\Request($name, 'GET', ['action' => substr($fqa, $namePos + 1) ?: 'default', '__terminate' => TRUE]));
 	}
@@ -131,8 +125,11 @@ trait PresenterTester
 	 */
 	public function checkRedirect($action, $method = 'GET', $params = [], $post = [])
 	{
+		$router = $this->getContainer()->getService('router');
+		$router[] = new Nette\Application\Routers\Route('<presenter>/<action>[/<id>]', 'Fake:route');
 		$response = $this->check($action, $method, $params, $post);
 		if (!$this->exception) {
+			Tester\Assert::same(200, $this->getReturnCode());
 			Tester\Assert::type('Nette\Application\Responses\RedirectResponse', $response);
 		}
 		return $response;
@@ -169,14 +166,9 @@ trait PresenterTester
 	 */
 	public function checkForm($action, $formName, $post = [], $method = 'POST')
 	{
-		$response = $this->check($action, $method, [
+		return $this->checkRedirect($action, $method, [
 			'do' => $formName . '-submit',
 		], $post);
-		if (!$this->exception) {
-			Tester\Assert::same(200, $this->getReturnCode());
-			Tester\Assert::type('Nette\Application\Responses\RedirectResponse', $response);
-		}
-		return $response;
 	}
 
 	/**
