@@ -3,118 +3,132 @@
 Heavily inspired by [Kdyby\TesterExtras](https://github.com/Kdyby/TesterExtras).
 
 Simple test bench for Nette Framework projects
-==============================================
-Write tests as simple as possible. This project helps you to write tests very quickly. DRY!
+----------------------------------------------
+Write tests as simple as possible. This project helps you to write tests very quickly. DRY! The main goal of this project is to make testing very simple for everyone.
+
+You can find few examples in this readme or take a look to the `tests` folder in this project.
 
 Minimal code
-============
-At first you need classic bootstrap file:
+-----------
+At first you need classic bootstrap file. It can be really simple:
 
 ```php
 <?php
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$configurator = Test\Bootstrap::setup(__DIR__);
-$configurator->createRobotLoader()
-	->addDirectory(__DIR__ . '/../app')
-	->register();
+$loader = new \Nette\Loaders\RobotLoader();
+$loader->setCacheStorage(new \Nette\Caching\Storages\MemoryStorage());
+$loader->addDirectory(__DIR__ . '/../app');
+$loader->addDirectory(__DIR__ . '/../custom');
+$loader->addDirectory(__DIR__ . '/../libs');
+$loader->register();
 
-// if needed:
-$configurator->addConfig(__DIR__ . '/../app/config/config.neon');
-$configurator->addConfig(__DIR__ . '/../app/config/config.local.neon');
-
-return $configurator->createContainer();
+Test\Bootstrap::setup(__DIR__);
 ```
 
-It's actually quite heavy configuration now, but we are testing presenters very intensively.
-Testbench actually tries to run whole application and even check generated HTML output.
+It's important, that we are not creating dependency injection container here. You can use [autoload](https://getcomposer.org/doc/04-schema.md#autoload) from composer if you don't want to use robot loader. It's usually very useful to create own test case which inherits from original one:
+
+```php
+<?php
+
+class PresenterTestCase extends Tester\TestCase
+{
+
+	use Test\PresenterTester {
+		Test\PresenterTester::createContainer as parentCreateContainer;
+	}
+
+	protected function createContainer()
+	{
+		return $this->parentCreateContainer([
+			__DIR__ . '/../app/config/config.neon',
+		]);
+	}
+
+}
+```
+
+With this test case, testing is really easy:
 
 ```php
 <?php //HomepagePresenterTest.phpt
 
-$container = require __DIR__ . '/../bootstrap.php';
+require __DIR__ . '/../bootstrap.php';
 
 /**
  * @testCase
  */
-class HomepagePresenterTest extends Tester\TestCase {
+class HomepagePresenterTest extends \PresenterTestCase
+{
 
-	private $tester;
-
-	public function __construct(Nette\DI\Container $container) {
-		$this->tester = new PresenterTester($container, 'Homepage'); //init bench with the presenter name
+	public function __construct()
+	{
+		$this->openPresenter('Homepage:');
 	}
 
-	public function testRenderDefault() {
-		$this->tester->testAction('default'); //test your action
+	public function testRenderDefault()
+	{
+		$this->checkAction('default');
 	}
 
 }
 
-(new HomepagePresenterTest($container))->run();
-```
-
-There is also `init` function so you can init tester with presenter name in the `setUp` function like this:
-
-```php
-public public function setUp() {
-	$this->tester->init('Homepage');
-}
+(new HomepagePresenterTest())->run();
 ```
 
 Testing modules
 ===============
-It's simple. Just init bench with `Module:Presenter` name like this:
+It's simple. Just init bench with `Module:Presenter:` name like this:
 
 ```php
-public function __construct(Nette\DI\Container $container) {
-	$this->tester = new PresenterTester($container, 'Admin:Presenter'); //init bench with the module:presenter name
-}
-
-// OR:
-
-public function setUp() {
-	$this->tester->init('Admin:Presenter'); //init bench with the module:presenter name
+public function __construct()
+{
+	$this->openPresenter('Module:Presenter:');
 }
 ```
+
+You should always use full presenter name.
 
 Testing restricted areas
 ========================
 ```php
-public function setUp() {
-	$this->tester->init('Admin:Presenter'); //init bench with the module:presenter name
-	$this->tester->logIn();
+public function setUp()
+{
+	$this->logIn();
 	
 	// OR:
 	
-	$this->tester->logIn(1); //with user ID
-	$this->tester->logIn(1, 'role'); //with user ID and role
-	$this->tester->logIn(1, ['role1', 'role2']); //with user ID and roles
-	$this->tester->logIn(1, ['role1', 'role2'], ['data']); //with user ID and roles and additional data
+	$this->logIn(1); //with user ID
+	$this->logIn(1, 'role'); //with user ID and role
+	$this->logIn(1, ['role1', 'role2']); //with user ID and roles
+	$this->logIn(1, ['role1', 'role2'], ['data']); //with user ID and roles and additional data
 }
 ```
 
 You can use logout as well:
 ```php
-public function tearDown() {
-	$this->tester->logOut();
+public function tearDown()
+{
+	$this->logOut();
 }
 ```
 
 Testing signals
 ===============
 ```php
-public function testSignal() {
-	$this->tester->testSignal('action-name', 'signal-name');
+public function testSignal()
+{
+	$this->checkSignal('action-name', 'signal-name');
 }
 ```
 
 Testing forms
 =============
 ```php
-public function testSearchForm() {
-	$this->tester->testForm('action-name', 'form-name', array(
+public function testSearchForm()
+{
+	$this->checkForm('action-name', 'form-name', array(
 		'input' => 'value',
 	));
 }
@@ -122,8 +136,9 @@ public function testSearchForm() {
 
 It's just simple stupid test. You are the tester so you can do whatever you want after this test:
 ```php
-public function testSearchForm() {
-	$response = $this->tester->testForm('action-name', 'form-name', array(
+public function testSearchForm()
+{
+	$response = $this->checkForm('action-name', 'form-name', array(
 		'input' => 'value',
 	));
 	
@@ -134,15 +149,16 @@ public function testSearchForm() {
 Testing return codes
 ====================
 ```php
-public function test404Render() {
-	$this->tester->testAction('404');
-	Tester\Assert::same(404, $this->tester->getReturnCode());
+public function test404Render()
+{
+	$this->checkAction('404');
+	Tester\Assert::same(404, $this->getReturnCode());
 	
 	// OR:
 	
 	Tester\Assert::exception(function () {
-        $this->tester->testAction('404');
-    }, 'Nette\Application\BadRequestException');
+		$this->checkAction('404');
+	}, 'Nette\Application\BadRequestException');
 }
 ```
 
@@ -150,18 +166,20 @@ Testing exceptions
 ==================
 I don't think this is very useful, but:
 ```php
-public function testRenderException() {
-	$this->tester->testAction('exception');
-	Tester\Assert::type('Latte\CompileException', $this->tester->getException());
+public function testRenderException()
+{
+	$this->checkAction('exception');
+	Tester\Assert::type('Latte\CompileException', $this->getException());
 }
 ```
 
 It's better to use classic exception test:
 ```php
-public function testRenderException() {
+public function testRenderException()
+{
 	Tester\Assert::exception(function () {
-        $this->tester->testAction('exception');
-    }, 'Latte\CompileException');
+		$this->checkAction('exception');
+	}, 'Latte\CompileException');
 }
 ```
 
@@ -169,25 +187,28 @@ Testing JSON output
 ===================
 Still in progress. But for now:
 ```php
-public function testJsonOutput() {
-	$this->tester->testJson('json');
+public function testJsonOutput()
+{
+	$this->checkJson('json-action');
 }
 ```
 
 Testing RSS and Sitemaps
 ========================
 ```php
-public function testRss() {
-	$this->tester->testRss('rss');
+public function testRss()
+{
+	$this->checkRss('rss');
 }
 
-public function testSitemap() {
-	$this->tester->testSitemap('sitemap');
+public function testSitemap()
+{
+	$this->checkSitemap('sitemap');
 }
 ```
 
 This test expects minimal template for RSS:
-```
+```latte
 {contentType application/xml; charset=utf-8}
 <<?php ?>?xml version="1.0" encoding="UTF-8"?>
 
@@ -205,7 +226,7 @@ This test expects minimal template for RSS:
 ```
 
 And Sitemap:
-```
+```latte
 {contentType application/xml; charset=utf-8}
 <<?php ?>?xml version="1.0" encoding="UTF-8"?>
 
