@@ -9,10 +9,8 @@ require_once __DIR__ . '/../bootstrap.php';
 /**
  * @testCase
  */
-class PresenterTest extends Tester\TestCase
+class PresenterTest extends CustomTestCase
 {
-
-	use PresenterTester;
 
 	public function __construct()
 	{

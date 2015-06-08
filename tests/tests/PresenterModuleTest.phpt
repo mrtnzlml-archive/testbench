@@ -10,10 +10,8 @@ require __DIR__ . '/../bootstrap.php';
 /**
  * @testCase
  */
-class PresenterModuleTest extends Tester\TestCase
+class PresenterModuleTest extends CustomTestCase
 {
-
-	use PresenterTester;
 
 	public function __construct()
 	{

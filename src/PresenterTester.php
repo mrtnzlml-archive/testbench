@@ -38,7 +38,7 @@ trait PresenterTester
 			$namespace = $namespace ? '\\' . $namespace : '';
 			$className = substr($class, $namespace ? $classPos + 1 : $classPos);
 			eval('namespace AutomaticTests' . $namespace . '; class ' . $className . ' extends \\' . $class . ' { '
-				. 'protected function startup() { if ($this->getParameter("__terminate") == TRUE) { $this->terminate(); } parent::startup(); } '
+				. 'public function startup() { if ($this->getParameter("__terminate") == TRUE) { $this->terminate(); } parent::startup(); } '
 				. 'public static function getReflection() { return parent::getReflection()->getParentClass(); } '
 				. '}');
 		}

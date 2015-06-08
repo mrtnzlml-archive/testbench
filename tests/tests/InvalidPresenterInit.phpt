@@ -10,10 +10,8 @@ $container = require __DIR__ . '/../bootstrap.php';
 /**
  * @testCase
  */
-class InvalidPresenterInit extends Tester\TestCase
+class InvalidPresenterInit extends CustomTestCase
 {
-
-	use PresenterTester;
 
 	public function testClassicRender()
 	{
@@ -24,4 +22,4 @@ class InvalidPresenterInit extends Tester\TestCase
 
 }
 
-(new InvalidPresenterInit($container))->run();
+(new InvalidPresenterInit())->run();
