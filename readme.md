@@ -78,7 +78,7 @@ class HomepagePresenterTest extends \PresenterTestCase
 ```
 
 Testing modules
-===============
+-----------
 It's simple. Just init bench with `Module:Presenter:` name like this:
 
 ```php
@@ -91,7 +91,7 @@ public function __construct()
 You should always use full presenter name.
 
 Testing restricted areas
-========================
+-----------
 ```php
 public function setUp()
 {
@@ -115,7 +115,7 @@ public function tearDown()
 ```
 
 Testing signals
-===============
+-----------
 ```php
 public function testSignal()
 {
@@ -124,7 +124,7 @@ public function testSignal()
 ```
 
 Testing forms
-=============
+-----------
 ```php
 public function testSearchForm()
 {
@@ -147,7 +147,7 @@ public function testSearchForm()
 ```
 
 Testing return codes
-====================
+-----------
 ```php
 public function test404Render()
 {
@@ -163,7 +163,7 @@ public function test404Render()
 ```
 
 Testing exceptions
-==================
+-----------
 I don't think this is very useful, but:
 ```php
 public function testRenderException()
@@ -184,7 +184,7 @@ public function testRenderException()
 ```
 
 Testing JSON output
-===================
+-----------
 Still in progress. But for now:
 ```php
 public function testJsonOutput()
@@ -194,7 +194,7 @@ public function testJsonOutput()
 ```
 
 Testing RSS and Sitemaps
-========================
+-----------
 ```php
 public function testRss()
 {
@@ -238,5 +238,5 @@ And Sitemap:
 ```
 
 Give it a shot!
-===============
+-----------
 Look at the tests in this project. You'll see how to use it properly.
