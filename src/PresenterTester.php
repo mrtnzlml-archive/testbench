@@ -24,8 +24,7 @@ trait PresenterTester
 		 * @var CompiledContainer $this
 		 */
 		$container = $this->getContainer();
-		$params = $container->getParameters();
-		$fakeUrl = new Nette\Http\UrlScript(isset($params['console']['url']) ? $params['console']['url'] : 'localhost');
+		$fakeUrl = new Nette\Http\UrlScript('http://fake.url/');
 		$container->removeService('httpRequest');
 		$container->addService('httpRequest', new HttpRequest($fakeUrl, NULL, [], [], [], [], PHP_SAPI, '127.0.0.1', '127.0.0.1'));
 		/** @var Nette\Application\IPresenterFactory $presenterFactory */
