@@ -8,7 +8,9 @@ use Tester;
 class CustomTestCase extends Tester\TestCase
 {
 
-	use PresenterTester;
+	use PresenterTester {
+		PresenterTester::createContainer as parentCreateContainer;
+	}
 
 	protected function doCreateConfiguration()
 	{
@@ -16,6 +18,14 @@ class CustomTestCase extends Tester\TestCase
 		// shared compiled container for faster tests
 		$config->setTempDirectory(dirname(TEMP_DIR));
 		return $config;
+	}
+
+	protected function createContainer(array $configs = [])
+	{
+		$container = $this->parentCreateContainer($configs);
+		$routeList = $container->getService('router');
+		$routeList[] = new Nette\Application\Routers\Route('<presenter>/<action>[/<id>]', 'Presenter:default');
+		return $container;
 	}
 
 }
