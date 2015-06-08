@@ -125,8 +125,6 @@ trait PresenterTester
 	 */
 	public function checkRedirect($action, $method = 'GET', $params = [], $post = [])
 	{
-		$router = $this->getContainer()->getService('router');
-		$router[] = new Nette\Application\Routers\Route('<presenter>/<action>[/<id>]', 'Fake:route');
 		$response = $this->check($action, $method, $params, $post);
 		if (!$this->exception) {
 			Tester\Assert::same(200, $this->getReturnCode());
