@@ -10,6 +10,7 @@ class CustomTestCase extends Tester\TestCase
 
 	use PresenterTester {
 		PresenterTester::createContainer as parentCreateContainer;
+		PresenterTester::doCreateConfiguration as parentDoCreateConfiguration;
 	}
 
 	protected function doCreateConfiguration()
