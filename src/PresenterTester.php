@@ -131,7 +131,7 @@ trait PresenterTester
 			Tester\Assert::same(200, $this->getReturnCode());
 			Tester\Assert::same(302, $response->getCode());
 			Tester\Assert::type('Nette\Application\Responses\RedirectResponse', $response);
-			Tester\Assert::match("~^http://fake\.url{$path}[a-z0-9?&=_]*$~", $response->getUrl());
+			Tester\Assert::match("~^https?://fake\.url{$path}[a-z0-9?&=_]*$~", $response->getUrl());
 			Debugger::log($response->getUrl());
 		}
 		return $response;
