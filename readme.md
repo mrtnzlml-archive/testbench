@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/mrtnzlml/testbench.svg?branch=master)](https://travis-ci.org/mrtnzlml/testbench)
 
-Heavily inspired by [Kdyby\TesterExtras](https://github.com/Kdyby/TesterExtras).
+Heavily inspired by [Kdyby\TesterExtras](https://github.com/Kdyby/TesterExtras). Tested against PHP 5.4, 5.5, 5.6, 7.0 and HHVM.
 
 Simple test bench for Nette Framework projects
 ----------------------------------------------
@@ -143,6 +143,23 @@ public function testSearchForm()
 	));
 	
 	//Tester\Assert::... with $response
+}
+```
+
+Testing redirects
+-----------
+```php
+public function testRedirect()
+{
+	$this->checkRedirect('action-name');
+}
+```
+
+You can optionally provide destination URL:
+```php
+public function testRedirect()
+{
+	$this->checkRedirect('action-name', '/presenter/action');
 }
 ```
 
