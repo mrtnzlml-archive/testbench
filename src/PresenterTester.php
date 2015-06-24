@@ -5,6 +5,7 @@ namespace Test;
 use Nette;
 use Nette\Http\Request as HttpRequest;
 use Tester;
+use Tracy\Debugger;
 
 trait PresenterTester
 {
@@ -108,7 +109,7 @@ trait PresenterTester
 	 */
 	public function checkSignal($action, $signal, $params = [], $post = [])
 	{
-		return $this->checkRedirect($action, $post ? 'POST' : 'GET', [
+		return $this->checkRedirect($action, '/', $post ? 'POST' : 'GET', [
 				'do' => $signal,
 			] + $params, $post);
 	}
@@ -119,15 +120,19 @@ trait PresenterTester
 	 * @param array $params
 	 * @param array $post
 	 *
-	 * @return Nette\Application\IResponse
+	 * @return Nette\Application\Responses\RedirectResponse
 	 * @throws \Exception
 	 */
-	public function checkRedirect($action, $method = 'GET', $params = [], $post = [])
+	public function checkRedirect($action, $path = '/', $method = 'GET', $params = [], $post = [])
 	{
+		/** @var Nette\Application\Responses\RedirectResponse $response */
 		$response = $this->check($action, $method, $params, $post);
 		if (!$this->exception) {
 			Tester\Assert::same(200, $this->getReturnCode());
+			Tester\Assert::same(302, $response->getCode());
 			Tester\Assert::type('Nette\Application\Responses\RedirectResponse', $response);
+			Tester\Assert::match("~^http://fake\.url{$path}[a-z0-9?&=_]*$~", $response->getUrl());
+			Debugger::log($response->getUrl());
 		}
 		return $response;
 	}
@@ -163,7 +168,7 @@ trait PresenterTester
 	 */
 	public function checkForm($action, $formName, $post = [], $method = 'POST')
 	{
-		return $this->checkRedirect($action, $method, [
+		return $this->checkRedirect($action, '/', $method, [
 			'do' => $formName . '-submit',
 		], $post);
 	}
