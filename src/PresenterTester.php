@@ -5,7 +5,6 @@ namespace Test;
 use Nette;
 use Nette\Http\Request as HttpRequest;
 use Tester;
-use Tracy\Debugger;
 
 trait PresenterTester
 {
@@ -50,19 +49,23 @@ trait PresenterTester
 
 	/**
 	 * @param $action
-	 * @param string $method
 	 * @param array $params
 	 * @param array $post
 	 *
 	 * @return Nette\Application\IResponse
 	 * @throws \Exception
 	 */
-	public function check($action, $method = 'GET', $params = [], $post = [])
+	public function check($action, $params = [], $post = [])
 	{
 		if (!$this->presenter) {
 			throw new \LogicException("You have to open the presenter using \$this->openPresenter(\$name); before calling actions");
 		}
-		$request = new Nette\Application\Request($this->presenter->getName(), $method, ['action' => $action] + $params, $post);
+		$request = new Nette\Application\Request(
+			$this->presenter->getName(),
+			$post ? 'POST' : 'GET',
+			['action' => $action] + $params,
+			$post
+		);
 		try {
 			$this->httpCode = 200;
 			$response = $this->presenter->run($request);
@@ -76,16 +79,16 @@ trait PresenterTester
 
 	/**
 	 * @param $action
-	 * @param string $method
 	 * @param array $params
 	 * @param array $post
 	 *
-	 * @return Nette\Application\IResponse
+	 * @return Nette\Application\Responses\TextResponse
 	 * @throws \Exception
 	 */
-	public function checkAction($action, $method = 'GET', $params = [], $post = [])
+	public function checkAction($action, $params = [], $post = [])
 	{
-		$response = $this->check($action, $method, $params, $post);
+		/** @var Nette\Application\Responses\TextResponse $response */
+		$response = $this->check($action, $params, $post);
 		if (!$this->exception) {
 			Tester\Assert::same(200, $this->getReturnCode());
 			Tester\Assert::type('Nette\Application\Responses\TextResponse', $response);
@@ -109,46 +112,45 @@ trait PresenterTester
 	 */
 	public function checkSignal($action, $signal, $params = [], $post = [])
 	{
-		return $this->checkRedirect($action, '/', $post ? 'POST' : 'GET', [
+		return $this->checkRedirect($action, '/', [
 				'do' => $signal,
 			] + $params, $post);
 	}
 
 	/**
 	 * @param $action
-	 * @param string $method
+	 * @param string $path
 	 * @param array $params
 	 * @param array $post
 	 *
 	 * @return Nette\Application\Responses\RedirectResponse
 	 * @throws \Exception
 	 */
-	public function checkRedirect($action, $path = '/', $method = 'GET', $params = [], $post = [])
+	public function checkRedirect($action, $path = '/', $params = [], $post = [])
 	{
 		/** @var Nette\Application\Responses\RedirectResponse $response */
-		$response = $this->check($action, $method, $params, $post);
+		$response = $this->check($action, $params, $post);
 		if (!$this->exception) {
 			Tester\Assert::same(200, $this->getReturnCode());
 			Tester\Assert::same(302, $response->getCode());
 			Tester\Assert::type('Nette\Application\Responses\RedirectResponse', $response);
 			Tester\Assert::match("~^https?://fake\.url{$path}[a-z0-9?&=_/]*$~", $response->getUrl());
-			Debugger::log($response->getUrl());
 		}
 		return $response;
 	}
 
 	/**
 	 * @param $action
-	 * @param string $method
 	 * @param array $params
 	 * @param array $post
 	 *
-	 * @return Nette\Application\IResponse
+	 * @return Nette\Application\Responses\JsonResponse
 	 * @throws \Exception
 	 */
-	public function checkJson($action, $method = 'GET', $params = [], $post = [])
+	public function checkJson($action, $params = [], $post = [])
 	{
-		$response = $this->check($action, $method, $params, $post);
+		/** @var Nette\Application\Responses\JsonResponse $response */
+		$response = $this->check($action, $params, $post);
 		if (!$this->exception) {
 			Tester\Assert::same(200, $this->getReturnCode());
 			Tester\Assert::type('Nette\Application\Responses\JsonResponse', $response);
@@ -161,30 +163,28 @@ trait PresenterTester
 	 * @param $action
 	 * @param $formName
 	 * @param array $post
-	 * @param string $method
 	 *
-	 * @return Nette\Application\IResponse
-	 * @throws \Exception
+	 * @return Nette\Application\Responses\RedirectResponse
 	 */
-	public function checkForm($action, $formName, $post = [], $method = 'POST')
+	public function checkForm($action, $formName, $post = [])
 	{
-		return $this->checkRedirect($action, '/', $method, [
+		return $this->checkRedirect($action, '/', [
 			'do' => $formName . '-submit',
 		], $post);
 	}
 
 	/**
 	 * @param $action
-	 * @param string $method
 	 * @param array $params
 	 * @param array $post
 	 *
-	 * @return Nette\Application\IResponse
+	 * @return Nette\Application\Responses\TextResponse
 	 * @throws \Exception
 	 */
-	public function checkRss($action, $method = 'GET', $params = [], $post = [])
+	public function checkRss($action, $params = [], $post = [])
 	{
-		$response = $this->check($action, $method, $params, $post);
+		/** @var Nette\Application\Responses\TextResponse $response */
+		$response = $this->check($action, $params, $post);
 		if (!$this->exception) {
 			Tester\Assert::same(200, $this->getReturnCode());
 			Tester\Assert::type('Nette\Application\Responses\TextResponse', $response);
@@ -202,16 +202,16 @@ trait PresenterTester
 
 	/**
 	 * @param $action
-	 * @param string $method
 	 * @param array $params
 	 * @param array $post
 	 *
-	 * @return Nette\Application\IResponse
+	 * @return Nette\Application\Responses\TextResponse
 	 * @throws \Exception
 	 */
-	public function checkSitemap($action, $method = 'GET', $params = [], $post = [])
+	public function checkSitemap($action, $params = [], $post = [])
 	{
-		$response = $this->check($action, $method, $params, $post);
+		/** @var Nette\Application\Responses\TextResponse $response */
+		$response = $this->check($action, $params, $post);
 		if (!$this->exception) {
 			Tester\Assert::same(200, $this->getReturnCode());
 			Tester\Assert::type('Nette\Application\Responses\TextResponse', $response);
