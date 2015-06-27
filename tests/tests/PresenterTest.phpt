@@ -53,7 +53,7 @@ class PresenterTest extends CustomTestCase
 
 	public function testRedirectRss()
 	{
-		$this->checkRedirect('redirectRss', '/presenter/rss');
+		$this->checkRedirect('redirectRss', '/x/y/rss');
 	}
 
 	public function testJsonOutput()

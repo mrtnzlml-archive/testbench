@@ -25,7 +25,7 @@ class CustomTestCase extends Tester\TestCase
 	{
 		$container = $this->parentCreateContainer($configs);
 		$routeList = $container->getService('router');
-		$routeList[] = new Nette\Application\Routers\Route('<presenter>/<action>[/<id>]', 'Presenter:default');
+		$routeList[] = new Nette\Application\Routers\Route('/x/y[[[/<presenter>]/<action>][/<id>]]', 'Presenter:default');
 		return $container;
 	}
 
