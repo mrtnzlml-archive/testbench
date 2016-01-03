@@ -6,6 +6,9 @@ use Nette;
 use Nette\DI\Container;
 use Nette\Http\Session;
 
+/**
+ * @deprecated
+ */
 trait CompiledContainer
 {
 

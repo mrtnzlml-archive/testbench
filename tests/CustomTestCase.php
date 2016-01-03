@@ -5,6 +5,9 @@ namespace Test;
 use Nette;
 use Tester;
 
+/**
+ * @deprecated
+ */
 class CustomTestCase extends Tester\TestCase
 {
 

@@ -13,7 +13,7 @@ use Tracy;
 class Bootstrap extends Nette\Object
 {
 
-	public static function setup($root_dir)
+	public static function setup($tempDir)
 	{
 		if (!class_exists('Tester\Assert')) {
 			echo "Install Nette Tester using `composer update --dev`\n";
@@ -23,12 +23,7 @@ class Bootstrap extends Nette\Object
 		Tester\Environment::setup();
 		date_default_timezone_set('Europe/Prague');
 
-		if (!is_dir($root_dir . '/temp/')) {
-			mkdir($root_dir . '/temp/');
-		}
-		define('TEMP_DIR', $root_dir . '/temp/' . getmypid());
-		Tester\Helpers::purge(TEMP_DIR);
-		@chmod(TEMP_DIR, 0777);
+		define('TEMP_DIR', $tempDir);
 		Tracy\Debugger::$logDirectory = TEMP_DIR;
 
 		$_ENV = $_GET = $_POST = $_FILES = [];

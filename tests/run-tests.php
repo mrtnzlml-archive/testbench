@@ -15,7 +15,7 @@ $_SERVER['argv'][++$position] = "php-$os.ini";
 // $_SERVER['argv'][++$position] = '--coverage-src';
 // $_SERVER['argv'][++$position] = './../app';
 
-$dir = __DIR__ . '/cache';
+$dir = __DIR__ . '/_helpers/cache';
 
 if (!is_dir($dir)) {
 	mkdir($dir);

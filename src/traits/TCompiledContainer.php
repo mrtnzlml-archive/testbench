@@ -24,6 +24,15 @@ trait TCompiledContainer
 		return $container->getByType($class);
 	}
 
+	protected function refreshContainer()
+	{
+		$this->container = $this->createContainer();
+		return TRUE;
+	}
+
+	/**
+	 * TODO: private (?)
+	 */
 	protected function createContainer()
 	{
 		$configurator = new Nette\Configurator();
@@ -31,23 +40,23 @@ trait TCompiledContainer
 		$configurator->setTempDirectory(__DIR__ . '/../'); // shared container for performance purposes
 		$configurator->setDebugMode(FALSE);
 
-		$configurator->addParameters([
-			'appDir' => __DIR__ . '/../../../app',
-			'wwwDir' => __DIR__ . '/../../..',
-		]);
+//		$configurator->addParameters([ //FIXME: konfigurovatelné
+//			'appDir' => __DIR__ . '/../../../app',
+//			'wwwDir' => __DIR__ . '/../../..',
+//		]);
 
-		$configurator->createRobotLoader()
-			->addDirectory([
-				__DIR__ . '/../../../app',
-				__DIR__ . '/../../../administrace',
-				__DIR__ . '/../../../libs',
-				__DIR__ . '/../../../include',
-				__DIR__ . '/../../../presentation',
-			])->register();
+//		$configurator->createRobotLoader()
+//			->addDirectory([
+//				__DIR__ . '/../../../app',
+//				__DIR__ . '/../../../administrace',
+//				__DIR__ . '/../../../libs',
+//				__DIR__ . '/../../../include',
+//				__DIR__ . '/../../../presentation',
+//			])->register();
 
-		$configurator->addConfig(__DIR__ . '/../../../app/config/config.neon');
-		$configurator->addConfig(__DIR__ . '/../../../app/config/config.local.neon');
-		$configurator->addConfig(__DIR__ . '/../../tests.neon');
+//		$configurator->addConfig(__DIR__ . '/../../../app/config/config.neon');
+//		$configurator->addConfig(__DIR__ . '/../../../app/config/config.local.neon');
+//		$configurator->addConfig(__DIR__ . '/../../tests.neon');
 
 		return $configurator->createContainer();
 	}
