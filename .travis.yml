@@ -9,7 +9,8 @@ php:
 
 before_script:
   - composer selfupdate
-  - composer install --prefer-dist --dev
+  - travis_retry composer install --prefer-dist --dev
+  - mkdir tests/_helpers/temp
 
 script:
   - vendor/bin/tester tests -p php -s -c tests/php-unix.ini
