@@ -7,13 +7,12 @@ use Nette\ComponentModel\IComponent;
 trait TComponent
 {
 
-	use TDatabaseSetup;
+	use TCompiledContainer;
 
 	protected function attachToPresenter(IComponent $component, $name = NULL)
 	{
 		if ($name === NULL) {
-			$rc = new \ReflectionClass($component);
-			$name = $rc->getShortName();
+			$name = $component->getName();
 		}
 		$presenter = new PresenterMock;
 		$presenter->onStartup[] = function (PresenterMock $presenter) use ($component, $name) {

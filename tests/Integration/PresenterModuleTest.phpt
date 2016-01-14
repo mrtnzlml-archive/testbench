@@ -2,25 +2,27 @@
 
 namespace Test;
 
-use Nette;
-use Tester;
-
 require __DIR__ . '/../bootstrap.php';
 
 /**
  * @testCase
  */
-class PresenterModuleTest extends CustomTestCase
+class PresenterModuleTest extends PresenterTestCase
 {
 
-	public function __construct()
+	public function testClassicRender1()
 	{
-		$this->openPresenter('Module:Presenter:');
+		$this->checkAction('Module:Presenter:');
 	}
 
-	public function testClassicRender()
+	public function testClassicRender2()
 	{
-		$this->checkAction('default');
+		$this->checkAction('Module:Presenter:default');
+	}
+
+	public function testClassicRender3()
+	{
+		$this->checkAction(':Module:Presenter:default');
 	}
 
 }

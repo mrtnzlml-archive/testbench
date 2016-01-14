@@ -16,6 +16,10 @@ trait TDatabaseSetup
 
 	protected function createContainer()
 	{
+		if (!class_exists(\Doctrine\DBAL\Connection::class)) {
+			throw new \Nette\NotSupportedException('TDatabaseSetup trait supports only Doctrine at this moment.');
+		}
+
 		$container = $this->parentCreateContainer();
 
 		/** @var ConnectionMock $db */

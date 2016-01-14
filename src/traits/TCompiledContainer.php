@@ -10,6 +10,9 @@ trait TCompiledContainer
 	/** @var Nette\DI\Container */
 	private $container;
 
+	/**
+	 * @return Nette\DI\Container
+	 */
 	protected function getContainer()
 	{
 		if ($this->container === NULL) {
@@ -27,17 +30,17 @@ trait TCompiledContainer
 	protected function refreshContainer()
 	{
 		$this->container = $this->createContainer();
-		return TRUE;
+		return $this->container;
 	}
 
 	/**
-	 * TODO: private (?)
+	 * @see: https://api.nette.org/2.3.8/source-Bootstrap.Configurator.php.html
 	 */
-	protected function createContainer()
+	private function createContainer($configFiles = [])
 	{
 		$configurator = new Nette\Configurator();
 
-		$configurator->setTempDirectory(__DIR__ . '/../'); // shared container for performance purposes
+		$configurator->setTempDirectory(TEMP_DIR); // shared container for performance purposes
 		$configurator->setDebugMode(FALSE);
 
 //		$configurator->addParameters([ //FIXME: konfigurovatelné
@@ -54,9 +57,9 @@ trait TCompiledContainer
 //				__DIR__ . '/../../../presentation',
 //			])->register();
 
-//		$configurator->addConfig(__DIR__ . '/../../../app/config/config.neon');
-//		$configurator->addConfig(__DIR__ . '/../../../app/config/config.local.neon');
-//		$configurator->addConfig(__DIR__ . '/../../tests.neon');
+		foreach ($configFiles as $configFile) {
+			$configurator->addConfig($configFile);
+		}
 
 		return $configurator->createContainer();
 	}
