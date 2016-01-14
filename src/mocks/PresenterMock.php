@@ -4,7 +4,6 @@ namespace Ant\Tests;
 
 use Nette\Application;
 use Nette\Application\UI;
-use Nextras\Application\UI\SecuredLinksPresenterTrait;
 
 class PresenterMock extends UI\Presenter
 {
