@@ -1,6 +1,12 @@
 [![Build Status](https://travis-ci.org/mrtnzlml/testbench.svg?branch=master)](https://travis-ci.org/mrtnzlml/testbench)
 
-Heavily inspired by [Kdyby\TesterExtras](https://github.com/Kdyby/TesterExtras). Tested against PHP 5.4, 5.5, 5.6, 7.0 and HHVM.
+Tested against PHP 5.4, 5.5, 5.6, 7.0 and HHVM.
+
+Heavily inspired by:
+
+- [Kdyby\TesterExtras](https://github.com/Kdyby/TesterExtras)
+- [Bootstrap your integration testing database - Jiří Pudil](https://jiripudil.cz/blog/bootstrap-your-integration-testing-database)
+- and Nette tests
 
 Simple test bench for Nette Framework projects
 ----------------------------------------------
@@ -24,7 +30,7 @@ $loader->addDirectory(__DIR__ . '/../custom');
 $loader->addDirectory(__DIR__ . '/../libs');
 $loader->register();
 
-Test\Bootstrap::setup(__DIR__);
+Test\Bootstrap::setup(__DIR__ . '/cache');
 ```
 
 It's important, that we are not creating dependency injection container here. You can use [autoload](https://getcomposer.org/doc/04-schema.md#autoload) from composer if you don't want to use robot loader. It's usually very useful to create own test case which inherits from original one:
@@ -62,33 +68,20 @@ require __DIR__ . '/../bootstrap.php';
 class HomepagePresenterTest extends \PresenterTestCase
 {
 
-	public function __construct()
-	{
-		$this->openPresenter('Homepage:');
-	}
-
 	public function testRenderDefault()
 	{
-		$this->checkAction('default');
+		$this->checkAction('Homepage:default');
 	}
+
+	public function testRenderDefaultModule()
+    {
+        $this->checkAction('Module:Homepage:default');
+    }
 
 }
 
 (new HomepagePresenterTest())->run();
 ```
-
-Testing modules
------------
-It's simple. Just init bench with `Module:Presenter:` name like this:
-
-```php
-public function __construct()
-{
-	$this->openPresenter('Module:Presenter:');
-}
-```
-
-You should always use full presenter name.
 
 Testing restricted areas
 -----------
@@ -96,9 +89,9 @@ Testing restricted areas
 public function setUp()
 {
 	$this->logIn();
-	
+
 	// OR:
-	
+
 	$this->logIn(1); //with user ID
 	$this->logIn(1, 'role'); //with user ID and role
 	$this->logIn(1, ['role1', 'role2']); //with user ID and roles
@@ -141,7 +134,7 @@ public function testSearchForm()
 	$response = $this->checkForm('action-name', 'form-name', array(
 		'input' => 'value',
 	));
-	
+
 	//Tester\Assert::... with $response
 }
 ```
@@ -170,9 +163,9 @@ public function test404Render()
 {
 	$this->checkAction('404');
 	Tester\Assert::same(404, $this->getReturnCode());
-	
+
 	// OR:
-	
+
 	Tester\Assert::exception(function () {
 		$this->checkAction('404');
 	}, 'Nette\Application\BadRequestException');
