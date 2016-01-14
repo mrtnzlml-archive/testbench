@@ -4,7 +4,6 @@ namespace Test;
 
 use Nette;
 use Tester;
-use Tracy;
 
 /**
  * Class Bootstrap
@@ -24,7 +23,9 @@ class Bootstrap extends Nette\Object
 		date_default_timezone_set('Europe/Prague');
 
 		define('TEMP_DIR', $tempDir);
-		Tracy\Debugger::$logDirectory = TEMP_DIR;
+		if (class_exists(\Tracy\Debugger::class)) {
+			\Tracy\Debugger::$logDirectory = TEMP_DIR;
+		}
 
 		$_ENV = $_GET = $_POST = $_FILES = [];
 	}
