@@ -24,9 +24,6 @@
     "classmap": ["tests/"]
   },
   "bin": ["src/run-tests"],
-  "config": {
-    "bin-dir": "vendor"
-  },
   "suggest": {
     "kdyby/doctrine": "Allows enhanced database tests"
   }
