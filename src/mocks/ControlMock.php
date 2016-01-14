@@ -2,7 +2,7 @@
 
 namespace Ant\Tests;
 
-class ControlMock
+class ControlMock extends \Nette\ComponentModel\Component
 {
 
 	public function link($destination, $args = [])
@@ -12,6 +12,11 @@ class ControlMock
 		}
 		array_unshift($args, $destination);
 		return 'link:' . strtr(json_encode($args), '"', "'");
+	}
+
+	public function getName()
+	{
+		return 'ControlMock';
 	}
 
 }
