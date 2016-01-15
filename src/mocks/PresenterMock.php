@@ -1,17 +1,14 @@
 <?php
 
-namespace Ant\Tests;
+namespace Testbench;
 
-use Nette\Application;
-use Nette\Application\UI;
-
-class PresenterMock extends UI\Presenter
+class PresenterMock extends \Nette\Application\UI\Presenter
 {
 
 	/** @var callable[] */
 	public $onStartup = [];
 
-	public function run(Application\Request $request)
+	public function run(\Nette\Application\Request $request)
 	{
 		$this->autoCanonicalize = FALSE;
 		return parent::run($request);

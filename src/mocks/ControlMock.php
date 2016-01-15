@@ -1,6 +1,6 @@
 <?php
 
-namespace Ant\Tests;
+namespace Testbench;
 
 class ControlMock extends \Nette\ComponentModel\Component
 {

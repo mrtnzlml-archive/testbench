@@ -3,7 +3,7 @@ application:
 
 
 #doctrine:
-#	wrapperClass: Ant\Tests\ConnectionMock
+#	wrapperClass: Testbench\ConnectionMock
 
 
 routing:

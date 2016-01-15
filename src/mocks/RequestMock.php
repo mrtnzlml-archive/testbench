@@ -1,10 +1,8 @@
 <?php
 
-namespace Ant\Tests;
+namespace Testbench;
 
-use Nette\Application;
-
-class RequestMock extends Application\Request
+class RequestMock extends \Nette\Application\Request
 {
 
 	public function __construct($name = NULL, $method = NULL, array $params = [], array $post = [], array $files = [], array $flags = [])

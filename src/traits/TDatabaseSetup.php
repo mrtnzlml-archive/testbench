@@ -1,6 +1,6 @@
 <?php
 
-namespace Ant\Tests;
+namespace Testbench;
 
 trait TDatabaseSetup
 {

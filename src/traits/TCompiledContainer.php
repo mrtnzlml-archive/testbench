@@ -1,17 +1,15 @@
 <?php
 
-namespace Ant\Tests;
-
-use Nette;
+namespace Testbench;
 
 trait TCompiledContainer
 {
 
-	/** @var Nette\DI\Container */
+	/** @var \Nette\DI\Container */
 	private $container;
 
 	/**
-	 * @return Nette\DI\Container
+	 * @return \Nette\DI\Container
 	 */
 	protected function getContainer()
 	{
@@ -38,7 +36,7 @@ trait TCompiledContainer
 	 */
 	private function createContainer()
 	{
-		$configurator = new Nette\Configurator();
+		$configurator = new \Nette\Configurator();
 
 		$configurator->setTempDirectory(TEMP_DIR); // shared container for performance purposes
 		$configurator->setDebugMode(FALSE);
@@ -57,7 +55,7 @@ trait TCompiledContainer
 //				__DIR__ . '/../../../presentation',
 //			])->register();
 
-		foreach (\Test\Bootstrap::$configFiles as $configFile) {
+		foreach (\Testbench\Bootstrap::$configFiles as $configFile) {
 			$configurator->addConfig($configFile);
 		}
 

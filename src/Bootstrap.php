@@ -1,15 +1,8 @@
 <?php
 
-namespace Test;
+namespace Testbench;
 
-use Nette;
-use Tester;
-
-/**
- * Class Bootstrap
- * @package Test
- */
-class Bootstrap extends Nette\Object
+class Bootstrap extends \Nette\Object
 {
 
 	public static $configFiles;
@@ -23,7 +16,7 @@ class Bootstrap extends Nette\Object
 		self::$configFiles = $configFiles;
 
 		umask(0);
-		Tester\Environment::setup();
+		\Tester\Environment::setup();
 		date_default_timezone_set('Europe/Prague');
 
 		define('TEMP_DIR', $tempDir);

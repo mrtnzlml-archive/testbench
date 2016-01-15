@@ -30,7 +30,7 @@ $loader->addDirectory(__DIR__ . '/../custom');
 $loader->addDirectory(__DIR__ . '/../libs');
 $loader->register();
 
-Test\Bootstrap::setup(__DIR__ . '/cache', [
+Testbench\Bootstrap::setup(__DIR__ . '/cache', [
     __DIR__ . '/tests.neon',
 ]);
 ```
@@ -44,7 +44,7 @@ application:
 
 
 #doctrine:
-#	wrapperClass: Ant\Tests\ConnectionMock
+#	wrapperClass: Testbench\ConnectionMock
 
 
 routing:
@@ -65,7 +65,7 @@ require __DIR__ . '/../bootstrap.php';
 class HomepagePresenterTest extends \Tester\TestCase
 {
 
-	use TPresenter;
+	use \Testbench\TPresenter;
 
 	public function testRenderDefault()
 	{

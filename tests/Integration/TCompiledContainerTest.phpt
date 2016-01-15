@@ -2,8 +2,6 @@
 
 namespace Test;
 
-use Ant\Tests\TCompiledContainer;
-use Tester;
 use Tester\Assert;
 
 require __DIR__ . '/../bootstrap.php';
@@ -11,10 +9,10 @@ require __DIR__ . '/../bootstrap.php';
 /**
  * @testCase
  */
-class TCompiledContainerTest extends Tester\TestCase
+class TCompiledContainerTest extends \Tester\TestCase
 {
 
-	use TCompiledContainer;
+	use \Testbench\TCompiledContainer;
 
 	public function testGetContainer()
 	{

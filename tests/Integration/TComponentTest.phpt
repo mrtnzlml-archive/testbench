@@ -2,11 +2,8 @@
 
 namespace Test;
 
-use Ant\Tests\ControlMock;
-use Ant\Tests\PresenterMock;
-use Ant\Tests\TComponent;
 use Nette\Application\IPresenter;
-use Tester;
+use Testbench;
 use Tester\Assert;
 
 require __DIR__ . '/../bootstrap.php';
@@ -14,19 +11,19 @@ require __DIR__ . '/../bootstrap.php';
 /**
  * @testCase
  */
-class TComponentTest extends Tester\TestCase
+class TComponentTest extends \Tester\TestCase
 {
 
-	use TComponent;
+	use Testbench\TComponent;
 
 	public function testAttachToPresenter()
 	{
-		$control = new ControlMock;
+		$control = new Testbench\ControlMock;
 		Assert::exception(function () use ($control) {
 			$control->lookup(IPresenter::class);
 		}, 'Nette\InvalidStateException', "Component '' is not attached to 'Nette\\Application\\IPresenter'.");
 		$this->attachToPresenter($control);
-		Assert::type(PresenterMock::class, $control->lookup(IPresenter::class));
+		Assert::type(Testbench\PresenterMock::class, $control->lookup(IPresenter::class));
 	}
 
 }

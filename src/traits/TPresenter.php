@@ -1,6 +1,6 @@
 <?php
 
-namespace Ant\Tests;
+namespace Testbench;
 
 use Nette;
 use Nette\Http\Request as HttpRequest;
@@ -267,12 +267,12 @@ trait TPresenter
 		$action = substr($destination, $pos + 1) ?: 'default';
 
 		$class = $presenterFactory->getPresenterClass($presenter);
-		if (!class_exists($overriddenPresenter = 'AutomaticTests\\' . $class)) {
+		if (!class_exists($overriddenPresenter = 'Testbench\\' . $class)) {
 			$classPos = strrpos($class, '\\');
 			$namespace = substr($class, 0, $classPos);
 			$namespace = $namespace ? '\\' . $namespace : '';
 			$className = substr($class, $namespace ? $classPos + 1 : $classPos);
-			eval('namespace AutomaticTests' . $namespace . '; class ' . $className . ' extends \\' . $class . ' { '
+			eval('namespace Testbench' . $namespace . '; class ' . $className . ' extends \\' . $class . ' { '
 				. 'public function startup() { if ($this->getParameter("__terminate") === TRUE) { $this->terminate(); } parent::startup(); } '
 				. 'public static function getReflection() { return parent::getReflection()->getParentClass(); } '
 				. '}');
