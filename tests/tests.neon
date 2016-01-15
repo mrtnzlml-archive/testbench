@@ -2,10 +2,26 @@ application:
 	scanComposer: no
 
 
-#doctrine:
-#	wrapperClass: Testbench\ConnectionMock
+doctrine:
+	wrapperClass: Testbench\ConnectionMock
+	user: root
+	password: pass
+	dbname: cms_new
 
 
 routing:
 	routes:
 		'/x/y[[[/<presenter>]/<action>][/<id>]]': 'Presenter:default'
+
+
+testbench:
+	dbname: cms_new #FIXME: použít doctrine/dbname
+	sqls:
+		- 1.sql
+
+
+extensions:
+	console: Kdyby\Console\DI\ConsoleExtension
+	events: Kdyby\Events\DI\EventsExtension
+	annotations: Kdyby\Annotations\DI\AnnotationsExtension
+	doctrine: Kdyby\Doctrine\DI\OrmExtension

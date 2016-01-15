@@ -37,6 +37,9 @@ trait TCompiledContainer
 	private function createContainer()
 	{
 		$configurator = new \Nette\Configurator();
+		$configurator->onCompile[] = function ($_, \Nette\DI\Compiler $compiler) {
+			$compiler->addExtension('testbench', new TestbenchExtension);
+		};
 
 		$configurator->setTempDirectory(TEMP_DIR); // shared container for performance purposes
 		$configurator->setDebugMode(FALSE);

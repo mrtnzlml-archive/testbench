@@ -2,7 +2,6 @@
 
 namespace Test;
 
-use Testbench;
 use Tester\Assert;
 
 require __DIR__ . '/../bootstrap.php';
@@ -13,11 +12,11 @@ require __DIR__ . '/../bootstrap.php';
 class TComponentTest extends \Tester\TestCase
 {
 
-	use Testbench\TComponent;
+	use \Testbench\TComponent;
 
 	public function testAttachToPresenter()
 	{
-		$control = new Testbench\ControlMock;
+		$control = new \Testbench\ControlMock;
 		Assert::exception(function () use ($control) {
 			$control->lookup('Nette\Application\IPresenter');
 		}, 'Nette\InvalidStateException', "Component '' is not attached to 'Nette\\Application\\IPresenter'.");

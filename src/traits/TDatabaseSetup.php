@@ -38,7 +38,7 @@ trait TDatabaseSetup
 			}
 
 			try {
-				$this->setupDatabase($db);
+				$this->setupDatabase($db, $container);
 			} catch (\Exception $e) {
 				\Tester\Assert::fail($e->getMessage());
 			}
@@ -55,19 +55,14 @@ trait TDatabaseSetup
 		return $this->getContainer()->getByType('Kdyby\Doctrine\EntityManager');
 	}
 
-	private function setupDatabase(ConnectionMock $db)
+	private function setupDatabase(ConnectionMock $db, $container)
 	{
 		$this->databaseName = 'db_tests_' . getmypid();
 
 		$this->dropDatabase($db);
 		$this->createDatabase($db);
 
-		$sqls = [
-			$this->container->parameters['appDir'] . '/../_zdroje/db/db_common_structure.sql',
-			$this->container->parameters['appDir'] . '/../_zdroje/db/db_data_eshop.sql',
-			$this->container->parameters['appDir'] . '/../_zdroje/db/changes struct/cms_innodb.sql', //FIXME: remove
-		];
-		foreach ($sqls as $file) {
+		foreach ($container->parameters['testbench']['sqls'] as $file) { //FIXME: nemusí existovat
 			\Kdyby\Doctrine\Helpers::loadFromFile($db, $file);
 		}
 
