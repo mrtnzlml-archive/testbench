@@ -30,29 +30,26 @@ $loader->addDirectory(__DIR__ . '/../custom');
 $loader->addDirectory(__DIR__ . '/../libs');
 $loader->register();
 
-Test\Bootstrap::setup(__DIR__ . '/cache');
+Test\Bootstrap::setup(__DIR__ . '/cache', [
+    __DIR__ . '/tests.neon',
+]);
 ```
 
-It's important, that we are not creating dependency injection container here. You can use [autoload](https://getcomposer.org/doc/04-schema.md#autoload) from composer if you don't want to use robot loader. It's usually very useful to create own test case which inherits from original one:
+It's important, that we are not creating dependency injection container here. You can use [autoload](https://getcomposer.org/doc/04-schema.md#autoload) from composer if you don't want to use robot loader.
+Second parameter is array of needed config files (`tests.neon`).
 
-```php
-<?php
+```neon
+application:
+	scanComposer: no
 
-class PresenterTestCase extends Tester\TestCase
-{
 
-	use Test\PresenterTester {
-		Test\PresenterTester::createContainer as parentCreateContainer;
-	}
+#doctrine:
+#	wrapperClass: Ant\Tests\ConnectionMock
 
-	protected function createContainer()
-	{
-		return $this->parentCreateContainer([
-			__DIR__ . '/../app/config/config.neon',
-		]);
-	}
 
-}
+routing:
+	routes:
+		'/x/y[[[/<presenter>]/<action>][/<id>]]': 'Presenter:default'
 ```
 
 With this test case, testing is really easy:
@@ -65,8 +62,10 @@ require __DIR__ . '/../bootstrap.php';
 /**
  * @testCase
  */
-class HomepagePresenterTest extends \PresenterTestCase
+class HomepagePresenterTest extends \Tester\TestCase
 {
+
+	use TPresenter;
 
 	public function testRenderDefault()
 	{

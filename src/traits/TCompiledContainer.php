@@ -36,7 +36,7 @@ trait TCompiledContainer
 	/**
 	 * @see: https://api.nette.org/2.3.8/source-Bootstrap.Configurator.php.html
 	 */
-	private function createContainer($configFiles = [])
+	private function createContainer()
 	{
 		$configurator = new Nette\Configurator();
 
@@ -57,7 +57,7 @@ trait TCompiledContainer
 //				__DIR__ . '/../../../presentation',
 //			])->register();
 
-		foreach ($configFiles as $configFile) {
+		foreach (\Test\Bootstrap::$configFiles as $configFile) {
 			$configurator->addConfig($configFile);
 		}
 

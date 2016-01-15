@@ -1,2 +1,11 @@
-doctrine:
-	wrapperClass: Ant\Tests\ConnectionMock
+application:
+	scanComposer: no
+
+
+#doctrine:
+#	wrapperClass: Ant\Tests\ConnectionMock
+
+
+routing:
+	routes:
+		'/x/y[[[/<presenter>]/<action>][/<id>]]': 'Presenter:default'

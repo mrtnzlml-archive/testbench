@@ -2,13 +2,18 @@
 
 namespace Test;
 
+use Ant\Tests\TPresenter;
+use Tester\TestCase;
+
 require __DIR__ . '/../bootstrap.php';
 
 /**
  * @testCase
  */
-class PresenterModuleTest extends PresenterTestCase
+class PresenterModuleTest extends TestCase
 {
+
+	use TPresenter;
 
 	public function testClassicRender1()
 	{

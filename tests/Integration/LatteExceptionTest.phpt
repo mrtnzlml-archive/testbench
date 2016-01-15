@@ -2,6 +2,7 @@
 
 namespace Test;
 
+use Ant\Tests\TPresenter;
 use Tester;
 
 require __DIR__ . '/../bootstrap.php';
@@ -10,8 +11,10 @@ require __DIR__ . '/../bootstrap.php';
  * @testCase
  * @exitCode 255
  */
-class LatteExceptionTest extends PresenterTestCase
+class LatteExceptionTest extends Tester\TestCase
 {
+
+	use TPresenter;
 
 	public function testLatteException()
 	{
