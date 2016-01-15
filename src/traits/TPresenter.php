@@ -2,17 +2,14 @@
 
 namespace Testbench;
 
-use Nette;
-use Nette\Http\Request as HttpRequest;
-use Tester;
+use Tester\Assert;
 
-//FIXME: uzavírat presentery v rámci jednoho vlákna po otestování
 trait TPresenter
 {
 
 	use TCompiledContainer;
 
-	/** @var Nette\Application\IPresenter */
+	/** @var \Nette\Application\IPresenter */
 	private $presenter;
 
 	private $httpCode;
@@ -20,20 +17,32 @@ trait TPresenter
 	private $exception;
 
 	/**
-	 * @param string $action
+	 * @param string $destination
 	 * @param array $params
 	 * @param array $post
 	 *
-	 * @return Nette\Application\IResponse
+	 * @return \Nette\Application\IResponse
 	 * @throws \Exception
 	 */
-	public function check($action, $params = [], $post = [])
+	public function check($destination, $params = [], $post = [])
 	{
+		$destination = ltrim($destination, ':');
+		$pos = strrpos($destination, ':');
+		$presenter = substr($destination, 0, $pos);
+		$action = substr($destination, $pos + 1) ?: 'default';
+
 		if (!$this->presenter) {
-			$action = $this->openPresenter($action);
+			$container = $this->getContainer();
+			$container->removeService('httpRequest');
+			$container->addService('httpRequest', new HttpRequestMock);
+			$presenterFactory = $container->getByType('Nette\Application\IPresenterFactory');
+			$class = $presenterFactory->getPresenterClass($presenter);
+			$this->presenter = $container->createInstance($class);
+			$this->presenter->autoCanonicalize = FALSE;
+			$container->callInjects($this->presenter);
 		}
-		$request = new Nette\Application\Request(
-			$this->presenter->getName(),
+		$request = new ApplicationRequestMock(
+			$presenter,
 			$post ? 'POST' : 'GET',
 			['action' => $action] + $params,
 			$post
@@ -50,149 +59,149 @@ trait TPresenter
 	}
 
 	/**
-	 * @param string $action
+	 * @param string $destination
 	 * @param array $params
 	 * @param array $post
 	 *
-	 * @return Nette\Application\Responses\TextResponse
+	 * @return \Nette\Application\Responses\TextResponse
 	 * @throws \Exception
 	 */
-	public function checkAction($action, $params = [], $post = [])
+	public function checkAction($destination, $params = [], $post = [])
 	{
-		/** @var Nette\Application\Responses\TextResponse $response */
-		$response = $this->check($action, $params, $post);
+		/** @var \Nette\Application\Responses\TextResponse $response */
+		$response = $this->check($destination, $params, $post);
 		if (!$this->exception) {
-			Tester\Assert::same(200, $this->getReturnCode());
-			Tester\Assert::type('Nette\Application\Responses\TextResponse', $response);
-			Tester\Assert::type('Nette\Application\UI\ITemplate', $response->getSource());
+			Assert::same(200, $this->getReturnCode());
+			Assert::type('Nette\Application\Responses\TextResponse', $response);
+			Assert::type('Nette\Application\UI\ITemplate', $response->getSource());
 
-			$dom = @Tester\DomQuery::fromHtml($response->getSource()); // @ - not valid HTML
-			Tester\Assert::true($dom->has('html'));
-			Tester\Assert::true($dom->has('title'));
-			Tester\Assert::true($dom->has('body'));
+			$dom = @\Tester\DomQuery::fromHtml($response->getSource()); // @ - not valid HTML
+			Assert::true($dom->has('html'));
+			Assert::true($dom->has('title'));
+			Assert::true($dom->has('body'));
 		}
 		return $response;
 	}
 
 	/**
-	 * @param string $action
+	 * @param string $destination
 	 * @param string $signal
 	 * @param array $params
 	 * @param array $post
 	 *
-	 * @return Nette\Application\IResponse
+	 * @return \Nette\Application\IResponse
 	 */
-	public function checkSignal($action, $signal, $params = [], $post = [])
+	public function checkSignal($destination, $signal, $params = [], $post = [])
 	{
-		return $this->checkRedirect($action, '/', [
+		return $this->checkRedirect($destination, '/', [
 				'do' => $signal,
 			] + $params, $post);
 	}
 
 	/**
-	 * @param string $action
+	 * @param string $destination
 	 * @param string $path
 	 * @param array $params
 	 * @param array $post
 	 *
-	 * @return Nette\Application\Responses\RedirectResponse
+	 * @return \Nette\Application\Responses\RedirectResponse
 	 * @throws \Exception
 	 */
-	public function checkRedirect($action, $path = '/', $params = [], $post = [])
+	public function checkRedirect($destination, $path = '/', $params = [], $post = [])
 	{
-		/** @var Nette\Application\Responses\RedirectResponse $response */
-		$response = $this->check($action, $params, $post);
+		/** @var \Nette\Application\Responses\RedirectResponse $response */
+		$response = $this->check($destination, $params, $post);
 		if (!$this->exception) {
-			Tester\Assert::same(200, $this->getReturnCode());
-			Tester\Assert::same(302, $response->getCode());
-			Tester\Assert::type('Nette\Application\Responses\RedirectResponse', $response);
-			Tester\Assert::match("~^https?://fake\.url{$path}[a-z0-9?&=_/]*$~", $response->getUrl());
+			Assert::same(200, $this->getReturnCode());
+			Assert::same(302, $response->getCode());
+			Assert::type('Nette\Application\Responses\RedirectResponse', $response);
+			Assert::match("~^https?://fake\.url{$path}[a-z0-9?&=_/]*$~", $response->getUrl());
 		}
 		return $response;
 	}
 
 	/**
-	 * @param string $action
+	 * @param string $destination
 	 * @param array $params
 	 * @param array $post
 	 *
-	 * @return Nette\Application\Responses\JsonResponse
+	 * @return \Nette\Application\Responses\JsonResponse
 	 * @throws \Exception
 	 */
-	public function checkJson($action, $params = [], $post = [])
+	public function checkJson($destination, $params = [], $post = [])
 	{
-		/** @var Nette\Application\Responses\JsonResponse $response */
-		$response = $this->check($action, $params, $post);
+		/** @var \Nette\Application\Responses\JsonResponse $response */
+		$response = $this->check($destination, $params, $post);
 		if (!$this->exception) {
-			Tester\Assert::same(200, $this->getReturnCode());
-			Tester\Assert::type('Nette\Application\Responses\JsonResponse', $response);
-			Tester\Assert::same('application/json', $response->getContentType());
+			Assert::same(200, $this->getReturnCode());
+			Assert::type('Nette\Application\Responses\JsonResponse', $response);
+			Assert::same('application/json', $response->getContentType());
 		}
 		return $response;
 	}
 
 	/**
-	 * @param string $action
+	 * @param string $destination
 	 * @param string $formName
 	 * @param array $post
 	 *
-	 * @return Nette\Application\Responses\RedirectResponse
+	 * @return \Nette\Application\Responses\RedirectResponse
 	 */
-	public function checkForm($action, $formName, $post = [])
+	public function checkForm($destination, $formName, $post = [])
 	{
-		return $this->checkRedirect($action, '/', [
+		return $this->checkRedirect($destination, '/', [
 			'do' => $formName . '-submit',
 		], $post);
 	}
 
 	/**
-	 * @param string $action
+	 * @param string $destination
 	 * @param array $params
 	 * @param array $post
 	 *
-	 * @return Nette\Application\Responses\TextResponse
+	 * @return \Nette\Application\Responses\TextResponse
 	 * @throws \Exception
 	 */
-	public function checkRss($action, $params = [], $post = [])
+	public function checkRss($destination, $params = [], $post = [])
 	{
-		/** @var Nette\Application\Responses\TextResponse $response */
-		$response = $this->check($action, $params, $post);
+		/** @var \Nette\Application\Responses\TextResponse $response */
+		$response = $this->check($destination, $params, $post);
 		if (!$this->exception) {
-			Tester\Assert::same(200, $this->getReturnCode());
-			Tester\Assert::type('Nette\Application\Responses\TextResponse', $response);
-			Tester\Assert::type('Nette\Application\UI\ITemplate', $response->getSource());
+			Assert::same(200, $this->getReturnCode());
+			Assert::type('Nette\Application\Responses\TextResponse', $response);
+			Assert::type('Nette\Application\UI\ITemplate', $response->getSource());
 
-			$dom = Tester\DomQuery::fromXml($response->getSource());
-			Tester\Assert::true($dom->has('rss'));
-			Tester\Assert::true($dom->has('channel'));
-			Tester\Assert::true($dom->has('title'));
-			Tester\Assert::true($dom->has('link'));
-			Tester\Assert::true($dom->has('item'));
+			$dom = \Tester\DomQuery::fromXml($response->getSource());
+			Assert::true($dom->has('rss'));
+			Assert::true($dom->has('channel'));
+			Assert::true($dom->has('title'));
+			Assert::true($dom->has('link'));
+			Assert::true($dom->has('item'));
 		}
 		return $response;
 	}
 
 	/**
-	 * @param string $action
+	 * @param string $destination
 	 * @param array $params
 	 * @param array $post
 	 *
-	 * @return Nette\Application\Responses\TextResponse
+	 * @return \Nette\Application\Responses\TextResponse
 	 * @throws \Exception
 	 */
-	public function checkSitemap($action, $params = [], $post = [])
+	public function checkSitemap($destination, $params = [], $post = [])
 	{
-		/** @var Nette\Application\Responses\TextResponse $response */
-		$response = $this->check($action, $params, $post);
+		/** @var \Nette\Application\Responses\TextResponse $response */
+		$response = $this->check($destination, $params, $post);
 		if (!$this->exception) {
-			Tester\Assert::same(200, $this->getReturnCode());
-			Tester\Assert::type('Nette\Application\Responses\TextResponse', $response);
-			Tester\Assert::type('Nette\Application\UI\ITemplate', $response->getSource());
+			Assert::same(200, $this->getReturnCode());
+			Assert::type('Nette\Application\Responses\TextResponse', $response);
+			Assert::type('Nette\Application\UI\ITemplate', $response->getSource());
 
-			$dom = @Tester\DomQuery::fromHtml($response->getSource()); // @ - not valid HTML
-			Tester\Assert::true($dom->has('urlset'));
-			Tester\Assert::true($dom->has('url'));
-			Tester\Assert::true($dom->has('loc'));
+			$dom = @\Tester\DomQuery::fromHtml($response->getSource()); // @ - not valid HTML
+			Assert::true($dom->has('urlset'));
+			Assert::true($dom->has('url'));
+			Assert::true($dom->has('loc'));
 		}
 		return $response;
 	}
@@ -202,30 +211,30 @@ trait TPresenter
 	 * @param null $roles
 	 * @param null $data
 	 *
-	 * @return Nette\Security\User
+	 * @return \Nette\Security\User
 	 */
 	public function logIn($id = 1, $roles = NULL, $data = NULL)
 	{
-		$identity = new Nette\Security\Identity($id, $roles, $data);
-		/** @var Nette\Security\User $user */
+		$identity = new \Nette\Security\Identity($id, $roles, $data);
+		/** @var \Nette\Security\User $user */
 		$user = $this->getContainer()->getByType('Nette\Security\User');
 		$user->login($identity);
 		return $user;
 	}
 
 	/**
-	 * @return Nette\Security\User
+	 * @return \Nette\Security\User
 	 */
 	public function logOut()
 	{
-		/** @var Nette\Security\User $user */
+		/** @var \Nette\Security\User $user */
 		$user = $this->getContainer()->getByType('Nette\Security\User');
 		$user->logout();
 		return $user;
 	}
 
 	/**
-	 * @return Nette\Application\UI\Presenter
+	 * @return \Nette\Application\UI\Presenter
 	 */
 	public function getPresenter()
 	{
@@ -246,42 +255,6 @@ trait TPresenter
 	public function getException()
 	{
 		return $this->exception;
-	}
-
-	private function openPresenter($destination)
-	{
-		/**
-		 * @var Nette\DI\Container $container
-		 * @var TCompiledContainer $this
-		 */
-		$container = $this->getContainer();
-		$fakeUrl = new Nette\Http\UrlScript('http://fake.url/');
-		$container->removeService('httpRequest');
-		$container->addService('httpRequest', new HttpRequest($fakeUrl, NULL, [], [], [], [], PHP_SAPI, '127.0.0.1', '127.0.0.1'));
-		/** @var Nette\Application\IPresenterFactory $presenterFactory */
-		$presenterFactory = $container->getByType('Nette\Application\IPresenterFactory');
-
-		$destination = ltrim($destination, ':');
-		$pos = strrpos($destination, ':');
-		$presenter = substr($destination, 0, $pos);
-		$action = substr($destination, $pos + 1) ?: 'default';
-
-		$class = $presenterFactory->getPresenterClass($presenter);
-		if (!class_exists($overriddenPresenter = 'Testbench\\' . $class)) {
-			$classPos = strrpos($class, '\\');
-			$namespace = substr($class, 0, $classPos);
-			$namespace = $namespace ? '\\' . $namespace : '';
-			$className = substr($class, $namespace ? $classPos + 1 : $classPos);
-			eval('namespace Testbench' . $namespace . '; class ' . $className . ' extends \\' . $class . ' { '
-				. 'public function startup() { if ($this->getParameter("__terminate") === TRUE) { $this->terminate(); } parent::startup(); } '
-				. 'public static function getReflection() { return parent::getReflection()->getParentClass(); } '
-				. '}');
-		}
-		$this->presenter = $container->createInstance($overriddenPresenter);
-		$container->callInjects($this->presenter);
-		$this->presenter->autoCanonicalize = FALSE;
-		$this->presenter->run(new Nette\Application\Request($presenter, 'GET', ['action' => $action, '__terminate' => TRUE]));
-		return $action;
 	}
 
 }

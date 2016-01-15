@@ -27,6 +27,13 @@ class PresenterModuleTest extends \Tester\TestCase
 		$this->checkAction(':Module:Presenter:default');
 	}
 
+	public function testMultipleSame()
+	{
+		$this->checkAction('Module:Presenter:');
+		$this->checkAction('Module:Presenter:default');
+		$this->checkAction(':Module:Presenter:default');
+	}
+
 }
 
 (new PresenterModuleTest())->run();
