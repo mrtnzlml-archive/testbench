@@ -24,6 +24,13 @@ class TComponentTest extends \Tester\TestCase
 		Assert::type('Testbench\PresenterMock', $control->lookup('Nette\Application\IPresenter'));
 	}
 
+	public function testRender()
+	{
+		$this->attachToPresenter($control = new \Component);
+		$this->checkRenderOutput($control, '<strong>OK</strong>');
+		$this->checkRenderOutput($control, __DIR__ . '/Component.expected');
+	}
+
 }
 
 (new TComponentTest)->run();

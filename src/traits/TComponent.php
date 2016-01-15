@@ -12,7 +12,9 @@ trait TComponent
 	protected function attachToPresenter(IComponent $component, $name = NULL)
 	{
 		if ($name === NULL) {
-			$name = $component->getName();
+			if (!$name = $component->getName()) {
+				$name = $component->getReflection()->getShortName();
+			}
 		}
 		$presenter = new PresenterMock;
 		$presenter->onStartup[] = function (PresenterMock $presenter) use ($component, $name) {
@@ -20,7 +22,18 @@ trait TComponent
 		};
 		$container = $this->getContainer();
 		$container->callInjects($presenter);
-		$presenter->run(new RequestMock);
+		$presenter->run(new ApplicationRequestMock);
+	}
+
+	protected function checkRenderOutput($control, $expected)
+	{
+		ob_start();
+		$control->render();
+		if (is_file($expected)) {
+			\Tester\Assert::matchFile($expected, ob_get_clean());
+		} else {
+			\Tester\Assert::match($expected, ob_get_clean());
+		}
 	}
 
 }
