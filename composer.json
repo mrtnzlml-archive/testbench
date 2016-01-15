@@ -2,7 +2,7 @@
   "name": "mrtnzlml/testbench",
   "type": "library",
   "license": ["BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
-  "authors": [{"name": "Martin Zlámal", "homepage": "http://www.zeminem.cz/"}],
+  "authors": [{"name": "Martin Zlámal", "homepage": "http://zlml.cz/"}],
   "require": {
     "php": ">=5.3.0",
     "nette/application": ">=2.2.0",
