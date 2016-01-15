@@ -4,9 +4,6 @@ application:
 
 doctrine:
 	wrapperClass: Testbench\ConnectionMock
-	user: root
-	password: pass
-	dbname: cms_new
 
 
 routing:
@@ -15,9 +12,9 @@ routing:
 
 
 testbench:
-	dbname: cms_new #FIXME: použít doctrine/dbname
+	dbname: testbench
 	sqls:
-		- 1.sql
+#		- %testsDir%/1.sql
 
 
 extensions:

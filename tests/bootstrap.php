@@ -2,6 +2,12 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-Testbench\Bootstrap::setup(__DIR__ . '/_helpers/temp', [
+$configFiles = [
 	__DIR__ . '/tests.neon',
-]);
+];
+
+if (file_exists($localConfig = __DIR__ . '/tests.local.neon')) {
+	$configFiles[] = $localConfig;
+}
+
+Testbench\Bootstrap::setup(__DIR__ . '/_helpers/temp', $configFiles);

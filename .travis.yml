@@ -7,7 +7,11 @@ php:
   - 7.0
   - hhvm
 
+services:
+  - mysql
+
 before_script:
+  - mysql -e 'create database testbench;'
   - composer selfupdate
   - travis_retry composer install --prefer-dist --dev
   - mkdir tests/_helpers/temp

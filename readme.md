@@ -4,9 +4,10 @@ Tested against PHP 5.4, 5.5, 5.6, 7.0 and HHVM.
 
 Heavily inspired by:
 
-- [Kdyby\TesterExtras](https://github.com/Kdyby/TesterExtras)
-- [Bootstrap your integration testing database - Jiří Pudil](https://jiripudil.cz/blog/bootstrap-your-integration-testing-database)
-- and Nette tests
+- [Kdyby](https://github.com/Kdyby/TesterExtras) namespace tests
+- [Librette](https://github.com/librette) namespace tests
+- [Nette](https://github.com/nette) namespace tests
+- [Bootstrap your integration testing database](https://jiripudil.cz/blog/bootstrap-your-integration-testing-database) (Jiří Pudil)
 
 Simple test bench for Nette Framework projects
 ----------------------------------------------

@@ -62,8 +62,10 @@ trait TDatabaseSetup
 		$this->dropDatabase($db);
 		$this->createDatabase($db);
 
-		foreach ($container->parameters['testbench']['sqls'] as $file) { //FIXME: nemusí existovat
-			\Kdyby\Doctrine\Helpers::loadFromFile($db, $file);
+		if (isset($container->parameters['testbench']['sqls'])) {
+			foreach ($container->parameters['testbench']['sqls'] as $file) {
+				\Kdyby\Doctrine\Helpers::loadFromFile($db, $file);
+			}
 		}
 
 		register_shutdown_function(function () use ($db) {
@@ -79,8 +81,8 @@ trait TDatabaseSetup
 
 	private function dropDatabase(ConnectionMock $db)
 	{
-		//FIXME:
-		$this->connectToDatabase($db, 'cms_new'); // connect to an existing database other than $this->databaseName
+		//connect to an existing database other than $this->databaseName
+		$this->connectToDatabase($db, $this->getContainer()->parameters['testbench']['dbname']);
 		$db->exec("DROP DATABASE IF EXISTS {$this->databaseName}");
 	}
 

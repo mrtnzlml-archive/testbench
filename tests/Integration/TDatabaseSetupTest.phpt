@@ -24,6 +24,18 @@ class TDatabaseSetupTest extends \Tester\TestCase
 		\Tester\Environment::$checkAssertions = FALSE;
 	}
 
+	public function testEntityManager()
+	{
+		Assert::type('\Doctrine\ORM\EntityManagerInterface', $this->getEntityManager());
+	}
+
+	public function testDatabaseCreation()
+	{
+		$connection = $this->getEntityManager()->getConnection();
+		$connection->connect();
+		Assert::match('db_tests_' . getmypid(), $connection->getDatabase());
+	}
+
 }
 
 (new TDatabaseSetupTest)->run();
