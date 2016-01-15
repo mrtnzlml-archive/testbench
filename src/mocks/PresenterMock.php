@@ -2,6 +2,9 @@
 
 namespace Testbench;
 
+/**
+ * @method onStartup(PresenterMock $this)
+ */
 class PresenterMock extends \Nette\Application\UI\Presenter
 {
 
@@ -16,6 +19,9 @@ class PresenterMock extends \Nette\Application\UI\Presenter
 
 	public function startup()
 	{
+		if ($this->getParameter('__terminate') === TRUE) {
+			$this->terminate();
+		}
 		parent::startup();
 		$this->onStartup($this);
 	}
