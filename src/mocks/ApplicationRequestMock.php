@@ -2,7 +2,7 @@
 
 namespace Testbench;
 
-class RequestMock extends \Nette\Application\Request
+class ApplicationRequestMock extends \Nette\Application\Request
 {
 
 	public function __construct($name = NULL, $method = NULL, array $params = [], array $post = [], array $files = [], array $flags = [])
