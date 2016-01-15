@@ -16,14 +16,14 @@ trait TDatabaseSetup
 
 	protected function createContainer()
 	{
-		if (!class_exists(\Doctrine\DBAL\Connection::class)) {
+		if (!class_exists('Doctrine\DBAL\Connection')) {
 			throw new \Nette\NotSupportedException('TDatabaseSetup trait supports only Doctrine at this moment.');
 		}
 
 		$container = $this->parentCreateContainer();
 
 		/** @var ConnectionMock $db */
-		$db = $container->getByType(\Doctrine\DBAL\Connection::class);
+		$db = $container->getByType('Doctrine\DBAL\Connection');
 		if (!$db instanceof ConnectionMock) {
 			$serviceNames = $container->findByType('Doctrine\DBAL\Connection');
 			throw new \LogicException(sprintf(
@@ -52,7 +52,7 @@ trait TDatabaseSetup
 	 */
 	protected function getEntityManager()
 	{
-		return $this->getContainer()->getByType(\Kdyby\Doctrine\EntityManager::class);
+		return $this->getContainer()->getByType('Kdyby\Doctrine\EntityManager');
 	}
 
 	private function setupDatabase(ConnectionMock $db)

@@ -20,7 +20,7 @@ class Bootstrap extends \Nette\Object
 		date_default_timezone_set('Europe/Prague');
 
 		define('TEMP_DIR', $tempDir);
-		if (class_exists(\Tracy\Debugger::class)) {
+		if (class_exists('Tracy\Debugger')) {
 			\Tracy\Debugger::$logDirectory = TEMP_DIR;
 		}
 
