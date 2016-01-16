@@ -25,8 +25,11 @@ trait TComponent
 		$presenter->run(new ApplicationRequestMock);
 	}
 
-	protected function checkRenderOutput($control, $expected)
+	protected function checkRenderOutput(IComponent $control, $expected)
 	{
+		if (!$control->getParent()) {
+			$this->attachToPresenter($control);
+		}
 		ob_start();
 		$control->render();
 		if (is_file($expected)) {

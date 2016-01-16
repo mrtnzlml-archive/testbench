@@ -159,7 +159,7 @@ See: https://tester.nette.org/#toc-assert-match
 use \Testbench\TComponent;
 public function testComponentRender()
 {
-	$this->attachToPresenter($control = new \Component);
+	$control = new \Component;
 	$this->checkRenderOutput($control, '<strong>OK%A%'); //match string
 	$this->checkRenderOutput($control, __DIR__ . '/Component.expected'); //match file content
 }
