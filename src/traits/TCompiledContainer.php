@@ -41,7 +41,7 @@ trait TCompiledContainer
 			$compiler->addExtension('testbench', new TestbenchExtension);
 		};
 
-		$configurator->setTempDirectory(TEMP_DIR); // shared container for performance purposes
+		$configurator->setTempDirectory(\Testbench\Bootstrap::$tempDir); // shared container for performance purposes
 		$configurator->setDebugMode(FALSE);
 
 //		$configurator->addParameters([ //FIXME: konfigurovatelné

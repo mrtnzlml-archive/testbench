@@ -7,6 +7,8 @@ class Bootstrap extends \Nette\Object
 
 	public static $configFiles = [];
 
+	public static $tempDir;
+
 	public static function setup($tempDir, array $configFiles = [])
 	{
 		if (!class_exists('Tester\Assert')) {
@@ -14,14 +16,14 @@ class Bootstrap extends \Nette\Object
 			exit(1);
 		}
 		self::$configFiles = $configFiles;
+		self::$tempDir = $tempDir;
 
 		umask(0);
 		\Tester\Environment::setup();
 		date_default_timezone_set('Europe/Prague');
 
-		define('TEMP_DIR', $tempDir);
 		if (class_exists('Tracy\Debugger')) {
-			\Tracy\Debugger::$logDirectory = TEMP_DIR;
+			\Tracy\Debugger::$logDirectory = self::$tempDir;
 		}
 
 		$_ENV = $_GET = $_POST = $_FILES = [];
