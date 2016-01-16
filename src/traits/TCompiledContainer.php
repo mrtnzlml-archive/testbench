@@ -44,13 +44,8 @@ trait TCompiledContainer
 		$configurator->setTempDirectory(\Testbench\Bootstrap::$tempDir); // shared container for performance purposes
 		$configurator->setDebugMode(FALSE);
 
-//		$configurator->addParameters([ //FIXME: konfigurovatelné
-//			'appDir' => __DIR__ . '/../../../app',
-//			'wwwDir' => __DIR__ . '/../../..',
-//		]);
-
-		foreach (\Testbench\Bootstrap::$configFiles as $configFile) {
-			$configurator->addConfig($configFile);
+		if (is_callable(\Testbench\Bootstrap::$onBeforeContainerCreate)) {
+			call_user_func_array(\Testbench\Bootstrap::$onBeforeContainerCreate, [$configurator]);
 		}
 
 		return $configurator->createContainer();

@@ -2,21 +2,22 @@
 
 namespace Testbench;
 
-class Bootstrap extends \Nette\Object
+class Bootstrap
 {
-
-	public static $configFiles = [];
 
 	public static $tempDir;
 
-	public static function setup($tempDir, array $configFiles = [])
+	/** @var callable */
+	public static $onBeforeContainerCreate;
+
+	public static function setup($tempDir, $callback = NULL)
 	{
 		if (!class_exists('Tester\Assert')) {
 			echo "Install Nette Tester using `composer update --dev`\n";
 			exit(1);
 		}
-		self::$configFiles = $configFiles;
 		self::$tempDir = $tempDir;
+		self::$onBeforeContainerCreate = $callback;
 
 		umask(0);
 		\Tester\Environment::setup();
