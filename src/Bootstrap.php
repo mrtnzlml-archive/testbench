@@ -5,7 +5,7 @@ namespace Testbench;
 class Bootstrap extends \Nette\Object
 {
 
-	public static $configFiles;
+	public static $configFiles = [];
 
 	public static function setup($tempDir, array $configFiles = [])
 	{
