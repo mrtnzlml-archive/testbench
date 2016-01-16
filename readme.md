@@ -28,19 +28,15 @@ require __DIR__ . '/../vendor/autoload.php';
 Tracy\Debugger::enable(TRUE);
 //only next line is important:
 Testbench\Bootstrap::setup(__DIR__ . '/_temp', function (\Nette\Configurator $configurator) {
+	$configurator->createRobotLoader()->addDirectory([
+		__DIR__ . '/../app',
+	])->register();
 	$configurator->addParameters([
 		'appDir' => __DIR__ . '/../app',
 	]);
 	$configurator->addConfig(__DIR__ . '/../app/config/config.neon');
 	$configurator->addConfig(__DIR__ . '/tests.neon');
 });
-
-$loader = new Nette\Loaders\RobotLoader;
-$loader->setCacheStorage(new Nette\Caching\Storages\FileStorage(\Testbench\Bootstrap::$tempDir));
-$loader->autoRebuild = FALSE;
-$loader->addDirectory([
-	__DIR__ . '/../app',
-])->register();
 ```
 
 It's important, that we are not creating dependency injection container here. You can use [autoload](https://getcomposer.org/doc/04-schema.md#autoload) from composer if you don't want to use robot loader.
