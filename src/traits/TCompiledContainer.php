@@ -49,15 +49,6 @@ trait TCompiledContainer
 //			'wwwDir' => __DIR__ . '/../../..',
 //		]);
 
-//		$configurator->createRobotLoader()
-//			->addDirectory([
-//				__DIR__ . '/../../../app',
-//				__DIR__ . '/../../../administrace',
-//				__DIR__ . '/../../../libs',
-//				__DIR__ . '/../../../include',
-//				__DIR__ . '/../../../presentation',
-//			])->register();
-
 		foreach (\Testbench\Bootstrap::$configFiles as $configFile) {
 			$configurator->addConfig($configFile);
 		}
