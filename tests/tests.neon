@@ -6,10 +6,6 @@ application:
 	scanComposer: no
 
 
-doctrine:
-	wrapperClass: Testbench\ConnectionMock
-
-
 routing:
 	routes:
 		'/x/y[[[/<presenter>]/<action>][/<id>]]': 'Presenter:default'

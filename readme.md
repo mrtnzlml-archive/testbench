@@ -26,7 +26,6 @@ At first you need classic bootstrap file (just example, DIY):
 require __DIR__ . '/../vendor/autoload.php';
 
 Tracy\Debugger::enable(TRUE);
-//only next line is important:
 Testbench\Bootstrap::setup(__DIR__ . '/_temp', function (\Nette\Configurator $configurator) {
 	$configurator->createRobotLoader()->addDirectory([
 		__DIR__ . '/../app',
@@ -43,13 +42,11 @@ It's important, that we are not creating dependency injection container here. Yo
 You should also create config file e.g. `tests.neon`. This file is needed only for database tests at this moment (Doctrine only - stay tuned). In this file you should configure your project before tests:
 
 ```neon
-doctrine:
-	wrapperClass: Testbench\ConnectionMock
-
 testbench:
 	dbname: cms_new #probably same as doctrine:dbname (I am looking for better solution)
 	sqls: #what should be loaded after empty database creation
 		- %appDir%/../sqls/1.sql
+		- %appDir%/../sqls/2.sql
 ```
 
 And you are ready to go:
