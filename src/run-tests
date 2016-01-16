@@ -1,13 +1,19 @@
 #!/usr/bin/env php
 <?php
 
-$testsDir = __DIR__ . '/../tests';
+$testsDir = dirname(dirname(dirname(dirname(__DIR__)))) . '/tests';
+if (!is_dir($testsDir)) {
+	$testsDir = __DIR__ . '/../tests';
+}
 
 $position = $_SERVER['argc'] - 1;
 
 if ($position === 0) {
 	$_SERVER['argv'][++$position] = $testsDir;
 }
+$_SERVER['argv'][++$position] = '-s';
+$_SERVER['argv'][++$position] = '-p';
+$_SERVER['argv'][++$position] = 'php';
 $_SERVER['argv'][++$position] = '-c';
 
 $os = stristr(PHP_OS, 'LINUX') ? 'unix' : 'win';
@@ -18,7 +24,7 @@ $_SERVER['argv'][++$position] = $testsDir . "/php-$os.ini";
 // $_SERVER['argv'][++$position] = '--coverage-src';
 // $_SERVER['argv'][++$position] = './../app';
 
-$dir = $testsDir . '/_helpers/temp';
+$dir = $testsDir . '/_temp';
 
 if (!is_dir($dir)) {
 	mkdir($dir);
@@ -34,4 +40,10 @@ foreach ($rii as $entry) {
 	}
 }
 
-require __DIR__ . '/../vendor/bin/tester';
+foreach ([__DIR__ . '/../vendor/bin/tester', __DIR__ . '/../../../bin/tester'] as $tester) {
+	if (file_exists($tester)) {
+		require $tester;
+	}
+}
+
+echo "Cannot find Nette\\Tester...\n";
