@@ -2,58 +2,61 @@
 
 Tested against PHP 5.4, 5.5, 5.6, 7.0 and HHVM.
 
-Heavily inspired by:
+Heavily inspired by these GitHub projects:
+- [Kdyby](https://github.com/Kdyby/TesterExtras) tests
+- [Librette](https://github.com/librette) tests
+- [Nette](https://github.com/nette) tests
 
-- [Kdyby](https://github.com/Kdyby/TesterExtras) namespace tests
-- [Librette](https://github.com/librette) namespace tests
-- [Nette](https://github.com/nette) namespace tests
+And articles:
 - [Bootstrap your integration testing database](https://jiripudil.cz/blog/bootstrap-your-integration-testing-database) (Jiří Pudil)
 
 Simple test bench for Nette Framework projects
 ----------------------------------------------
-Write tests as simple as possible. This project helps you to write tests very quickly. DRY! The main goal of this project is to make testing very simple for everyone.
+Write integration tests as simple as possible. This project helps you to write tests very quickly. DRY! The main goal of this project is to make testing very simple for everyone and help with the difficult start.
 
 You can find few examples in this readme or take a look to the `tests` folder in this project.
 
 Minimal code
 -----------
-At first you need classic bootstrap file. It can be really simple:
+At first you need classic bootstrap file (just example, DIY):
 
 ```php
 <?php
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$loader = new \Nette\Loaders\RobotLoader();
-$loader->setCacheStorage(new \Nette\Caching\Storages\MemoryStorage());
-$loader->addDirectory(__DIR__ . '/../app');
-$loader->addDirectory(__DIR__ . '/../custom');
-$loader->addDirectory(__DIR__ . '/../libs');
-$loader->register();
+Tracy\Debugger::enable(TRUE);
+//only next line is important:
+Testbench\Bootstrap::setup(__DIR__ . '/_temp', function (\Nette\Configurator $configurator) {
+	$configurator->addParameters([
+		'appDir' => __DIR__ . '/../app',
+	]);
+	$configurator->addConfig(__DIR__ . '/../app/config/config.neon');
+	$configurator->addConfig(__DIR__ . '/tests.neon');
+});
 
-Testbench\Bootstrap::setup(__DIR__ . '/cache', [
-    __DIR__ . '/tests.neon',
-]);
+$loader = new Nette\Loaders\RobotLoader;
+$loader->setCacheStorage(new Nette\Caching\Storages\FileStorage(\Testbench\Bootstrap::$tempDir));
+$loader->autoRebuild = FALSE;
+$loader->addDirectory([
+	__DIR__ . '/../app',
+])->register();
 ```
 
 It's important, that we are not creating dependency injection container here. You can use [autoload](https://getcomposer.org/doc/04-schema.md#autoload) from composer if you don't want to use robot loader.
-Second parameter is array of needed config files (`tests.neon`).
+You should also create config file e.g. `tests.neon`. This file is needed only for database tests at this moment (Doctrine only - stay tuned). In this file you should configure your project before tests:
 
 ```neon
-application:
-	scanComposer: no
+doctrine:
+	wrapperClass: Testbench\ConnectionMock
 
-
-#doctrine:
-#	wrapperClass: Testbench\ConnectionMock
-
-
-routing:
-	routes:
-		'/x/y[[[/<presenter>]/<action>][/<id>]]': 'Presenter:default'
+testbench:
+	dbname: cms_new #probably same as doctrine:dbname (I am looking for better solution)
+	sqls: #what should be loaded after empty database creation
+		- %appDir%/../sqls/1.sql
 ```
 
-With this test case, testing is really easy:
+And you are ready to go:
 
 ```php
 <?php //HomepagePresenterTest.phpt
@@ -86,12 +89,11 @@ class HomepagePresenterTest extends \Tester\TestCase
 Testing restricted areas
 -----------
 ```php
+use \Testbench\TPresenter;
 public function setUp()
 {
 	$this->logIn();
-
 	// OR:
-
 	$this->logIn(1); //with user ID
 	$this->logIn(1, 'role'); //with user ID and role
 	$this->logIn(1, ['role1', 'role2']); //with user ID and roles
@@ -101,6 +103,7 @@ public function setUp()
 
 You can use logout as well:
 ```php
+use \Testbench\TPresenter;
 public function tearDown()
 {
 	$this->logOut();
@@ -110,6 +113,7 @@ public function tearDown()
 Testing signals
 -----------
 ```php
+use \Testbench\TPresenter;
 public function testSignal()
 {
 	$this->checkSignal('action-name', 'signal-name');
@@ -119,21 +123,23 @@ public function testSignal()
 Testing forms
 -----------
 ```php
+use \Testbench\TPresenter;
 public function testSearchForm()
 {
-	$this->checkForm('action-name', 'form-name', array(
+	$this->checkForm('action-name', 'form-name', [
 		'input' => 'value',
-	));
+	]);
 }
 ```
 
-It's just simple stupid test. You are the tester so you can do whatever you want after this test:
+It's just simple stupid test. Testbench is going to help you only with basic and boring tasks. You are the tester so you can do whatever you want after this test:
 ```php
+use \Testbench\TPresenter;
 public function testSearchForm()
 {
-	$response = $this->checkForm('action-name', 'form-name', array(
+	$response = $this->checkForm('action-name', 'form-name', [
 		'input' => 'value',
-	));
+	]);
 
 	//Tester\Assert::... with $response
 }
@@ -142,49 +148,45 @@ public function testSearchForm()
 Testing redirects
 -----------
 ```php
+use \Testbench\TPresenter;
 public function testRedirect()
 {
 	$this->checkRedirect('action-name');
+	$this->checkRedirect('action-name', '/presenter/action'); //optional destination URL
 }
 ```
 
-You can optionally provide destination URL:
-```php
-public function testRedirect()
-{
-	$this->checkRedirect('action-name', '/presenter/action');
-}
-```
-
-Testing return codes
+Testing UI\Control render
 -----------
+See: https://tester.nette.org/#toc-assert-match
 ```php
-public function test404Render()
+use \Testbench\TComponent;
+public function testComponentRender()
 {
-	$this->checkAction('404');
-	Tester\Assert::same(404, $this->getReturnCode());
-
-	// OR:
-
-	Tester\Assert::exception(function () {
-		$this->checkAction('404');
-	}, 'Nette\Application\BadRequestException');
+	$this->attachToPresenter($control = new \Component);
+	$this->checkRenderOutput($control, '<strong>OK%A%'); //match string
+	$this->checkRenderOutput($control, __DIR__ . '/Component.expected'); //match file content
 }
 ```
+
+Working with database (Doctrine)
+-----------
+Testbench is taking care of database creation and deletion. It can also load SQLs. Now it's up to you. Get entity manager and do whatever you want to do:
+```php
+use \Testbench\TDatabaseSetup;
+public function testDatabase()
+{
+	$em = $this->getEntityManager();
+	//Tester\Assert::...
+}
+```
+Pretty easy, right?
 
 Testing exceptions
 -----------
-I don't think this is very useful, but:
+Yes, this is just pure Nette\Tester. But stay tuned... :)
 ```php
-public function testRenderException()
-{
-	$this->checkAction('exception');
-	Tester\Assert::type('Latte\CompileException', $this->getException());
-}
-```
-
-It's better to use classic exception test:
-```php
+use \Testbench\TPresenter;
 public function testRenderException()
 {
 	Tester\Assert::exception(function () {
@@ -195,8 +197,9 @@ public function testRenderException()
 
 Testing JSON output
 -----------
-Still in progress. But for now:
+Still in progress. It would be nice if you could check output using match method from Nette\Tester. But for now:
 ```php
+use \Testbench\TPresenter;
 public function testJsonOutput()
 {
 	$this->checkJson('json-action');
@@ -206,6 +209,7 @@ public function testJsonOutput()
 Testing RSS and Sitemaps
 -----------
 ```php
+use \Testbench\TPresenter;
 public function testRss()
 {
 	$this->checkRss('rss');
