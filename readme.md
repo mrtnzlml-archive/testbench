@@ -30,9 +30,11 @@ Testbench\Bootstrap::setup(__DIR__ . '/_temp', function (\Nette\Configurator $co
 	$configurator->createRobotLoader()->addDirectory([
 		__DIR__ . '/../app',
 	])->register();
+
 	$configurator->addParameters([
 		'appDir' => __DIR__ . '/../app',
 	]);
+
 	$configurator->addConfig(__DIR__ . '/../app/config/config.neon');
 	$configurator->addConfig(__DIR__ . '/tests.neon');
 });
