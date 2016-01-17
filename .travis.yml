@@ -11,10 +11,12 @@ services:
   - mysql
 
 before_script:
+  - phpenv config-rm xdebug.ini
   - mysql -e 'create database testbench;'
   - composer selfupdate
   - travis_retry composer install --prefer-dist --dev
-  - mkdir tests/_helpers/temp
+  - mkdir tests/_temp
+  - echo "{doctrine: {user: travis, password: \"\", dbname: testbench}}" > tests/tests.local.neon
 
 script:
   - vendor/bin/tester tests -p php -s -c tests/php-unix.ini
