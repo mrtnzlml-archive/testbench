@@ -2,6 +2,7 @@
 
 namespace Test;
 
+use Testbench\ConnectionMock;
 use Tester\Assert;
 
 require __DIR__ . '/../bootstrap.php';
@@ -34,6 +35,18 @@ class TDatabaseSetupTest extends \Tester\TestCase
 		$connection = $this->getEntityManager()->getConnection();
 		$connection->connect();
 		Assert::match('db_tests_' . getmypid(), $connection->getDatabase());
+	}
+
+	public function testDatabaseSqls()
+	{
+		/** @var ConnectionMock $connection */
+		$connection = $this->getEntityManager()->getConnection();
+		$result = $connection->query('SELECT * FROM table_1')->fetchAll();
+		Assert::same([
+			['id' => '1', 'column_1' => 'value_1', 'column_2' => 'value_2'],
+			['id' => '2', 'column_1' => 'value_1', 'column_2' => 'value_2'],
+			['id' => '3', 'column_1' => 'value_1', 'column_2' => 'value_2'],
+		], $result);
 	}
 
 }

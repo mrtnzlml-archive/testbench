@@ -14,7 +14,8 @@ routing:
 testbench:
 	dbname: testbench
 	sqls:
-#		- %testsDir%/1.sql
+		- %testsDir%/_helpers/sqls/1.sql
+		- %testsDir%/_helpers/sqls/2.sql
 
 
 extensions:
