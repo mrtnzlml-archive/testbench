@@ -16,7 +16,7 @@ trait TComponent
 				$name = $component->getReflection()->getShortName();
 			}
 		}
-		$presenter = new PresenterMock;
+		$presenter = $this->getService('Testbench\PresenterMock');
 		$presenter->onStartup[] = function (PresenterMock $presenter) use ($component, $name) {
 			$presenter->addComponent($component, $name);
 		};

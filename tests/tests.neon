@@ -11,6 +11,10 @@ routing:
 		'/x/y[[[/<presenter>]/<action>][/<id>]]': 'Presenter:default'
 
 
+services:
+	testbench.presenterMock: Testbench\CustomPresenterMock
+
+
 testbench:
 	dbname: testbench
 	sqls:

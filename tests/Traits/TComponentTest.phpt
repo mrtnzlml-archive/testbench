@@ -21,7 +21,7 @@ class TComponentTest extends \Tester\TestCase
 			$control->lookup('Nette\Application\IPresenter');
 		}, 'Nette\InvalidStateException', "Component '' is not attached to 'Nette\\Application\\IPresenter'.");
 		$this->attachToPresenter($control);
-		Assert::type('Testbench\PresenterMock', $control->lookup('Nette\Application\IPresenter'));
+		Assert::type('Testbench\CustomPresenterMock', $control->lookup('Nette\Application\IPresenter'));
 	}
 
 	public function testRender()
