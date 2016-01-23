@@ -16,6 +16,8 @@ trait TPresenter
 
 	private $exception;
 
+	private $ajaxMode = FALSE;
+
 	/**
 	 * @param string $destination
 	 * @param array $params
@@ -34,11 +36,13 @@ trait TPresenter
 		if (!$this->presenter) {
 			$container = $this->getContainer();
 			$container->removeService('httpRequest');
-			$container->addService('httpRequest', new HttpRequestMock);
+			$headers = $this->ajaxMode ? ['X-Requested-With' => 'XMLHttpRequest'] : [];
+			$container->addService('httpRequest', new HttpRequestMock(NULL, NULL, [], [], [], $headers));
 			$presenterFactory = $container->getByType('Nette\Application\IPresenterFactory');
 			$class = $presenterFactory->getPresenterClass($presenter);
 			$this->presenter = $container->createInstance($class);
 			$this->presenter->autoCanonicalize = FALSE;
+			$this->presenter->invalidLinkMode = \Nette\Application\UI\Presenter::INVALID_LINK_EXCEPTION;
 			$container->callInjects($this->presenter);
 		}
 		$request = new ApplicationRequestMock(
@@ -168,6 +172,27 @@ trait TPresenter
 		} else {
 			\Tester\Assert::fail('Path should be string or boolean (probably FALSE).');
 		}
+	}
+
+	public function checkAjaxForm($destination, $formName, $post = [], $path = FALSE)
+	{
+		if (is_string($path)) {
+			$this->checkForm($destination, $formName, $post, $path);
+			Assert::false($this->presenter->isAjax());
+		}
+		$this->presenter = NULL; //FIXME: not very nice, but performance first
+		$this->ajaxMode = TRUE;
+		$response = $this->check($destination, [
+			'do' => $formName . '-submit',
+		], $post);
+		Assert::true($this->presenter->isAjax());
+		if (!$this->exception) {
+			Assert::same(200, $this->getReturnCode());
+			Assert::type('Nette\Application\Responses\JsonResponse', $response);
+		}
+		$this->presenter = NULL;
+		$this->ajaxMode = FALSE;
+		return $response;
 	}
 
 	/**

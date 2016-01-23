@@ -29,6 +29,11 @@ class TPresenterTest extends \Tester\TestCase
 		$this->checkAction(':Presenter:default');
 	}
 
+	public function testRenderBrokenLink()
+	{
+		$this->checkAction('Presenter:brokenLink'); //FIXME: should fail (?)
+	}
+
 	public function test404Render()
 	{
 		Assert::exception(function () {
@@ -141,6 +146,21 @@ class TPresenterTest extends \Tester\TestCase
 		$this->checkForm('Presenter:default', 'form3', [
 			'test' => 'test',
 		], FALSE); //do not check redirect
+	}
+
+	public function testAjaxForm()
+	{
+		$this->checkForm('Presenter:default', 'ajaxForm', [
+			'test' => 'test',
+		], '/x/y/json');
+
+		$this->checkAjaxForm('Presenter:default', 'ajaxForm', [
+			'test' => 'test',
+		]);
+
+		$this->checkAjaxForm('Presenter:default', 'ajaxForm', [
+			'test' => 'test',
+		], '/x/y/json');
 	}
 
 	public function testSignal()

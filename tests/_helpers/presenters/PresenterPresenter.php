@@ -86,6 +86,21 @@ class PresenterPresenter extends Nette\Application\UI\Presenter
 		return $form;
 	}
 
+	protected function createComponentAjaxForm()
+	{
+		$form = new \Nette\Application\UI\Form();
+		$form->addText('test');
+		$form->onSuccess[] = function ($_, $values) {
+			$this->flashMessage(json_encode($values));
+			if ($this->isAjax()) {
+				$this->redrawControl();
+			} else {
+				$this->redirect('json');
+			}
+		};
+		return $form;
+	}
+
 	public function handleSignal()
 	{
 		$this->flashMessage('OK');
