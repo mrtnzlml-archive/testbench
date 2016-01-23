@@ -2,10 +2,6 @@
 # http://nette.org/security-warning
 
 
-application:
-	scanComposer: no
-
-
 routing:
 	routes:
 		'/x/y[[[/<presenter>]/<action>][/<id>]]': 'Presenter:default'
