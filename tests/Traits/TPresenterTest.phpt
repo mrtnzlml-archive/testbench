@@ -124,9 +124,23 @@ class TPresenterTest extends \Tester\TestCase
 
 	public function testForm()
 	{
-		$this->checkForm('Presenter:default', 'form', [
+		$this->checkForm('Presenter:default', 'form1', [
 			'test' => 'test',
 		]);
+	}
+
+	public function testFormDifferentDestination()
+	{
+		$this->checkForm('Presenter:default', 'form2', [
+			'test' => 'test',
+		], '/x/y/json');
+	}
+
+	public function testFormWithoutRedirect()
+	{
+		$this->checkForm('Presenter:default', 'form3', [
+			'test' => 'test',
+		], FALSE); //do not check redirect
 	}
 
 	public function testSignal()

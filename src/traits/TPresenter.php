@@ -113,8 +113,8 @@ trait TPresenter
 		$response = $this->check($destination, $params, $post);
 		if (!$this->exception) {
 			Assert::same(200, $this->getReturnCode());
-			Assert::same(302, $response->getCode());
 			Assert::type('Nette\Application\Responses\RedirectResponse', $response);
+			Assert::same(302, $response->getCode());
 			Assert::match("~^https?://fake\.url{$path}[a-z0-9?&=_/]*$~", $response->getUrl());
 		}
 		return $response;
@@ -144,14 +144,30 @@ trait TPresenter
 	 * @param string $destination
 	 * @param string $formName
 	 * @param array $post
+	 * @param string|boolean $path Path after redirect or FALSE if it's form without redirect
 	 *
 	 * @return \Nette\Application\Responses\RedirectResponse
+	 * @throws \Tester\AssertException
 	 */
-	public function checkForm($destination, $formName, $post = [])
+	public function checkForm($destination, $formName, $post = [], $path = '/')
 	{
-		return $this->checkRedirect($destination, '/', [
-			'do' => $formName . '-submit',
-		], $post);
+		if (is_string($path)) {
+			return $this->checkRedirect($destination, $path, [
+				'do' => $formName . '-submit',
+			], $post);
+		} elseif (is_bool($path)) {
+			/** @var \Nette\Application\Responses\RedirectResponse $response */
+			$response = $this->check($destination, [
+				'do' => $formName . '-submit',
+			], $post);
+			if (!$this->exception) {
+				Assert::same(200, $this->getReturnCode());
+				Assert::type('Nette\Application\Responses\TextResponse', $response);
+			}
+			return $response;
+		} else {
+			\Tester\Assert::fail('Path should be string or boolean (probably FALSE).');
+		}
 	}
 
 	/**

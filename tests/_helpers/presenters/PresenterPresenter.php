@@ -54,18 +54,36 @@ class PresenterPresenter extends Nette\Application\UI\Presenter
 		$this->template->sitemap = [0, 1, 2]; //dumb
 	}
 
-	protected function createComponentForm()
+	protected function createComponentForm1()
 	{
 		$form = new \Nette\Application\UI\Form();
 		$form->addText('test');
-		$form->onSuccess[] = $this->formSucceeded;
+		$form->onSuccess[] = function ($_, $values) {
+			$this->flashMessage(json_encode($values));
+			$this->redirect('this');
+		};
 		return $form;
 	}
 
-	public function formSucceeded($form, $values)
+	protected function createComponentForm2()
 	{
-		$this->flashMessage(json_encode($values));
-		$this->redirect('this');
+		$form = new \Nette\Application\UI\Form();
+		$form->addText('test');
+		$form->onSuccess[] = function ($_, $values) {
+			$this->flashMessage(json_encode($values));
+			$this->redirect('json');
+		};
+		return $form;
+	}
+
+	protected function createComponentForm3()
+	{
+		$form = new \Nette\Application\UI\Form();
+		$form->addText('test');
+		$form->onSuccess[] = function ($_, $values) {
+			$this->flashMessage(json_encode($values));
+		};
+		return $form;
 	}
 
 	public function handleSignal()
