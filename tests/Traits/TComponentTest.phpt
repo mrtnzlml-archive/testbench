@@ -38,6 +38,14 @@ class TComponentTest extends \Tester\TestCase
 		$this->checkRenderOutput($control, __DIR__ . '/Component.expected');
 	}
 
+	public function testMultipleAttaches()
+	{
+		$control = new \Component;
+		$this->attachToPresenter($control);
+		$this->attachToPresenter($control);
+		\Tester\Environment::$checkAssertions = FALSE;
+	}
+
 }
 
 (new TComponentTest)->run();

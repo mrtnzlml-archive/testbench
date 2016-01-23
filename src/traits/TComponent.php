@@ -9,8 +9,13 @@ trait TComponent
 
 	use TCompiledContainer;
 
+	private $alreadyAttached = FALSE;
+
 	protected function attachToPresenter(IComponent $component, $name = NULL)
 	{
+		if ($this->alreadyAttached) {
+			return;
+		}
 		if ($name === NULL) {
 			if (!$name = $component->getName()) {
 				$name = $component->getReflection()->getShortName();
@@ -23,6 +28,7 @@ trait TComponent
 		$container = $this->getContainer();
 		$container->callInjects($presenter);
 		$presenter->run(new ApplicationRequestMock);
+		$this->alreadyAttached = TRUE;
 	}
 
 	protected function checkRenderOutput(IComponent $control, $expected)
