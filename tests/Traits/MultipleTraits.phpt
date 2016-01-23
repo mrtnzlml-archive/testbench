@@ -11,6 +11,7 @@ require __DIR__ . '/../bootstrap.php';
 
 /**
  * @testCase
+ * @skip This test test works only with PHP 7.
  */
 class MultipleTraits extends \Tester\TestCase
 {
