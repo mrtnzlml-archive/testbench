@@ -1,13 +1,21 @@
 #!/usr/bin/env php
 <?php
 
-$testsDir = dirname(dirname(dirname(dirname(__DIR__)))) . '/tests';
-if (!is_dir($testsDir)) {
-	$testsDir = __DIR__ . '/../tests';
-}
+$recursionLimit = 10;
+$findVendor = function ($dirName = 'vendor/bin', $dir = __DIR__) use (&$findVendor, &$recursionLimit) {
+	if (!$recursionLimit--) {
+		throw new \Exception('Cannot find vendor directory.');
+	}
+	$found = $dir . "/$dirName";
+	if (is_dir($found) || is_file($found)) {
+		return dirname($found);
+	}
+	return $findVendor($dirName, dirname($dir));
+};
+$vendorDir = $findVendor();
+$testsDir = dirname($vendorDir) . '/tests';
 
 $position = $_SERVER['argc'] - 1;
-
 if ($position === 0) {
 	$_SERVER['argv'][++$position] = $testsDir;
 }
@@ -40,10 +48,4 @@ foreach ($rii as $entry) {
 	}
 }
 
-foreach ([__DIR__ . '/../vendor/bin/tester', __DIR__ . '/../../../bin/tester'] as $tester) {
-	if (file_exists($tester)) {
-		require $tester;
-	}
-}
-
-echo "Cannot find Nette\\Tester...\n";
+require $vendorDir . '/bin/tester';
