@@ -32,9 +32,7 @@ class TDatabaseSetupTest extends \Tester\TestCase
 
 	public function testDatabaseCreation()
 	{
-		$connection = $this->getEntityManager()->getConnection();
-		$connection->connect();
-		Assert::match('db_tests_' . getmypid(), $connection->getDatabase());
+		Assert::same('db_tests_' . getmypid(), $this->getEntityManager()->getConnection()->getDatabase());
 	}
 
 	public function testDatabaseSqls()

@@ -52,7 +52,9 @@ trait TDatabaseSetup
 	 */
 	protected function getEntityManager()
 	{
-		return $this->getContainer()->getByType('Kdyby\Doctrine\EntityManager');
+		$em = $this->getContainer()->getByType('Kdyby\Doctrine\EntityManager');
+		$em->getConnection()->connect();
+		return $em;
 	}
 
 	private function setupDatabase(ConnectionMock $db, $container)
