@@ -48,4 +48,4 @@ foreach ($rii as $entry) {
 	}
 }
 
-require $vendorDir . '/bin/tester';
+require $vendorDir . '/nette/tester/src/tester.php';
