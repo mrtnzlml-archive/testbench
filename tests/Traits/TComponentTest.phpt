@@ -42,7 +42,18 @@ class TComponentTest extends \Tester\TestCase
 	{
 		$control = new \Component;
 		$this->attachToPresenter($control);
+		Assert::type('Testbench\CustomPresenterMock', $control->lookup('Nette\Application\IPresenter'));
 		$this->attachToPresenter($control);
+		Assert::type('Testbench\CustomPresenterMock', $control->lookup('Nette\Application\IPresenter'));
+		\Tester\Environment::$checkAssertions = FALSE;
+	}
+
+	public function testMultipleAttachesDifferentComponents()
+	{
+		$this->attachToPresenter($control = new \Component, 'name_1');
+		Assert::type('Testbench\CustomPresenterMock', $control->lookup('Nette\Application\IPresenter'));
+		$this->attachToPresenter($control = new \Component, 'name_2');
+		Assert::type('Testbench\CustomPresenterMock', $control->lookup('Nette\Application\IPresenter'));
 		\Tester\Environment::$checkAssertions = FALSE;
 	}
 

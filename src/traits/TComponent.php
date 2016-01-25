@@ -9,26 +9,28 @@ trait TComponent
 
 	use TCompiledContainer;
 
-	private $alreadyAttached = FALSE;
+	private $presenter;
 
 	protected function attachToPresenter(IComponent $component, $name = NULL)
 	{
-		if ($this->alreadyAttached) {
-			return;
-		}
 		if ($name === NULL) {
 			if (!$name = $component->getName()) {
 				$name = $component->getReflection()->getShortName();
 			}
 		}
-		$presenter = $this->getService('Testbench\PresenterMock');
-		$presenter->onStartup[] = function (PresenterMock $presenter) use ($component, $name) {
+		if (!$this->presenter) {
+			$this->presenter = $this->getService('Testbench\PresenterMock');
+			$container = $this->getContainer();
+			$container->callInjects($this->presenter);
+		}
+		$this->presenter->onStartup[] = function (PresenterMock $presenter) use ($component, $name) {
+			try {
+				$presenter->removeComponent($component);
+			} catch (\Nette\InvalidArgumentException $exc) {
+			}
 			$presenter->addComponent($component, $name);
 		};
-		$container = $this->getContainer();
-		$container->callInjects($presenter);
-		$presenter->run(new ApplicationRequestMock);
-		$this->alreadyAttached = TRUE;
+		$this->presenter->run(new ApplicationRequestMock);
 	}
 
 	protected function checkRenderOutput(IComponent $control, $expected)
