@@ -9,7 +9,7 @@ trait TComponent
 
 	use TCompiledContainer;
 
-	private $presenter;
+	private $_presenter;
 
 	protected function attachToPresenter(IComponent $component, $name = NULL)
 	{
@@ -18,19 +18,19 @@ trait TComponent
 				$name = $component->getReflection()->getShortName();
 			}
 		}
-		if (!$this->presenter) {
-			$this->presenter = $this->getService('Testbench\PresenterMock');
+		if (!$this->_presenter) {
+			$this->_presenter = $this->getService('Testbench\PresenterMock');
 			$container = $this->getContainer();
-			$container->callInjects($this->presenter);
+			$container->callInjects($this->_presenter);
 		}
-		$this->presenter->onStartup[] = function (PresenterMock $presenter) use ($component, $name) {
+		$this->_presenter->onStartup[] = function (PresenterMock $presenter) use ($component, $name) {
 			try {
 				$presenter->removeComponent($component);
 			} catch (\Nette\InvalidArgumentException $exc) {
 			}
 			$presenter->addComponent($component, $name);
 		};
-		$this->presenter->run(new ApplicationRequestMock);
+		$this->_presenter->run(new ApplicationRequestMock);
 	}
 
 	protected function checkRenderOutput(IComponent $control, $expected)

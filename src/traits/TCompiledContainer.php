@@ -6,17 +6,17 @@ trait TCompiledContainer
 {
 
 	/** @var \Nette\DI\Container */
-	private $container;
+	private $_container;
 
 	/**
 	 * @return \Nette\DI\Container
 	 */
 	protected function getContainer()
 	{
-		if ($this->container === NULL) {
-			$this->container = $this->createContainer();
+		if ($this->_container === NULL) {
+			$this->_container = $this->createContainer();
 		}
-		return $this->container;
+		return $this->_container;
 	}
 
 	protected function getService($class)
@@ -27,8 +27,8 @@ trait TCompiledContainer
 
 	protected function refreshContainer()
 	{
-		$this->container = $this->createContainer();
-		return $this->container;
+		$this->_container = $this->createContainer();
+		return $this->_container;
 	}
 
 	/**

@@ -12,7 +12,7 @@ trait TDatabaseSetup
 	/**
 	 * @var string|NULL
 	 */
-	protected $databaseName;
+	protected $_databaseName;
 
 	protected function createContainer()
 	{
@@ -33,7 +33,7 @@ trait TDatabaseSetup
 		}
 
 		$db->onConnect[] = function (ConnectionMock $db) use ($container) {
-			if ($this->databaseName !== NULL) {
+			if ($this->_databaseName !== NULL) {
 				return;
 			}
 
@@ -59,7 +59,7 @@ trait TDatabaseSetup
 
 	private function setupDatabase(ConnectionMock $db, $container)
 	{
-		$this->databaseName = 'db_tests_' . getmypid();
+		$this->_databaseName = 'db_tests_' . getmypid();
 
 		$this->dropDatabase($db);
 		$this->createDatabase($db);
@@ -77,15 +77,15 @@ trait TDatabaseSetup
 
 	private function createDatabase(ConnectionMock $db)
 	{
-		$db->exec("CREATE DATABASE {$this->databaseName}");
-		$this->connectToDatabase($db, $this->databaseName);
+		$db->exec("CREATE DATABASE {$this->_databaseName}");
+		$this->connectToDatabase($db, $this->_databaseName);
 	}
 
 	private function dropDatabase(ConnectionMock $db)
 	{
-		//connect to an existing database other than $this->databaseName
+		//connect to an existing database other than $this->_databaseName
 		$this->connectToDatabase($db, $this->getContainer()->parameters['testbench']['dbname']);
-		$db->exec("DROP DATABASE IF EXISTS {$this->databaseName}");
+		$db->exec("DROP DATABASE IF EXISTS {$this->_databaseName}");
 	}
 
 	private function connectToDatabase(ConnectionMock $db, $databaseName)

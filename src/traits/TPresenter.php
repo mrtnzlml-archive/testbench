@@ -10,13 +10,13 @@ trait TPresenter
 	use TCompiledContainer;
 
 	/** @var \Nette\Application\IPresenter */
-	private $presenter;
+	private $_presenter;
 
-	private $httpCode;
+	private $_httpCode;
 
-	private $exception;
+	private $_exception;
 
-	private $ajaxMode = FALSE;
+	private $_ajaxMode = FALSE;
 
 	/**
 	 * @param string $destination
@@ -33,17 +33,17 @@ trait TPresenter
 		$presenter = substr($destination, 0, $pos);
 		$action = substr($destination, $pos + 1) ?: 'default';
 
-		if (!$this->presenter) {
+		if (!$this->_presenter) {
 			$container = $this->getContainer();
 			$container->removeService('httpRequest');
-			$headers = $this->ajaxMode ? ['X-Requested-With' => 'XMLHttpRequest'] : [];
+			$headers = $this->_ajaxMode ? ['X-Requested-With' => 'XMLHttpRequest'] : [];
 			$container->addService('httpRequest', new HttpRequestMock(NULL, NULL, [], [], [], $headers));
 			$presenterFactory = $container->getByType('Nette\Application\IPresenterFactory');
 			$class = $presenterFactory->getPresenterClass($presenter);
-			$this->presenter = $container->createInstance($class);
-			$this->presenter->autoCanonicalize = FALSE;
-			$this->presenter->invalidLinkMode = \Nette\Application\UI\Presenter::INVALID_LINK_EXCEPTION;
-			$container->callInjects($this->presenter);
+			$this->_presenter = $container->createInstance($class);
+			$this->_presenter->autoCanonicalize = FALSE;
+			$this->_presenter->invalidLinkMode = \Nette\Application\UI\Presenter::INVALID_LINK_EXCEPTION;
+			$container->callInjects($this->_presenter);
 		}
 		$request = new ApplicationRequestMock(
 			$presenter,
@@ -52,12 +52,12 @@ trait TPresenter
 			$post
 		);
 		try {
-			$this->httpCode = 200;
-			$response = $this->presenter->run($request);
+			$this->_httpCode = 200;
+			$response = $this->_presenter->run($request);
 			return $response;
 		} catch (\Exception $exc) {
-			$this->exception = $exc;
-			$this->httpCode = $exc->getCode();
+			$this->_exception = $exc;
+			$this->_httpCode = $exc->getCode();
 			throw $exc;
 		}
 	}
@@ -74,7 +74,7 @@ trait TPresenter
 	{
 		/** @var \Nette\Application\Responses\TextResponse $response */
 		$response = $this->check($destination, $params, $post);
-		if (!$this->exception) {
+		if (!$this->_exception) {
 			Assert::same(200, $this->getReturnCode());
 			Assert::type('Nette\Application\Responses\TextResponse', $response);
 			Assert::type('Nette\Application\UI\ITemplate', $response->getSource());
@@ -115,7 +115,7 @@ trait TPresenter
 	{
 		/** @var \Nette\Application\Responses\RedirectResponse $response */
 		$response = $this->check($destination, $params, $post);
-		if (!$this->exception) {
+		if (!$this->_exception) {
 			Assert::same(200, $this->getReturnCode());
 			Assert::type('Nette\Application\Responses\RedirectResponse', $response);
 			Assert::same(302, $response->getCode());
@@ -136,7 +136,7 @@ trait TPresenter
 	{
 		/** @var \Nette\Application\Responses\JsonResponse $response */
 		$response = $this->check($destination, $params, $post);
-		if (!$this->exception) {
+		if (!$this->_exception) {
 			Assert::same(200, $this->getReturnCode());
 			Assert::type('Nette\Application\Responses\JsonResponse', $response);
 			Assert::same('application/json', $response->getContentType());
@@ -164,7 +164,7 @@ trait TPresenter
 			$response = $this->check($destination, [
 				'do' => $formName . '-submit',
 			], $post);
-			if (!$this->exception) {
+			if (!$this->_exception) {
 				Assert::same(200, $this->getReturnCode());
 				Assert::type('Nette\Application\Responses\TextResponse', $response);
 			}
@@ -178,20 +178,20 @@ trait TPresenter
 	{
 		if (is_string($path)) {
 			$this->checkForm($destination, $formName, $post, $path);
-			Assert::false($this->presenter->isAjax());
+			Assert::false($this->_presenter->isAjax());
 		}
-		$this->presenter = NULL; //FIXME: not very nice, but performance first
-		$this->ajaxMode = TRUE;
+		$this->_presenter = NULL; //FIXME: not very nice, but performance first
+		$this->_ajaxMode = TRUE;
 		$response = $this->check($destination, [
 			'do' => $formName . '-submit',
 		], $post);
-		Assert::true($this->presenter->isAjax());
-		if (!$this->exception) {
+		Assert::true($this->_presenter->isAjax());
+		if (!$this->_exception) {
 			Assert::same(200, $this->getReturnCode());
 			Assert::type('Nette\Application\Responses\JsonResponse', $response);
 		}
-		$this->presenter = NULL;
-		$this->ajaxMode = FALSE;
+		$this->_presenter = NULL;
+		$this->_ajaxMode = FALSE;
 		return $response;
 	}
 
@@ -207,7 +207,7 @@ trait TPresenter
 	{
 		/** @var \Nette\Application\Responses\TextResponse $response */
 		$response = $this->check($destination, $params, $post);
-		if (!$this->exception) {
+		if (!$this->_exception) {
 			Assert::same(200, $this->getReturnCode());
 			Assert::type('Nette\Application\Responses\TextResponse', $response);
 			Assert::type('Nette\Application\UI\ITemplate', $response->getSource());
@@ -234,7 +234,7 @@ trait TPresenter
 	{
 		/** @var \Nette\Application\Responses\TextResponse $response */
 		$response = $this->check($destination, $params, $post);
-		if (!$this->exception) {
+		if (!$this->_exception) {
 			Assert::same(200, $this->getReturnCode());
 			Assert::type('Nette\Application\Responses\TextResponse', $response);
 			Assert::type('Nette\Application\UI\ITemplate', $response->getSource());
@@ -279,7 +279,7 @@ trait TPresenter
 	 */
 	public function getPresenter()
 	{
-		return $this->presenter;
+		return $this->_presenter;
 	}
 
 	/**
@@ -287,7 +287,7 @@ trait TPresenter
 	 */
 	public function getReturnCode()
 	{
-		return $this->httpCode;
+		return $this->_httpCode;
 	}
 
 	/**
@@ -295,7 +295,7 @@ trait TPresenter
 	 */
 	public function getException()
 	{
-		return $this->exception;
+		return $this->_exception;
 	}
 
 }
