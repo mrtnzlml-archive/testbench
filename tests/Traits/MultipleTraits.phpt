@@ -10,8 +10,10 @@ use Testbench\TPresenter;
 require __DIR__ . '/../bootstrap.php';
 
 /**
+ * Trait composition is fine, but there is problem with properties. (https://travis-ci.org/mrtnzlml/testbench/builds/104321286)
+ *
  * @testCase
- * @skip This test test works only with PHP 7.
+ * @phpVersion 7.0
  */
 class MultipleTraits extends \Tester\TestCase
 {
@@ -34,6 +36,11 @@ class MultipleTraits extends \Tester\TestCase
 		TCompiledContainer::getService insteadof TPresenter;
 		TCompiledContainer::refreshContainer insteadof TPresenter;
 		TCompiledContainer::createContainer insteadof TPresenter;
+	}
+
+	public function testShutUp()
+	{
+		\Tester\Environment::$checkAssertions = FALSE;
 	}
 
 }
