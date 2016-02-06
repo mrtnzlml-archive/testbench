@@ -12,7 +12,7 @@ require __DIR__ . '/../bootstrap.php';
 class DatabaseBench extends \Tester\TestCase
 {
 
-	use \Testbench\TDatabaseSetup;
+	use \Testbench\TDoctrine;
 
 	public function setUp()
 	{

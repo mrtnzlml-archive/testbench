@@ -11,7 +11,7 @@ trait TCompiledContainer
 	/**
 	 * @return \Nette\DI\Container
 	 */
-	protected function getContainer()
+	private function getContainer()
 	{
 		if ($this->_container === NULL) {
 			$this->_container = $this->createContainer();
@@ -19,21 +19,19 @@ trait TCompiledContainer
 		return $this->_container;
 	}
 
-	protected function getService($class)
+	private function getService($class)
 	{
 		$container = $this->getContainer();
 		return $container->getByType($class);
 	}
 
-	protected function refreshContainer()
+	private function refreshContainer()
 	{
 		$this->_container = $this->createContainer();
 		return $this->_container;
 	}
 
-	/**
-	 * @see: https://api.nette.org/2.3.8/source-Bootstrap.Configurator.php.html
-	 */
+	/** @internal */
 	private function createContainer()
 	{
 		$configurator = new \Nette\Configurator();

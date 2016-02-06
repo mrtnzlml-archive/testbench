@@ -4,7 +4,7 @@ namespace Test;
 
 use Testbench\TCompiledContainer;
 use Testbench\TComponent;
-use Testbench\TDatabaseSetup;
+use Testbench\TDoctrine;
 use Testbench\TPresenter;
 
 require __DIR__ . '/../bootstrap.php';
@@ -23,11 +23,11 @@ class MultipleTraits extends \Tester\TestCase
 		TCompiledContainer::refreshContainer insteadof TComponent;
 		TCompiledContainer::createContainer insteadof TComponent;
 	}
-	use TDatabaseSetup {
-		TCompiledContainer::getContainer insteadof TDatabaseSetup;
-		TCompiledContainer::getService insteadof TDatabaseSetup;
-		TCompiledContainer::refreshContainer insteadof TDatabaseSetup;
-		TDatabaseSetup::createContainer insteadof TCompiledContainer; //warning!
+	use TDoctrine {
+		TCompiledContainer::getContainer insteadof TDoctrine;
+		TCompiledContainer::getService insteadof TDoctrine;
+		TCompiledContainer::refreshContainer insteadof TDoctrine;
+		TDoctrine::createContainer insteadof TCompiledContainer; //warning!
 	}
 	use TPresenter {
 		TCompiledContainer::getContainer insteadof TPresenter;

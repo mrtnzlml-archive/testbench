@@ -25,7 +25,6 @@ At first you need classic bootstrap file (just example, DIY):
 
 require __DIR__ . '/../vendor/autoload.php';
 
-Tracy\Debugger::enable(TRUE);
 Testbench\Bootstrap::setup(__DIR__ . '/_temp', function (\Nette\Configurator $configurator) {
 	$configurator->createRobotLoader()->addDirectory([
 		__DIR__ . '/../app',
@@ -168,7 +167,7 @@ Working with database (Doctrine)
 -----------
 Testbench is taking care of database creation and deletion. It can also load SQLs. Now it's up to you. Get entity manager and do whatever you want to do:
 ```php
-use \Testbench\TDatabaseSetup;
+use \Testbench\TDoctrine;
 public function testDatabase()
 {
 	$em = $this->getEntityManager();

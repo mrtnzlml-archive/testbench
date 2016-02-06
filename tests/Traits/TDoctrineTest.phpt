@@ -2,7 +2,6 @@
 
 namespace Test;
 
-use Testbench\ConnectionMock;
 use Tester\Assert;
 
 require __DIR__ . '/../bootstrap.php';
@@ -10,10 +9,10 @@ require __DIR__ . '/../bootstrap.php';
 /**
  * @testCase
  */
-class TDatabaseSetupTest extends \Tester\TestCase
+class TDoctrineTest extends \Tester\TestCase
 {
 
-	use \Testbench\TDatabaseSetup;
+	use \Testbench\TDoctrine;
 
 	public function testLazyConnection()
 	{
@@ -37,7 +36,7 @@ class TDatabaseSetupTest extends \Tester\TestCase
 
 	public function testDatabaseSqls()
 	{
-		/** @var ConnectionMock $connection */
+		/** @var \Testbench\ConnectionMock $connection */
 		$connection = $this->getEntityManager()->getConnection();
 		$result = $connection->query('SELECT * FROM table_1')->fetchAll();
 		Assert::same([
@@ -49,4 +48,4 @@ class TDatabaseSetupTest extends \Tester\TestCase
 
 }
 
-(new TDatabaseSetupTest)->run();
+(new TDoctrineTest)->run();

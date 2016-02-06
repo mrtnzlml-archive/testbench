@@ -2,7 +2,7 @@
 
 namespace Testbench;
 
-trait TDatabaseSetup
+trait TDoctrine
 {
 
 	use TCompiledContainer {
@@ -14,10 +14,11 @@ trait TDatabaseSetup
 	 */
 	protected $_databaseName;
 
-	protected function createContainer()
+	/** @internal */
+	private function createContainer()
 	{
 		if (!class_exists('Doctrine\DBAL\Connection')) {
-			\Tester\Environment::skip('TDatabaseSetup trait supports only Doctrine at this moment.');
+			\Tester\Environment::skip('TDoctrine trait supports only Doctrine at this moment.');
 		}
 
 		$container = $this->parentCreateContainer();
@@ -50,13 +51,14 @@ trait TDatabaseSetup
 	/**
 	 * @return \Kdyby\Doctrine\EntityManager
 	 */
-	protected function getEntityManager()
+	private function getEntityManager()
 	{
 		$em = $this->getContainer()->getByType('Kdyby\Doctrine\EntityManager');
 		$em->getConnection()->connect();
 		return $em;
 	}
 
+	/** @internal */
 	private function setupDatabase(ConnectionMock $db, $container)
 	{
 		$this->_databaseName = 'db_tests_' . getmypid();
@@ -75,12 +77,14 @@ trait TDatabaseSetup
 		});
 	}
 
+	/** @internal */
 	private function createDatabase(ConnectionMock $db)
 	{
 		$db->exec("CREATE DATABASE {$this->_databaseName}");
 		$this->connectToDatabase($db, $this->_databaseName);
 	}
 
+	/** @internal */
 	private function dropDatabase(ConnectionMock $db)
 	{
 		//connect to an existing database other than $this->_databaseName
@@ -88,6 +92,7 @@ trait TDatabaseSetup
 		$db->exec("DROP DATABASE IF EXISTS {$this->_databaseName}");
 	}
 
+	/** @internal */
 	private function connectToDatabase(ConnectionMock $db, $databaseName)
 	{
 		$db->close();
