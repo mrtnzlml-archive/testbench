@@ -24,7 +24,7 @@ $_SERVER['argv'][++$position] = '-p';
 $_SERVER['argv'][++$position] = 'php';
 $_SERVER['argv'][++$position] = '-c';
 
-$os = stristr(PHP_OS, 'LINUX') ? 'unix' : 'win';
+$os = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? 'win' : 'unix';
 $_SERVER['argv'][++$position] = $testsDir . "/php-$os.ini";
 
 // $_SERVER['argv'][++$position] = '--coverage';
