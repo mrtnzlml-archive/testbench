@@ -7,15 +7,26 @@ php:
   - 7.0
   - hhvm
 
+matrix:
+  allow_failures:
+    - php: hhvm
+
 services:
   - mysql
+  - postgresql
+
+env:
+  - DB=mysql
+  - DB=pgsql
 
 before_script:
-  - mysql -e 'create database testbench;'
-  - composer selfupdate
+  - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'create database testbench_initial;'; fi"
+  - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'create database testbench_initial;' -U postgres; fi"
+  - composer selfupdate --no-progress
   - travis_retry composer install --prefer-dist --dev
   - mkdir tests/_temp
-  - "echo \"{'doctrine': {'user': 'travis', 'password': '', 'dbname': 'testbench'}}\" > tests/tests.local.neon"
+  - "sh -c \"if [ '$DB' = 'mysql' ]; then cp tests/_helpers/mysql.neon tests/tests.local.neon; fi\""
+  - "sh -c \"if [ '$DB' = 'pgsql' ]; then cp tests/_helpers/pgsql.neon tests/tests.local.neon; fi\""
 
 script:
   - vendor/bin/tester tests -p php -s -c tests/php-unix.ini

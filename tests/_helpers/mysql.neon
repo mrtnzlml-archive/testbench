@@ -1,0 +1,11 @@
+doctrine:
+	driver: pdo_mysql
+	user: travis
+	password: ''
+	dbname: testbench_initial
+
+
+testbench:
+	sqls:
+		- %testsDir%/_helpers/sqls/mysql_1.sql
+		- %testsDir%/_helpers/sqls/mysql_2.sql
