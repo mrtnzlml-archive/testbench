@@ -1,0 +1,4 @@
+doctrine:
+	user: travis
+	password: ''
+	dbname: testbench

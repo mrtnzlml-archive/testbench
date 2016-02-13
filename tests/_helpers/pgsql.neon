@@ -1,0 +1,4 @@
+doctrine:
+	user: postgres
+	password: ''
+	dbname: testbench
