@@ -2,4 +2,10 @@ doctrine:
 	driver: pdo_pgsql
 	user: postgres
 	password: ''
-	dbname: testbench
+	dbname: testbench_initial
+
+
+testbench:
+	sqls:
+		- %testsDir%/_helpers/sqls/pgsql_1.sql
+		- %testsDir%/_helpers/sqls/pgsql_2.sql

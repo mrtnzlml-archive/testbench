@@ -2,6 +2,10 @@
 # http://nette.org/security-warning
 
 
+doctrine:
+	dbname: testbench_initial
+
+
 routing:
 	routes:
 		'/x/y[[[/<presenter>]/<action>][/<id>]]': 'Presenter:default'
@@ -9,13 +13,6 @@ routing:
 
 services:
 	testbench.presenterMock: Testbench\CustomPresenterMock
-
-
-testbench:
-	dbname: testbench
-	sqls:
-		- %testsDir%/_helpers/sqls/1.sql
-		- %testsDir%/_helpers/sqls/2.sql
 
 
 extensions:
