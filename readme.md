@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/mrtnzlml/testbench.svg?branch=master)](https://travis-ci.org/mrtnzlml/testbench)
 
-Tested against PHP 5.4, 5.5, 5.6, 7.0 and HHVM.
+Tested against PHP 5.4, 5.5, 5.6 and 7.0.
 
 Heavily inspired by these GitHub projects:
 - [Kdyby](https://github.com/Kdyby/TesterExtras) tests

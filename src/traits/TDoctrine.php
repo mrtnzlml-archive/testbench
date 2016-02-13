@@ -116,12 +116,6 @@ trait TDoctrine
 		}
 
 		$db->close();
-
-		\Tracy\Debugger::log( //FIXME: remove
-			debug_backtrace()[1]['function'] . ' is connecting to the ' . $databaseName . ' from ' . $db->getDatabase(),
-			'connect'
-		);
-
 		$db->__construct(
 			['dbname' => $databaseName] + $db->getParams(),
 			$db->getDriver(),
