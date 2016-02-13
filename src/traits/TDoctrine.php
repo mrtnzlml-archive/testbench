@@ -2,6 +2,9 @@
 
 namespace Testbench;
 
+use Doctrine\DBAL\Platforms\MySqlPlatform;
+use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
+
 trait TDoctrine
 {
 
@@ -81,21 +84,44 @@ trait TDoctrine
 	private function createDatabase(ConnectionMock $db)
 	{
 		$db->exec("CREATE DATABASE {$this->_databaseName}");
-		$this->connectToDatabase($db, $this->_databaseName);
+		if ($db->getDatabasePlatform() instanceof MySqlPlatform) {
+			$db->exec("USE {$this->_databaseName}");
+		} else {
+			$this->connectToDatabase($db, $this->_databaseName);
+		}
 	}
 
 	/** @internal */
 	private function dropDatabase(ConnectionMock $db)
 	{
-		//connect to an existing database other than $this->_databaseName
-		$this->connectToDatabase($db, $this->getContainer()->parameters['testbench']['dbname']);
+		if (!$db->getDatabasePlatform() instanceof MySqlPlatform) {
+			$this->connectToDatabase($db);
+		}
 		$db->exec("DROP DATABASE IF EXISTS {$this->_databaseName}");
 	}
 
 	/** @internal */
-	private function connectToDatabase(ConnectionMock $db, $databaseName)
+	private function connectToDatabase(ConnectionMock $db, $databaseName = NULL)
 	{
+		//connect to an existing database other than $this->_databaseName
+		if ($databaseName === NULL) {
+			$config = $this->getContainer()->parameters['testbench'];
+			if (isset($config['dbname'])) {
+				$databaseName = $config['dbname'];
+			} elseif ($db->getDatabasePlatform() instanceof PostgreSqlPlatform) {
+				$databaseName = 'postgres';
+			} else {
+				throw new \LogicException('You should setup existing database name using testbench:dbname option.');
+			}
+		}
+
 		$db->close();
+
+		\Tracy\Debugger::log( //FIXME: remove
+			debug_backtrace()[1]['function'] . ' is connecting to the ' . $databaseName . ' from ' . $db->getDatabase(),
+			'connect'
+		);
+
 		$db->__construct(
 			['dbname' => $databaseName] + $db->getParams(),
 			$db->getDriver(),

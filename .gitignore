@@ -1,5 +1,7 @@
-.idea
-vendor
+.idea/
+vendor/
+tests/_temp/
+
 composer.lock
-coverage.html
-temp
+*.actual
+*.expected
