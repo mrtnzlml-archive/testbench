@@ -24,18 +24,21 @@ class MultipleTraits extends \Tester\TestCase
 		TCompiledContainer::getService insteadof TComponent;
 		TCompiledContainer::refreshContainer insteadof TComponent;
 		TCompiledContainer::createContainer insteadof TComponent;
+		TCompiledContainer::changeRunLevel insteadof TComponent;
 	}
 	use TDoctrine {
 		TCompiledContainer::getContainer insteadof TDoctrine;
 		TCompiledContainer::getService insteadof TDoctrine;
 		TCompiledContainer::refreshContainer insteadof TDoctrine;
 		TDoctrine::createContainer insteadof TCompiledContainer; //warning!
+		TCompiledContainer::changeRunLevel insteadof TDoctrine;
 	}
 	use TPresenter {
 		TCompiledContainer::getContainer insteadof TPresenter;
 		TCompiledContainer::getService insteadof TPresenter;
 		TCompiledContainer::refreshContainer insteadof TPresenter;
 		TCompiledContainer::createContainer insteadof TPresenter;
+		TCompiledContainer::changeRunLevel insteadof TPresenter;
 	}
 
 	public function testShutUp()

@@ -14,6 +14,7 @@ class PresenterBench extends \Tester\TestCase
 
 	public function testClassicRender()
 	{
+		$this->changeRunLevel(\Testbench::FINE);
 		$this->checkAction('Presenter:default');
 	}
 

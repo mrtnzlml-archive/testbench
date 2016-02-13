@@ -18,6 +18,8 @@ services:
 env:
   - DB=mysql
   - DB=pgsql
+  - RUNLEVEL=5
+  - RUNLEVEL=10
 
 before_script:
   - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'create database testbench_initial;'; fi"

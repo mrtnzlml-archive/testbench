@@ -15,19 +15,10 @@ class DatabaseBench extends \Tester\TestCase
 
 	use \Testbench\TDoctrine;
 
-	public function setUp()
-	{
-		\Tracy\Debugger::timer(getmypid());
-	}
-
-	public function tearDown()
-	{
-		$time = \Tracy\Debugger::timer(getmypid());
-		//Assert::match('0.%d%', $time, 'Test was too slow');
-	}
-
 	public function testDatabaseSqls()
 	{
+		$this->changeRunLevel(\Testbench::SLOW);
+
 		/** @var \Testbench\ConnectionMock $connection */
 		$connection = $this->getEntityManager()->getConnection();
 		$result = $connection->query('SELECT * FROM table_1')->fetchAll();

@@ -53,4 +53,14 @@ trait TCompiledContainer
 		return $configurator->createContainer();
 	}
 
+	private function changeRunLevel($testSpeed = \Testbench::FINE)
+	{
+		if ((int)getenv('RUNLEVEL') < $testSpeed) {
+			\Tester\Environment::skip(
+				"Required runlevel '$testSpeed' but current runlevel is '" . (int)getenv('RUNLEVEL') . "' (higher runlevel means slower tests)\n" .
+				"You can run this test with environment variable: 'RUNLEVEL=$testSpeed vendor/bin/run-tests ...'\n"
+			);
+		}
+	}
+
 }
