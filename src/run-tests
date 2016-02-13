@@ -27,11 +27,6 @@ $_SERVER['argv'][++$position] = '-c';
 $os = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? 'win' : 'unix';
 $_SERVER['argv'][++$position] = $testsDir . "/php-$os.ini";
 
-// $_SERVER['argv'][++$position] = '--coverage';
-// $_SERVER['argv'][++$position] = 'coverage.html';
-// $_SERVER['argv'][++$position] = '--coverage-src';
-// $_SERVER['argv'][++$position] = './../app';
-
 $dir = $testsDir . '/_temp';
 
 if (!is_dir($dir)) {
