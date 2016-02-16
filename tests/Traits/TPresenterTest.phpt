@@ -114,6 +114,18 @@ class TPresenterTest extends \Tester\TestCase
 		Assert::false($user->isInRole('admin'));
 	}
 
+	public function testUserLogInWithIdentity()
+	{
+		$identity = new \Testbench\IdentityMock();
+		$user = $this->logIn(1, $identity->getRoles(), $identity);
+		Assert::true($user->isLoggedIn());
+		Assert::same($identity, $user->identity);
+		Assert::same(1, $user->identity->id);
+		Assert::true($user->isInRole('test1'));
+		Assert::true($user->isInRole('test2'));
+		Assert::false($user->isInRole('admin'));
+	}
+
 	public function testUserLogOut()
 	{
 		$user = $this->logOut();
