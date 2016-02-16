@@ -14,8 +14,15 @@ Write integration tests as simple as possible. This project helps you to write t
 
 You can find few examples in this readme or take a look to the `tests` folder in this project.
 
+Installation
+------------
+
+```sh
+$ composer require mrtnzlml/testbench
+```
+
 Minimal code
------------
+------------
 At first you need classic bootstrap file (just example, DIY):
 
 ```php
