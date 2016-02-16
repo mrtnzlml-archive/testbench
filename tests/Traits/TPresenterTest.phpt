@@ -114,6 +114,19 @@ class TPresenterTest extends \Tester\TestCase
 		Assert::false($user->isInRole('admin'));
 	}
 
+	public function testUserLogInWithIdentity()
+	{
+		$user = $this->logIn($identity = new \Nette\Security\Identity(123, ['Role_1', 'Role_2']), ['Role_3']);
+
+		Assert::true($user->isLoggedIn());
+		Assert::same($identity, $user->getIdentity());
+		Assert::same(123, $user->getIdentity()->getId());
+		Assert::true($user->isInRole('Role_1'));
+		Assert::true($user->isInRole('Role_2'));
+		Assert::false($user->isInRole('Role_3'));
+		Assert::same(['Role_1', 'Role_2'], $user->getRoles());
+	}
+
 	public function testUserLogOut()
 	{
 		$user = $this->logOut();
