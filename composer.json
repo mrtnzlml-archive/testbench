@@ -1,8 +1,18 @@
 {
   "name": "mrtnzlml/testbench",
+  "description": "Simple integration testing tool for Nette Framework applications",
   "type": "library",
-  "license": ["BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
-  "authors": [{"name": "Martin Zlámal", "homepage": "http://zlml.cz/"}],
+  "license": [
+    "BSD-3-Clause",
+    "GPL-2.0",
+    "GPL-3.0"
+  ],
+  "authors": [
+    {
+      "name": "Martin Zlámal",
+      "homepage": "http://zlml.cz/"
+    }
+  ],
   "require": {
     "php": ">=5.4.0",
     "nette/application": ">=2.2.0",
@@ -18,12 +28,18 @@
     "kdyby/doctrine": ">=2.0.0"
   },
   "autoload": {
-    "classmap": ["src/"]
+    "classmap": [
+      "src/"
+    ]
   },
   "autoload-dev": {
-    "classmap": ["tests/"]
+    "classmap": [
+      "tests/"
+    ]
   },
-  "bin": ["src/run-tests"],
+  "bin": [
+    "src/run-tests"
+  ],
   "suggest": {
     "kdyby/doctrine": "Allows enhanced database tests"
   }
