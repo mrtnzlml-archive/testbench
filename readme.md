@@ -14,8 +14,16 @@ Write integration tests as simple as possible. This project helps you to write t
 
 You can find few examples in this readme or take a look to the `tests` folder in this project.
 
+Installation
+------------
+```
+$ composer require mrtnzlml/testbench
+```
+
+Testbench itself doesn't need database. But if you want to use `Testbench\TDoctrine` trait you have to setup database for the first connection. It's standard Doctrine configuration - nothing special. You can see example in `tests/tests.local.neon.dist` file. Empty database is good enough for Testbench.
+
 Minimal code
------------
+------------
 At first you need classic bootstrap file (just example, DIY):
 
 ```php

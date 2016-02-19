@@ -248,15 +248,19 @@ trait TPresenter
 	}
 
 	/**
-	 * @param integer $id
-	 * @param null $roles
-	 * @param null $data
+	 * @param \Nette\Security\IIdentity|integer $id
+	 * @param array|null $roles
+	 * @param array|null $data
 	 *
 	 * @return \Nette\Security\User
 	 */
 	private function logIn($id = 1, $roles = NULL, $data = NULL)
 	{
-		$identity = new \Nette\Security\Identity($id, $roles, $data);
+		if ($id instanceof \Nette\Security\IIdentity) {
+			$identity = $id;
+		} else {
+			$identity = new \Nette\Security\Identity($id, $roles, $data);
+		}
 		/** @var \Nette\Security\User $user */
 		$user = $this->getContainer()->getByType('Nette\Security\User');
 		$user->login($identity);
