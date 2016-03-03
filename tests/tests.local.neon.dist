@@ -6,6 +6,7 @@ doctrine:
 	driver: pdo_mysql #pdo_pgsql
 	user: root #postgres
 	password: '...'
+	dbname: testbench_empty
 
 
 testbench:

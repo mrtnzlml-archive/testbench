@@ -3,7 +3,8 @@
 
 
 doctrine:
-	dbname: testbench_initial
+	default:
+		dbname: testbench_initial
 
 
 routing:

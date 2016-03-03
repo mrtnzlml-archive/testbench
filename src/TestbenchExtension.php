@@ -12,7 +12,13 @@ class TestbenchExtension extends \Nette\DI\CompilerExtension
 
 		/** @var \Nette\DI\CompilerExtension $extension */
 		foreach ($this->compiler->getExtensions('Kdyby\Doctrine\DI\OrmExtension') as $name => $extension) {
-			$extension->config['wrapperClass'] = 'Testbench\ConnectionMock';
+			foreach ($extension->config as $sectionName => $sectionConfig) {
+				if (is_array($sectionConfig)) {
+					$extension->config[$sectionName]['wrapperClass'] = 'Testbench\ConnectionMock';
+				} else {
+					$extension->config['wrapperClass'] = 'Testbench\ConnectionMock';
+				}
+			}
 		}
 
 		//$builder->addDefinition($this->prefix('applicationRequestMock'))->setClass('Testbench\ApplicationRequestMock');
@@ -24,7 +30,7 @@ class TestbenchExtension extends \Nette\DI\CompilerExtension
 		$builder = $this->compiler->getContainerBuilder();
 		foreach ($builder->findByType('Testbench\PresenterMock') as $name => $definition) {
 			$builder->removeDefinition($name);
-			$builder->addDefinition($name)->setClass($definition->class);
+			$builder->addDefinition($name)->setClass($definition->getClass());
 		}
 	}
 

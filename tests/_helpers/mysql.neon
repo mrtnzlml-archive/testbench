@@ -1,8 +1,9 @@
 doctrine:
-	driver: pdo_mysql
-	user: travis
-	password: ''
-	dbname: testbench_initial
+	default:
+		driver: pdo_mysql
+		user: travis
+		password: ''
+		dbname: testbench_initial
 
 
 testbench:
