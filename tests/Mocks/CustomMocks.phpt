@@ -16,8 +16,11 @@ class CustomMocks extends \Tester\TestCase
 
 	public function testCustomMocks()
 	{
-//		Assert::type('Testbench\CustomApplicationRequestMock', $this->getService('Testbench\ApplicationRequestMock'));
+		Assert::type('Testbench\PresenterMock', $this->getService('Testbench\PresenterMock'));
 		Assert::type('Testbench\CustomPresenterMock', $this->getService('Testbench\PresenterMock'));
+
+		Assert::notSame('Testbench\PresenterMock', get_class($this->getService('Testbench\PresenterMock')));
+		Assert::same('Testbench\CustomPresenterMock', get_class($this->getService('Testbench\PresenterMock')));
 	}
 
 }

@@ -21,16 +21,20 @@ class TestbenchExtension extends \Nette\DI\CompilerExtension
 			}
 		}
 
-		//$builder->addDefinition($this->prefix('applicationRequestMock'))->setClass('Testbench\ApplicationRequestMock');
-		$builder->addDefinition($this->prefix('presenterMock'))->setClass('Testbench\PresenterMock');
+		//TODO: $builder->addDefinition($this->prefix('applicationRequestMock'))->setClass('Testbench\ApplicationRequestMock');
 	}
 
 	public function beforeCompile()
 	{
 		$builder = $this->compiler->getContainerBuilder();
-		foreach ($builder->findByType('Testbench\PresenterMock') as $name => $definition) {
-			$builder->removeDefinition($name);
-			$builder->addDefinition($name)->setClass($definition->getClass());
+
+		if ($builder->hasDefinition($this->prefix('presenterMock'))) { //custom testbench.presenterMock implementation
+			//workaround because of Application\UI\Presenter descendant (presenterMock needs to be reattached)
+			$mockReplacement = $builder->getDefinition($this->prefix('presenterMock'))->getClass();
+			$builder->removeDefinition($this->prefix('presenterMock'));
+			$builder->addDefinition($this->prefix('presenterMock'))->setClass($mockReplacement);
+		} else {
+			$builder->addDefinition($this->prefix('presenterMock'))->setClass('Testbench\PresenterMock');
 		}
 	}
 
