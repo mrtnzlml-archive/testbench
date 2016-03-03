@@ -1,7 +1,4 @@
 .idea/
 vendor/
-tests/_temp/
 
 composer.lock
-*.actual
-*.expected
