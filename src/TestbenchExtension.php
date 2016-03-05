@@ -9,14 +9,17 @@ class TestbenchExtension extends \Nette\DI\CompilerExtension
 	{
 		$builder = $this->compiler->getContainerBuilder();
 		$builder->parameters[$this->name] = $this->getConfig();
+		$connectionSectionKeys = ['dbname' => NULL, 'driver' => NULL, 'connection' => NULL];
 
 		/** @var \Nette\DI\CompilerExtension $extension */
-		foreach ($this->compiler->getExtensions('Kdyby\Doctrine\DI\OrmExtension') as $name => $extension) {
-			foreach ($extension->config as $sectionName => $sectionConfig) {
-				if (is_array($sectionConfig)) {
-					$extension->config[$sectionName]['wrapperClass'] = 'Testbench\ConnectionMock';
-				} else {
-					$extension->config['wrapperClass'] = 'Testbench\ConnectionMock';
+		foreach ($this->compiler->getExtensions('Kdyby\Doctrine\DI\OrmExtension') as $extension) {
+			if (array_intersect_key($extension->config, $connectionSectionKeys)) {
+				$extension->config['wrapperClass'] = 'Testbench\ConnectionMock';
+			} else {
+				foreach ($extension->config as $sectionName => $sectionConfig) {
+					if (is_array($sectionConfig) && array_intersect_key($sectionConfig, $connectionSectionKeys)) {
+						$extension->config[$sectionName]['wrapperClass'] = 'Testbench\ConnectionMock';
+					}
 				}
 			}
 		}

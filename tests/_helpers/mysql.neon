@@ -1,4 +1,6 @@
 doctrine:
+	metadata:
+		App: %appDir%
 	default:
 		driver: pdo_mysql
 		user: travis

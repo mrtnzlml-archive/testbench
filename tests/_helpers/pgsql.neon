@@ -1,4 +1,6 @@
 doctrine:
+	metadata:
+		App: %appDir%
 	driver: pdo_pgsql
 	user: postgres
 	password: ''
