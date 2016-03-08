@@ -8,23 +8,20 @@ use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
 trait TDoctrine
 {
 
-	use TCompiledContainer {
-		createContainer as parentCreateContainer;
-	}
+	/** @var string|NULL */
+	private $__testbench_databaseName;
 
-	/**
-	 * @var string|NULL
-	 */
-	protected $_databaseName;
+	/** @var \Nette\DI\Container */
+	private $__testbench_container;
 
 	/** @internal */
-	private function createContainer()
+	private function __testbench_createContainer()
 	{
 		if (!class_exists('Doctrine\DBAL\Connection')) {
 			\Tester\Environment::skip('TDoctrine trait supports only Doctrine at this moment.');
 		}
 
-		$container = $this->parentCreateContainer();
+		$container = \Testbench\ContainerFactory::create(FALSE);
 
 		/** @var ConnectionMock $db */
 		$db = $container->getByType('Doctrine\DBAL\Connection');
@@ -37,7 +34,7 @@ trait TDoctrine
 		}
 
 		$db->onConnect[] = function (ConnectionMock $db) use ($container) {
-			if ($this->_databaseName !== NULL) {
+			if ($this->__testbench_databaseName !== NULL) {
 				return;
 			}
 
@@ -52,11 +49,23 @@ trait TDoctrine
 	}
 
 	/**
+	 * @internal
+	 * @return \Nette\DI\Container
+	 */
+	private function __testbench_getContainer()
+	{
+		if ($this->__testbench_container === NULL) {
+			$this->__testbench_container = $this->__testbench_createContainer();
+		}
+		return $this->__testbench_container;
+	}
+
+	/**
 	 * @return \Kdyby\Doctrine\EntityManager
 	 */
 	private function getEntityManager()
 	{
-		$em = $this->getContainer()->getByType('Kdyby\Doctrine\EntityManager');
+		$em = $this->__testbench_getContainer()->getByType('Kdyby\Doctrine\EntityManager');
 		$em->getConnection()->connect();
 		return $em;
 	}
@@ -64,7 +73,7 @@ trait TDoctrine
 	/** @internal */
 	private function setupDatabase(ConnectionMock $db, $container)
 	{
-		$this->_databaseName = 'db_tests_' . getmypid();
+		$this->__testbench_databaseName = 'db_tests_' . getmypid();
 
 		$this->dropDatabase($db);
 		$this->createDatabase($db);
@@ -83,11 +92,11 @@ trait TDoctrine
 	/** @internal */
 	private function createDatabase(ConnectionMock $db)
 	{
-		$db->exec("CREATE DATABASE {$this->_databaseName}");
+		$db->exec("CREATE DATABASE {$this->__testbench_databaseName}");
 		if ($db->getDatabasePlatform() instanceof MySqlPlatform) {
-			$db->exec("USE {$this->_databaseName}");
+			$db->exec("USE {$this->__testbench_databaseName}");
 		} else {
-			$this->connectToDatabase($db, $this->_databaseName);
+			$this->connectToDatabase($db, $this->__testbench_databaseName);
 		}
 	}
 
@@ -97,7 +106,7 @@ trait TDoctrine
 		if (!$db->getDatabasePlatform() instanceof MySqlPlatform) {
 			$this->connectToDatabase($db);
 		}
-		$db->exec("DROP DATABASE IF EXISTS {$this->_databaseName}");
+		$db->exec("DROP DATABASE IF EXISTS {$this->__testbench_databaseName}");
 	}
 
 	/** @internal */
@@ -105,7 +114,7 @@ trait TDoctrine
 	{
 		//connect to an existing database other than $this->_databaseName
 		if ($databaseName === NULL) {
-			$config = $this->getContainer()->parameters['testbench'];
+			$config = $this->__testbench_getContainer()->parameters['testbench'];
 			if (isset($config['dbname'])) {
 				$databaseName = $config['dbname'];
 			} elseif ($db->getDatabasePlatform() instanceof PostgreSqlPlatform) {

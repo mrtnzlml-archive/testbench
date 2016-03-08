@@ -13,6 +13,7 @@ require __DIR__ . '/../bootstrap.php';
 class DatabaseBench extends \Tester\TestCase
 {
 
+	use \Testbench\TCompiledContainer;
 	use \Testbench\TDoctrine;
 
 	public function testDatabaseSqls()

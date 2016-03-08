@@ -13,6 +13,7 @@ require __DIR__ . '/../bootstrap.php';
 class TDoctrineTest extends \Tester\TestCase
 {
 
+	use \Testbench\TCompiledContainer;
 	use \Testbench\TDoctrine;
 
 	public function testLazyConnection()

@@ -4,12 +4,12 @@ namespace Testbench;
 
 use Nette\ComponentModel\IComponent;
 
+require_once __DIR__ . '/../Helpers.php';
+
 trait TComponent
 {
 
-	use TCompiledContainer;
-
-	private $_presenter;
+	private $__testbench_presenter;
 
 	private function attachToPresenter(IComponent $component, $name = NULL)
 	{
@@ -18,19 +18,19 @@ trait TComponent
 				$name = $component->getReflection()->getShortName();
 			}
 		}
-		if (!$this->_presenter) {
-			$this->_presenter = $this->getService('Testbench\PresenterMock');
-			$container = $this->getContainer();
-			$container->callInjects($this->_presenter);
+		if (!$this->__testbench_presenter) {
+			$this->__testbench_presenter = __testbench_getService('Testbench\PresenterMock');
+			$container = \Testbench\ContainerFactory::create(FALSE);
+			$container->callInjects($this->__testbench_presenter);
 		}
-		$this->_presenter->onStartup[] = function (PresenterMock $presenter) use ($component, $name) {
+		$this->__testbench_presenter->onStartup[] = function (PresenterMock $presenter) use ($component, $name) {
 			try {
 				$presenter->removeComponent($component);
 			} catch (\Nette\InvalidArgumentException $exc) {
 			}
 			$presenter->addComponent($component, $name);
 		};
-		$this->_presenter->run(new ApplicationRequestMock);
+		$this->__testbench_presenter->run(new ApplicationRequestMock);
 	}
 
 	private function checkRenderOutput(IComponent $control, $expected)
