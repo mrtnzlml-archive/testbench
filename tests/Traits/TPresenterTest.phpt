@@ -9,10 +9,8 @@ require __DIR__ . '/../bootstrap.php';
 /**
  * @testCase
  */
-class TPresenterTest extends \Tester\TestCase
+class TPresenterTest extends \Testbench\CustomPresenterTestCase
 {
-
-	use \Testbench\TPresenter;
 
 	public function testClassicRender()
 	{

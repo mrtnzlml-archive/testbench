@@ -11,7 +11,7 @@ trait TCompiledContainer
 	/**
 	 * @return \Nette\DI\Container
 	 */
-	private function getContainer()
+	protected function getContainer()
 	{
 		if ($this->_container === NULL) {
 			$this->_container = $this->createContainer();
@@ -19,13 +19,13 @@ trait TCompiledContainer
 		return $this->_container;
 	}
 
-	private function getService($class)
+	protected function getService($class)
 	{
 		$container = $this->getContainer();
 		return $container->getByType($class);
 	}
 
-	private function refreshContainer()
+	protected function refreshContainer()
 	{
 		$this->_container = $this->createContainer();
 		return $this->_container;
@@ -53,7 +53,7 @@ trait TCompiledContainer
 		return $configurator->createContainer();
 	}
 
-	private function changeRunLevel($testSpeed = \Testbench::FINE)
+	protected function changeRunLevel($testSpeed = \Testbench::FINE)
 	{
 		if ((int)getenv('RUNLEVEL') < $testSpeed) {
 			\Tester\Environment::skip(

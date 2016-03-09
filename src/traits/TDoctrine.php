@@ -54,7 +54,7 @@ trait TDoctrine
 	/**
 	 * @return \Kdyby\Doctrine\EntityManager
 	 */
-	private function getEntityManager()
+	protected function getEntityManager()
 	{
 		$em = $this->getContainer()->getByType('Kdyby\Doctrine\EntityManager');
 		$em->getConnection()->connect();

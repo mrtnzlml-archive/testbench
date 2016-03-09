@@ -26,7 +26,7 @@ trait TPresenter
 	 * @return \Nette\Application\IResponse
 	 * @throws \Exception
 	 */
-	private function check($destination, $params = [], $post = [])
+	protected function check($destination, $params = [], $post = [])
 	{
 		$destination = ltrim($destination, ':');
 		$pos = strrpos($destination, ':');
@@ -70,7 +70,7 @@ trait TPresenter
 	 * @return \Nette\Application\Responses\TextResponse
 	 * @throws \Exception
 	 */
-	private function checkAction($destination, $params = [], $post = [])
+	protected function checkAction($destination, $params = [], $post = [])
 	{
 		/** @var \Nette\Application\Responses\TextResponse $response */
 		$response = $this->check($destination, $params, $post);
@@ -95,7 +95,7 @@ trait TPresenter
 	 *
 	 * @return \Nette\Application\IResponse
 	 */
-	private function checkSignal($destination, $signal, $params = [], $post = [])
+	protected function checkSignal($destination, $signal, $params = [], $post = [])
 	{
 		return $this->checkRedirect($destination, '/', [
 				'do' => $signal,
@@ -111,7 +111,7 @@ trait TPresenter
 	 * @return \Nette\Application\Responses\RedirectResponse
 	 * @throws \Exception
 	 */
-	private function checkRedirect($destination, $path = '/', $params = [], $post = [])
+	protected function checkRedirect($destination, $path = '/', $params = [], $post = [])
 	{
 		/** @var \Nette\Application\Responses\RedirectResponse $response */
 		$response = $this->check($destination, $params, $post);
@@ -132,7 +132,7 @@ trait TPresenter
 	 * @return \Nette\Application\Responses\JsonResponse
 	 * @throws \Exception
 	 */
-	private function checkJson($destination, $params = [], $post = [])
+	protected function checkJson($destination, $params = [], $post = [])
 	{
 		/** @var \Nette\Application\Responses\JsonResponse $response */
 		$response = $this->check($destination, $params, $post);
@@ -153,7 +153,7 @@ trait TPresenter
 	 * @return \Nette\Application\Responses\RedirectResponse
 	 * @throws \Tester\AssertException
 	 */
-	private function checkForm($destination, $formName, $post = [], $path = '/')
+	protected function checkForm($destination, $formName, $post = [], $path = '/')
 	{
 		if (is_string($path)) {
 			return $this->checkRedirect($destination, $path, [
@@ -174,7 +174,7 @@ trait TPresenter
 		}
 	}
 
-	private function checkAjaxForm($destination, $formName, $post = [], $path = FALSE)
+	protected function checkAjaxForm($destination, $formName, $post = [], $path = FALSE)
 	{
 		if (is_string($path)) {
 			$this->checkForm($destination, $formName, $post, $path);
@@ -203,7 +203,7 @@ trait TPresenter
 	 * @return \Nette\Application\Responses\TextResponse
 	 * @throws \Exception
 	 */
-	private function checkRss($destination, $params = [], $post = [])
+	protected function checkRss($destination, $params = [], $post = [])
 	{
 		/** @var \Nette\Application\Responses\TextResponse $response */
 		$response = $this->check($destination, $params, $post);
@@ -230,7 +230,7 @@ trait TPresenter
 	 * @return \Nette\Application\Responses\TextResponse
 	 * @throws \Exception
 	 */
-	private function checkSitemap($destination, $params = [], $post = [])
+	protected function checkSitemap($destination, $params = [], $post = [])
 	{
 		/** @var \Nette\Application\Responses\TextResponse $response */
 		$response = $this->check($destination, $params, $post);
@@ -254,7 +254,7 @@ trait TPresenter
 	 *
 	 * @return \Nette\Security\User
 	 */
-	private function logIn($id = 1, $roles = NULL, $data = NULL)
+	protected function logIn($id = 1, $roles = NULL, $data = NULL)
 	{
 		if ($id instanceof \Nette\Security\IIdentity) {
 			$identity = $id;
@@ -270,7 +270,7 @@ trait TPresenter
 	/**
 	 * @return \Nette\Security\User
 	 */
-	private function logOut()
+	protected function logOut()
 	{
 		/** @var \Nette\Security\User $user */
 		$user = $this->getContainer()->getByType('Nette\Security\User');
@@ -281,7 +281,7 @@ trait TPresenter
 	/**
 	 * @return \Nette\Application\UI\Presenter
 	 */
-	private function getPresenter()
+	protected function getPresenter()
 	{
 		return $this->_presenter;
 	}
@@ -289,7 +289,7 @@ trait TPresenter
 	/**
 	 * @return integer
 	 */
-	private function getReturnCode()
+	protected function getReturnCode()
 	{
 		return $this->_httpCode;
 	}
@@ -297,7 +297,7 @@ trait TPresenter
 	/**
 	 * @return \Exception
 	 */
-	private function getException()
+	protected function getException()
 	{
 		return $this->_exception;
 	}

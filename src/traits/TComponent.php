@@ -11,7 +11,7 @@ trait TComponent
 
 	private $_presenter;
 
-	private function attachToPresenter(IComponent $component, $name = NULL)
+	protected function attachToPresenter(IComponent $component, $name = NULL)
 	{
 		if ($name === NULL) {
 			if (!$name = $component->getName()) {
@@ -33,7 +33,7 @@ trait TComponent
 		$this->_presenter->run(new ApplicationRequestMock);
 	}
 
-	private function checkRenderOutput(IComponent $control, $expected)
+	protected function checkRenderOutput(IComponent $control, $expected)
 	{
 		if (!$control->getParent()) {
 			$this->attachToPresenter($control);
