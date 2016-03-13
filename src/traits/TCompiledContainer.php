@@ -13,8 +13,7 @@ trait TCompiledContainer
 
 	protected function getService($class)
 	{
-		$container = \Testbench\ContainerFactory::create(FALSE);
-		return $container->getByType($class);
+		return $this->getContainer()->getByType($class);
 	}
 
 	protected function refreshContainer()
