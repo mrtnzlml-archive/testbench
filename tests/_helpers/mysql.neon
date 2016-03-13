@@ -1,3 +1,11 @@
+database:
+	default:
+		dsn: 'mysql:host=127.0.0.1;dbname=testbench_initial'
+		user: travis
+		password: ''
+		options: [PDO::MYSQL_ATTR_COMPRESS = true]
+
+
 doctrine:
 	metadata:
 		App: %appDir%

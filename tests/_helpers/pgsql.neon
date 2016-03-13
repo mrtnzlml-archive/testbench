@@ -1,3 +1,10 @@
+database:
+	dsn: 'pgsql:host=127.0.0.1;dbname=testbench_initial'
+	user: postgres
+	password: ''
+	options: [PDO::MYSQL_ATTR_COMPRESS = true]
+
+
 doctrine:
 	metadata:
 		App: %appDir%

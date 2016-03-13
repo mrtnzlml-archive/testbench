@@ -20,7 +20,12 @@ Installation
 $ composer require mrtnzlml/testbench
 ```
 
-Testbench itself doesn't need database. But if you want to use `Testbench\TDoctrine` trait you have to setup database for the first connection. It's standard Doctrine configuration - nothing special. You can see example in `tests/tests.local.neon.dist` file. Empty database is good enough for Testbench.
+Testbench itself doesn't need database. But if you want to use `Testbench\TDoctrine` or `Testbench\TNetteDatabase` trait you have to setup database for the first connection. You should use standard database configuration - nothing special. You can see example in `tests/tests.local.neon.dist` file. Empty database is good enough for Testbench. Supported databases are:
+
+- Doctrine 2
+- Nette\Database
+
+For another databases please send PR or open issue.
 
 Minimal code
 ------------
@@ -46,7 +51,7 @@ Testbench\Bootstrap::setup(__DIR__ . '/_temp', function (\Nette\Configurator $co
 ```
 
 It's important, that we are not creating dependency injection container here. You can use [autoload](https://getcomposer.org/doc/04-schema.md#autoload) from composer if you don't want to use robot loader.
-You should also create config file e.g. `tests.neon`. This file is needed only for database tests at this moment (Doctrine only - stay tuned). In this file you should configure your project before tests:
+You should also create config file e.g. `tests.neon`. This file is needed only for database tests at this moment. In this file you should configure your project before tests:
 
 ```neon
 testbench:
@@ -96,4 +101,5 @@ Look at the tests in this project. You'll see how to use it properly. There are 
 - [Testbench\TCompiledContainer](https://github.com/mrtnzlml/testbench/wiki/Testbench%5CTCompiledContainer)
 - [Testbench\TComponent](https://github.com/mrtnzlml/testbench/wiki/Testbench%5CTComponent)
 - [Testbench\TDoctrine](https://github.com/mrtnzlml/testbench/wiki/Testbench%5CTDoctrine)
+- Testbench\TNetteDatabase
 - [Testbench\TPresenter](https://github.com/mrtnzlml/testbench/wiki/Testbench%5CTPresenter)

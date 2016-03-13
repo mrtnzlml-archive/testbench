@@ -5,7 +5,7 @@ namespace Test;
 require __DIR__ . '/../bootstrap.php';
 
 /**
- * @multiple 100
+ * @multiple 50
  */
 class PresenterBench extends \Tester\TestCase
 {

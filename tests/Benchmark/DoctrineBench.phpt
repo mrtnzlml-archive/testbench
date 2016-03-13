@@ -8,9 +8,9 @@ use Tester\Assert;
 require __DIR__ . '/../bootstrap.php';
 
 /**
- * @multiple 100
+ * @multiple 50
  */
-class DatabaseBench extends \Tester\TestCase
+class DoctrineBench extends \Tester\TestCase
 {
 
 	use \Testbench\TCompiledContainer;
@@ -42,4 +42,4 @@ class DatabaseBench extends \Tester\TestCase
 
 }
 
-(new DatabaseBench)->run();
+(new DoctrineBench)->run();
