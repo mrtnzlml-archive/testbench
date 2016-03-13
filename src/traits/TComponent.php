@@ -9,7 +9,7 @@ require_once __DIR__ . '/../Helpers.php';
 trait TComponent
 {
 
-	private $__testbench_presenter;
+	private $__testbench_presenterMock;
 
 	protected function attachToPresenter(IComponent $component, $name = NULL)
 	{
@@ -18,19 +18,19 @@ trait TComponent
 				$name = $component->getReflection()->getShortName();
 			}
 		}
-		if (!$this->__testbench_presenter) {
-			$this->__testbench_presenter = __testbench_getService('Testbench\PresenterMock');
+		if (!$this->__testbench_presenterMock) {
+			$this->__testbench_presenterMock = __testbench_getService('Testbench\PresenterMock');
 			$container = \Testbench\ContainerFactory::create(FALSE);
-			$container->callInjects($this->__testbench_presenter);
+			$container->callInjects($this->__testbench_presenterMock);
 		}
-		$this->__testbench_presenter->onStartup[] = function (PresenterMock $presenter) use ($component, $name) {
+		$this->__testbench_presenterMock->onStartup[] = function (PresenterMock $presenter) use ($component, $name) {
 			try {
 				$presenter->removeComponent($component);
 			} catch (\Nette\InvalidArgumentException $exc) {
 			}
 			$presenter->addComponent($component, $name);
 		};
-		$this->__testbench_presenter->run(new ApplicationRequestMock);
+		$this->__testbench_presenterMock->run(new ApplicationRequestMock);
 	}
 
 	protected function checkRenderOutput(IComponent $control, $expected)
