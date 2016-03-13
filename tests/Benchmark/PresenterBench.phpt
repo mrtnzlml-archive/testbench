@@ -10,6 +10,7 @@ require __DIR__ . '/../bootstrap.php';
 class PresenterBench extends \Tester\TestCase
 {
 
+	use \Testbench\TCompiledContainer;
 	use \Testbench\TPresenter;
 
 	public function testClassicRender()
