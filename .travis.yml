@@ -16,9 +16,9 @@ services:
   - postgresql
 
 env:
-  - DB=mysql RUNLEVEL=5
+  - DB=mysql RUNLEVEL=0
   - DB=mysql RUNLEVEL=10
-  - DB=pgsql RUNLEVEL=5
+  - DB=pgsql RUNLEVEL=0
   - DB=pgsql RUNLEVEL=10
 
 before_script:
