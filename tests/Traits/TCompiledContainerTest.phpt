@@ -34,6 +34,23 @@ class TCompiledContainerTest extends \Tester\TestCase
 		Assert::notSame($container, $refreshedContainer);
 	}
 
+	public function testRunLevels()
+	{
+		Assert::same(0, (int)getenv('RUNLEVEL'));
+		putenv('RUNLEVEL=5'); //do not skip
+		$this->markTestAsSlow();
+		Assert::same(\Testbench::FINE, (int)getenv('RUNLEVEL'));
+		putenv('RUNLEVEL=10');
+		$this->markTestAsVerySlow();
+		Assert::same(\Testbench::SLOW, (int)getenv('RUNLEVEL'));
+		putenv('RUNLEVEL=7');
+		$this->changeRunLevel(7);
+		Assert::same(7, (int)getenv('RUNLEVEL'));
+		putenv('RUNLEVEL=0');
+		$this->markTestAsSlow(FALSE);
+		Assert::same(0, (int)getenv('RUNLEVEL'));
+	}
+
 }
 
 (new TCompiledContainerTest)->run();

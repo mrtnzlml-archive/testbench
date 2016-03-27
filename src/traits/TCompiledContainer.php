@@ -21,6 +21,7 @@ trait TCompiledContainer
 		return \Testbench\ContainerFactory::create(TRUE);
 	}
 
+	//FIXME: should be in TCompiledContainer?
 	protected function changeRunLevel($testSpeed = \Testbench::FINE)
 	{
 		if ((int)getenv('RUNLEVEL') < $testSpeed) {
@@ -29,6 +30,16 @@ trait TCompiledContainer
 				"You can run this test with environment variable: 'RUNLEVEL=$testSpeed vendor/bin/run-tests ...'\n"
 			);
 		}
+	}
+
+	protected function markTestAsSlow($really = TRUE)
+	{
+		$this->changeRunLevel($really ? \Testbench::FINE : \Testbench::QUICK);
+	}
+
+	protected function markTestAsVerySlow($really = TRUE)
+	{
+		$this->changeRunLevel($really ? \Testbench::SLOW : \Testbench::QUICK);
 	}
 
 }
