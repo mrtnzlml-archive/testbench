@@ -36,6 +36,7 @@ class TCompiledContainerTest extends \Tester\TestCase
 
 	public function testRunLevels()
 	{
+		putenv('RUNLEVEL=0');
 		Assert::same(0, (int)getenv('RUNLEVEL'));
 		putenv('RUNLEVEL=5'); //do not skip
 		$this->markTestAsSlow();
