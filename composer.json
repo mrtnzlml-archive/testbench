@@ -18,7 +18,8 @@
     "nette/application": ">=2.2.0",
     "nette/bootstrap": ">=2.2.0",
     "nette/di": ">=2.2.0",
-    "nette/tester": ">=1.2.0"
+    "nette/tester": ">=1.2.0",
+    "kdyby/fake-session": "^2.0"
   },
   "require-dev": {
     "latte/latte": ">=2.2.0",

@@ -43,6 +43,12 @@ trait TPresenter
 			$this->__testbench_presenter->invalidLinkMode = \Nette\Application\UI\Presenter::INVALID_LINK_EXCEPTION;
 			$container->callInjects($this->__testbench_presenter);
 		}
+		/** @var \Kdyby\FakeSession\Session $session */
+		$session = $this->__testbench_presenter->getSession();
+		$session->setFakeId('testbench.fakeId');
+		$session->getSection('Nette\Forms\Controls\CsrfProtection')->token = 'testbench.fakeToken';
+		$post = $post + ['_token_' => 'goVdCQ1jk0UQuVArz15RzkW6vpDU9YqTRILjE=']; //CSRF magic! ¯\_(ツ)_/¯
+
 		$request = new ApplicationRequestMock(
 			$presenter,
 			$post ? 'POST' : 'GET',

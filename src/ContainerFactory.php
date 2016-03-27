@@ -25,6 +25,7 @@ class ContainerFactory extends \Nette\Object
 
 			$configurator->onCompile[] = function ($_, \Nette\DI\Compiler $compiler) {
 				$compiler->addExtension('testbench', new \Testbench\TestbenchExtension);
+				$compiler->addExtension('fakeSession', new \Kdyby\FakeSession\DI\FakeSessionExtension);
 				$consoleExtension = 'Kdyby\Console\DI\ConsoleExtension';
 				if (class_exists($consoleExtension) && isset($compiler->config['extensions']) && !isset($compiler->config['extensions']['console'])) {
 					$compiler->addExtension('console', new \Kdyby\Console\DI\ConsoleExtension);
