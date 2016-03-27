@@ -174,6 +174,13 @@ class TPresenterTest extends \Testbench\CustomPresenterTestCase
 		], '/x/y/json');
 	}
 
+	public function testCsrfForm()
+	{
+		$this->checkForm('Presenter:default', 'csrfForm', [
+			'test' => 'test',
+		]);
+	}
+
 	public function testSignal()
 	{
 		$this->checkSignal('Presenter:default', 'signal');

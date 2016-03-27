@@ -101,6 +101,17 @@ class PresenterPresenter extends Nette\Application\UI\Presenter
 		return $form;
 	}
 
+	protected function createComponentCsrfForm()
+	{
+		$form = new \Nette\Application\UI\Form();
+		$form->addProtection('CSRF protection applied!');
+		$form->addText('test');
+		$form->onSuccess[] = function ($_, $values) {
+			$this->redirect('this');
+		};
+		return $form;
+	}
+
 	public function handleSignal()
 	{
 		$this->flashMessage('OK');
