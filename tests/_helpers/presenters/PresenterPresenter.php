@@ -57,7 +57,7 @@ class PresenterPresenter extends Nette\Application\UI\Presenter
 	protected function createComponentForm1()
 	{
 		$form = new \Nette\Application\UI\Form();
-		$form->addText('test');
+		$form->addText('test')->setRequired();
 		$form->onSuccess[] = function ($_, $values) {
 			$this->flashMessage(json_encode($values));
 			$this->redirect('this');
