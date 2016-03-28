@@ -31,18 +31,17 @@ trait TPresenter
 		$presenter = substr($destination, 0, $pos);
 		$action = substr($destination, $pos + 1) ?: 'default';
 
-		if (!$this->__testbench_presenter) {
-			$container = \Testbench\ContainerFactory::create(FALSE);
-			$container->removeService('httpRequest');
-			$headers = $this->__testbench_ajaxMode ? ['X-Requested-With' => 'XMLHttpRequest'] : [];
-			$container->addService('httpRequest', new HttpRequestMock(NULL, NULL, [], [], [], $headers));
-			$presenterFactory = $container->getByType('Nette\Application\IPresenterFactory');
-			$class = $presenterFactory->getPresenterClass($presenter);
-			$this->__testbench_presenter = $container->createInstance($class);
-			$this->__testbench_presenter->autoCanonicalize = FALSE;
-			$this->__testbench_presenter->invalidLinkMode = \Nette\Application\UI\Presenter::INVALID_LINK_EXCEPTION;
-			$container->callInjects($this->__testbench_presenter);
-		}
+		$container = \Testbench\ContainerFactory::create(FALSE);
+		$container->removeService('httpRequest');
+		$headers = $this->__testbench_ajaxMode ? ['X-Requested-With' => 'XMLHttpRequest'] : [];
+		$container->addService('httpRequest', new HttpRequestMock(NULL, NULL, [], [], [], $headers));
+		$presenterFactory = $container->getByType('Nette\Application\IPresenterFactory');
+		$class = $presenterFactory->getPresenterClass($presenter);
+		$this->__testbench_presenter = $container->createInstance($class);
+		$this->__testbench_presenter->autoCanonicalize = FALSE;
+		$this->__testbench_presenter->invalidLinkMode = \Nette\Application\UI\Presenter::INVALID_LINK_EXCEPTION;
+		$container->callInjects($this->__testbench_presenter);
+
 		/** @var \Kdyby\FakeSession\Session $session */
 		$session = $this->__testbench_presenter->getSession();
 		$session->setFakeId('testbench.fakeId');
