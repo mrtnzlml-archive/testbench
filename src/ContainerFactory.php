@@ -23,17 +23,11 @@ class ContainerFactory extends \Nette\Object
 		if ($new || self::$container === NULL) {
 			$configurator = new \Nette\Configurator();
 
-			$configurator->onCompile[] = function ($_, \Nette\DI\Compiler $compiler) {
+			$configurator->onCompile[] = function (\Nette\Configurator $configurator, \Nette\DI\Compiler $compiler) {
 				$compiler->addExtension('testbench', new \Testbench\TestbenchExtension);
-
-				$extensions = isset($compiler->config['extensions']) ? $compiler->config['extensions'] : [];
-				if ($extensions && !isset(array_flip($extensions)['Kdyby\FakeSession\DI\FakeSessionExtension'])) {
-					$compiler->addExtension('fakeSession', new \Kdyby\FakeSession\DI\FakeSessionExtension);
-				}
-
-				$consoleExtension = 'Kdyby\Console\DI\ConsoleExtension';
-				if (class_exists($consoleExtension) && $extensions && !isset(array_flip($extensions)[$consoleExtension])) {
-					$compiler->addExtension('console', new \Kdyby\Console\DI\ConsoleExtension);
+				self::registerAdditionalExtension($compiler, 'fakeSession', new \Kdyby\FakeSession\DI\FakeSessionExtension);
+				if (class_exists('Kdyby\Console\DI\ConsoleExtension')) {
+					self::registerAdditionalExtension($compiler, 'console', new \Kdyby\Console\DI\ConsoleExtension);
 				}
 			};
 
@@ -47,6 +41,24 @@ class ContainerFactory extends \Nette\Object
 			self::$container = $configurator->createContainer();
 		}
 		return self::$container;
+	}
+
+	/**
+	 * Register extension if not registered by user.
+	 */
+	private static function registerAdditionalExtension(\Nette\DI\Compiler $compiler, $name, $newExtension)
+	{
+		$extensions = [];
+		foreach (isset($compiler->config['extensions']) ? $compiler->config['extensions'] : [] as $extension) {
+			if (is_string($extension)) {
+				$extensions[] = $extension;
+			} elseif ($extension instanceof \Nette\DI\Statement) {
+				$extensions[] = $extension->getEntity();
+			}
+		}
+		if ($extensions && !in_array(get_class($newExtension), $extensions)) {
+			$compiler->addExtension($name, $newExtension);
+		}
 	}
 
 	final public function __clone()
