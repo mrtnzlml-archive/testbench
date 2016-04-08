@@ -1,4 +1,4 @@
 tests.local.neon
 _temp/
-*/output/
+**/output/
 tests.log

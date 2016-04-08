@@ -15,45 +15,10 @@ $findVendor = function ($dirName = 'vendor/bin', $dir = __DIR__) use (&$findVend
 $vendorDir = $findVendor();
 $testsDir = dirname($vendorDir) . '/tests';
 
-//Show information about skipped tests
-$_SERVER['argv'][] = '-s';
+require __DIR__ . '/Runner.php';
+$script = array_shift($_SERVER['argv']);
+$_SERVER['argv'] = (new \Testbench\Runner)->prepareArguments($_SERVER['argv'], $testsDir);
+array_unshift($_SERVER['argv'], $script);
 
-//Specify PHP interpreter to run
-if (!in_array('-p', $_SERVER['argv'])) {
-	$_SERVER['argv'][] = '-p';
-	$_SERVER['argv'][] = 'php';
-}
-
-//Look for php.ini file
-$os = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? 'win' : 'unix';
-$iniFile = $testsDir . "/php-$os.ini";
-if (!in_array('-c', $_SERVER['argv']) && is_file($iniFile)) {
-	$_SERVER['argv'][] = '-c';
-	$_SERVER['argv'][] = $iniFile;
-}
-
-//Purge temp directory
-if ($tmp = array_search('--temp', $_SERVER['argv'])) {
-	$dir = $_SERVER['argv'][$tmp + 1];
-	unset($_SERVER['argv'][$tmp], $_SERVER['argv'][$tmp + 1]);
-} else {
-	$dir = $testsDir . '/_temp';
-}
-if (!is_dir($dir)) {
-	mkdir($dir);
-}
-$rdi = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
-$rii = new \RecursiveIteratorIterator($rdi, \RecursiveIteratorIterator::CHILD_FIRST);
-foreach ($rii as $entry) {
-	if ($entry->isDir()) {
-		rmdir($entry);
-	} else {
-		unlink($entry);
-	}
-}
-
-$_SERVER['argv'][] = '--log';
-$_SERVER['argv'][] = $testsDir . '/tests.log';
-$_SERVER['argv'][] = $testsDir;
-echo "TESTBENCH edition v2.1.2\n";
+echo "TESTBENCH edition v2.1.3\n";
 require $vendorDir . '/nette/tester/src/tester.php';
