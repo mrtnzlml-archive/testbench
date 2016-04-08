@@ -13,13 +13,14 @@ require __DIR__ . '/bootstrap.php';
 class Runner extends \Tester\TestCase
 {
 
-	private $tempDir = __DIR__ . '/_temp';
+	private $tempDir;
 
 	/** @var \Testbench\Runner */
 	private $runner;
 
 	public function setUp()
 	{
+		$this->tempDir = __DIR__ . '/_temp';
 		$this->runner = new \Testbench\Runner;
 	}
 
