@@ -38,6 +38,7 @@ class TNetteDatabaseTest extends \Tester\TestCase
 		preg_match('~.*dbname=([a-z0-9_-]+)~i', $connection->getDsn(), $matches);
 		if ($connection->getSupplementalDriver() instanceof MySqlDriver) {
 			Assert::match('testbench_initial', $matches[1]);
+			Assert::match('db_tests_' . getmypid(), $connection->query('SELECT DATABASE();')->fetchPairs()[0]);
 		} else {
 			Assert::same('db_tests_' . getmypid(), $matches[1]);
 		}

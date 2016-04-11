@@ -37,6 +37,7 @@ class TDoctrineTest extends \Tester\TestCase
 		$connection = $this->getEntityManager()->getConnection();
 		if ($connection->getDatabasePlatform() instanceof MySqlPlatform) {
 			Assert::match('testbench_initial', $connection->getDatabase());
+			Assert::match('db_tests_' . getmypid(), $connection->query('SELECT DATABASE();')->fetchColumn());
 		} else {
 			Assert::same('db_tests_' . getmypid(), $connection->getDatabase());
 		}
