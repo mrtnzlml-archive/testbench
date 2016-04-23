@@ -20,5 +20,5 @@ $script = array_shift($_SERVER['argv']);
 $_SERVER['argv'] = (new \Testbench\Runner)->prepareArguments($_SERVER['argv'], $testsDir);
 array_unshift($_SERVER['argv'], $script);
 
-echo "TESTBENCH edition v2.1.4\n";
+echo "TESTBENCH edition\n";
 require $vendorDir . '/nette/tester/src/tester.php';
