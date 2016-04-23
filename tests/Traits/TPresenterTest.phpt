@@ -140,6 +140,17 @@ class TPresenterTest extends \Testbench\CustomPresenterTestCase
 
 	public function testForm()
 	{
+		Assert::exception(function () {
+			$this->checkForm('Presenter:default', 'form1', []);
+		}, 'Tester\AssertException', "field 'test' returned this error(s):\n  - This field is required.");
+
+		Assert::exception(function () {
+			$this->checkForm('Presenter:default', 'form1', [
+				'test' => 'test',
+				'error' => 'FORM ERROR',
+			]);
+		}, 'Tester\AssertException', "FORM ERROR");
+
 		$this->checkForm('Presenter:default', 'form1', [
 			'test' => 'test',
 		]);

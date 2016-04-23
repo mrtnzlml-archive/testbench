@@ -34,11 +34,15 @@ class Issue_17 extends \Tester\TestCase
 	 */
 	public function testCommentFormBetter($post, $shouldFail = TRUE)
 	{
-		$this->checkForm('Presenter:default', 'form1', $post, $shouldFail ? FALSE : '/');
-		$errors = $this->getPresenter()->getComponent('form1')->getErrors();
 		if ($shouldFail) {
+			Assert::exception(function () use ($post, $shouldFail) {
+				$this->checkForm('Presenter:default', 'form1', $post, $shouldFail ? FALSE : '/');
+			}, 'Tester\AssertException', "field 'test' returned this error(s):\n  - This field is required.");
+			$errors = $this->getPresenter()->getComponent('form1')->getErrors();
 			Assert::same(['This field is required.'], $errors);
 		} else {
+			$this->checkForm('Presenter:default', 'form1', $post, $shouldFail ? FALSE : '/');
+			$errors = $this->getPresenter()->getComponent('form1')->getErrors();
 			Assert::same([], $errors);
 		}
 	}

@@ -57,6 +57,28 @@ trait TPresenter
 		try {
 			$this->__testbench_httpCode = 200;
 			$response = $this->__testbench_presenter->run($request);
+
+			if (isset($params['do'])) {
+				if (preg_match('~(.+)-submit$~', $params['do'], $matches)) {
+					/** @var \Nette\Application\UI\Form $form */
+					$form = $this->__testbench_presenter->getComponent($matches[1]);
+					foreach ($form->getControls() as $control) {
+						if ($control->hasErrors()) {
+							$errors = '';
+							$counter = 1;
+							foreach ($control->getErrors() as $error) {
+								$errors .= "  - $error\n";
+								$counter++;
+							}
+							Assert::fail("field '{$control->name}' returned this error(s):\n$errors");
+						}
+					}
+					foreach ($form->getErrors() as $error) {
+						Assert::fail($error);
+					}
+				}
+			}
+
 			return $response;
 		} catch (\Exception $exc) {
 			$this->__testbench_exception = $exc;

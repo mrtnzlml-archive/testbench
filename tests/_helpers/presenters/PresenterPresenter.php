@@ -1,5 +1,7 @@
 <?php
 
+use Nette\Application\UI;
+
 class PresenterPresenter extends Nette\Application\UI\Presenter
 {
 
@@ -56,9 +58,13 @@ class PresenterPresenter extends Nette\Application\UI\Presenter
 
 	protected function createComponentForm1()
 	{
-		$form = new \Nette\Application\UI\Form();
+		$form = new UI\Form();
 		$form->addText('test')->setRequired();
-		$form->onSuccess[] = function ($_, $values) {
+		$form->addText('error');
+		$form->onSuccess[] = function (UI\Form $form, $values) {
+			if (!empty($values->error)) {
+				$form->addError($values->error);
+			}
 			$this->flashMessage(json_encode($values));
 			$this->redirect('this');
 		};
@@ -67,7 +73,7 @@ class PresenterPresenter extends Nette\Application\UI\Presenter
 
 	protected function createComponentForm2()
 	{
-		$form = new \Nette\Application\UI\Form();
+		$form = new UI\Form();
 		$form->addText('test');
 		$form->onSuccess[] = function ($_, $values) {
 			$this->flashMessage(json_encode($values));
@@ -88,7 +94,7 @@ class PresenterPresenter extends Nette\Application\UI\Presenter
 
 	protected function createComponentAjaxForm()
 	{
-		$form = new \Nette\Application\UI\Form();
+		$form = new UI\Form();
 		$form->addText('test');
 		$form->onSuccess[] = function ($_, $values) {
 			$this->flashMessage(json_encode($values));
@@ -103,7 +109,7 @@ class PresenterPresenter extends Nette\Application\UI\Presenter
 
 	protected function createComponentCsrfForm()
 	{
-		$form = new \Nette\Application\UI\Form();
+		$form = new UI\Form();
 		$form->addProtection('CSRF protection applied!');
 		$form->addText('test');
 		$form->onSuccess[] = function ($_, $values) {
