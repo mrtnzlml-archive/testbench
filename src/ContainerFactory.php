@@ -56,7 +56,7 @@ class ContainerFactory extends \Nette\Object
 				$extensions[] = $extension->getEntity();
 			}
 		}
-		if ($extensions && !in_array(get_class($newExtension), $extensions)) {
+		if (!in_array(get_class($newExtension), $extensions)) {
 			$compiler->addExtension($name, $newExtension);
 		}
 	}
