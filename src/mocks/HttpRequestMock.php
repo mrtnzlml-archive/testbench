@@ -19,9 +19,13 @@ class HttpRequestMock extends \Nette\Http\Request
 		$remoteHost = '127.0.0.1',
 		$rawBodyCallback = NULL
 	) {
+		$url = $url ?: new Http\UrlScript('http://fake.url/');
+		if ($query !== NULL) {
+			$url->setQuery($query);
+		}
 		parent::__construct(
-			$url ?: new Http\UrlScript('http://fake.url/'),
-			$query,
+			$url,
+			NULL, //deprecated
 			$post,
 			$files,
 			$cookies,
