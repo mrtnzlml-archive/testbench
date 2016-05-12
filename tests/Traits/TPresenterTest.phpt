@@ -65,6 +65,8 @@ class TPresenterTest extends \Testbench\CustomPresenterTestCase
 	public function testRedirectRss()
 	{
 		$this->checkRedirect('Presenter:redirectRss', '/x/y/rss');
+		$this->checkRedirect('Presenter:redirectRss', '/.*');
+		$this->checkRedirect('Presenter:redirectRss', '/(x|y)/(x|y)/.?s{2}');
 	}
 
 	public function testRedirectRssFailedUrl()
