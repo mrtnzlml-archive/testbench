@@ -122,7 +122,7 @@ trait TPresenter
 	 */
 	protected function checkSignal($destination, $signal, $params = [], $post = [])
 	{
-		return $this->checkRedirect($destination, '/', [
+		return $this->checkRedirect($destination, FALSE, [
 				'do' => $signal,
 			] + $params, $post);
 	}
@@ -144,7 +144,9 @@ trait TPresenter
 			Assert::same(200, $this->getReturnCode());
 			Assert::type('Nette\Application\Responses\RedirectResponse', $response);
 			Assert::same(302, $response->getCode());
-			Assert::match("~^https?://fake\.url{$path}[a-z0-9?&=_/]*$~", $response->getUrl());
+			if($path) {
+				Assert::match("~^https?://fake\.url{$path}(?(?=\?).+)$~", $response->getUrl());
+			}
 		}
 		return $response;
 	}

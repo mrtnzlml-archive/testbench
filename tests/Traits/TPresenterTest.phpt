@@ -58,7 +58,7 @@ class TPresenterTest extends \Testbench\CustomPresenterTestCase
 
 	public function testRedirect()
 	{
-		$this->checkRedirect('Presenter:redirect', '/');
+		$this->checkRedirect('Presenter:redirect', '/x/y');
 	}
 
 	public function testRedirectRss()
@@ -189,7 +189,7 @@ class TPresenterTest extends \Testbench\CustomPresenterTestCase
 	{
 		$this->checkForm('Presenter:default', 'csrfForm', [
 			'test' => 'test',
-		]);
+		], '/x/y');
 	}
 
 	public function testSignal()

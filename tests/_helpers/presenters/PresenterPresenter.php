@@ -5,6 +5,9 @@ use Nette\Application\UI;
 class PresenterPresenter extends Nette\Application\UI\Presenter
 {
 
+	/** @persistent */
+	public $persistentParameter;
+
 	public function actionJson()
 	{
 		$this->sendResponse(new \Nette\Application\Responses\JsonResponse(['OK']));

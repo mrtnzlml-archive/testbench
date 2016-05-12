@@ -45,6 +45,12 @@ class Issue_21 extends \Tester\TestCase
 		Assert::same(1, $httpRequest->getQuery('id'));
 	}
 
+	public function testRedirectPersistentParameter()
+	{
+		$this->checkRedirect('Presenter:redirectRss', '/x/y/rss', ['persistentParameter' => 'Url-En.coded Value MixedCasě?!']);
+		$this->checkRedirect('Presenter:redirect', '/x/y', ['persistentParameter' => 'Url-En.coded Value MixedCasě?!']);
+	}
+
 }
 
 (new Issue_21)->run();
