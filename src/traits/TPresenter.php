@@ -35,7 +35,8 @@ trait TPresenter
 		$container = \Testbench\ContainerFactory::create(FALSE);
 		$container->removeService('httpRequest');
 		$headers = $this->__testbench_ajaxMode ? ['X-Requested-With' => 'XMLHttpRequest'] : [];
-		$container->addService('httpRequest', new HttpRequestMock(NULL, $params, $post, [], [], $headers));
+		$url = new \Nette\Http\UrlScript($container->parameters['testbench']['url']);
+		$container->addService('httpRequest', new HttpRequestMock($url, $params, $post, [], [], $headers));
 		$presenterFactory = $container->getByType('Nette\Application\IPresenterFactory');
 		$class = $presenterFactory->getPresenterClass($presenter);
 		$this->__testbench_presenter = $container->createInstance($class);

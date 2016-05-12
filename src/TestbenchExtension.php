@@ -8,7 +8,11 @@ class TestbenchExtension extends \Nette\DI\CompilerExtension
 	public function loadConfiguration()
 	{
 		$builder = $this->compiler->getContainerBuilder();
-		$builder->parameters[$this->name] = $this->getConfig();
+		$testbenchConfig = $this->getConfig();
+		if (!isset($testbenchConfig['url'])) {
+			$testbenchConfig['url'] = 'http://test.bench/';
+		}
+		$builder->parameters[$this->name] = $testbenchConfig;
 		$connectionSectionKeys = ['dbname' => NULL, 'driver' => NULL, 'connection' => NULL];
 
 		/** @var \Nette\DI\CompilerExtension $extension */
