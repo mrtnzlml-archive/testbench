@@ -3,6 +3,7 @@
 namespace Testbench;
 
 use Tester\Assert;
+use Tester\Dumper;
 
 trait TPresenter
 {
@@ -144,8 +145,15 @@ trait TPresenter
 			Assert::same(200, $this->getReturnCode());
 			Assert::type('Nette\Application\Responses\RedirectResponse', $response);
 			Assert::same(302, $response->getCode());
-			if($path) {
-				Assert::match("~^https?://fake\.url{$path}(?(?=\?).+)$~", $response->getUrl());
+			if ($path) {
+				if (!\Tester\Assert::isMatching("~^https?://test\.bench{$path}(?(?=\?).+)$~", $response->getUrl())) {
+					$path = Dumper::color('yellow') . Dumper::toLine($path) . Dumper::color('white');
+					$url = Dumper::color('yellow') . Dumper::toLine($response->getUrl()) . Dumper::color('white');
+					$originalUrl = new \Nette\Http\Url($response->getUrl());
+					Assert::fail(
+						str_repeat(' ', strlen($originalUrl->getHostUrl()) - 13) // strlen('Failed: path ') = 13
+						. "path $path doesn't match\n$url\nafter redirect");
+				}
 			}
 		}
 		return $response;

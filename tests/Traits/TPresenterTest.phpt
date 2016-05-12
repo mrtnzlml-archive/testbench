@@ -3,6 +3,7 @@
 namespace Test;
 
 use Tester\Assert;
+use Tester\Dumper;
 
 require __DIR__ . '/../bootstrap.php';
 
@@ -64,6 +65,17 @@ class TPresenterTest extends \Testbench\CustomPresenterTestCase
 	public function testRedirectRss()
 	{
 		$this->checkRedirect('Presenter:redirectRss', '/x/y/rss');
+	}
+
+	public function testRedirectRssFailedUrl()
+	{
+		$path = Dumper::color('yellow') . Dumper::toLine('/x/y/rs') . Dumper::color('white');
+		$url = Dumper::color('yellow') . Dumper::toLine('http://test.bench/x/y/rss') . Dumper::color('white');
+		Assert::error(function () {
+			$this->checkRedirect('Presenter:redirectRss', '/x/y/rs', [
+				'flashMessage' => FALSE,
+			]);
+		}, 'Tester\AssertException', str_repeat(' ', 4) . "path $path doesn't match\n$url\nafter redirect");
 	}
 
 	public function testJsonOutput()

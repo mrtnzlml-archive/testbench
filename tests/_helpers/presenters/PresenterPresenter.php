@@ -34,9 +34,11 @@ class PresenterPresenter extends Nette\Application\UI\Presenter
 		$this->redirect('default');
 	}
 
-	public function renderRedirectRss()
+	public function renderRedirectRss($flashMessage = TRUE)
 	{
-		$this->flashMessage('Because of _fid parameter to the URL...');
+		if ($flashMessage) {
+			$this->flashMessage('Because of _fid parameter to the URL...');
+		}
 		$this->redirect('rss');
 	}
 
