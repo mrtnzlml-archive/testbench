@@ -153,7 +153,8 @@ trait TPresenter
 					$originalUrl = new \Nette\Http\Url($response->getUrl());
 					Assert::fail(
 						str_repeat(' ', strlen($originalUrl->getHostUrl()) - 13) // strlen('Failed: path ') = 13
-						. "path $path doesn't match\n$url\nafter redirect");
+						. "path $path doesn't match\n$url\nafter redirect"
+					);
 				}
 			}
 		}
