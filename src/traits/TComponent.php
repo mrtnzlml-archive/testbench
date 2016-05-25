@@ -16,6 +16,9 @@ trait TComponent
 		if ($name === NULL) {
 			if (!$name = $component->getName()) {
 				$name = $component->getReflection()->getShortName();
+				if (preg_match('~class@anonymous.*~', $name)) {
+					$name = md5($name);
+				}
 			}
 		}
 		if (!$this->__testbench_presenterMock) {
