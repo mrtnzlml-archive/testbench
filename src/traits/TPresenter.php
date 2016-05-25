@@ -44,6 +44,15 @@ trait TPresenter
 		$this->__testbench_presenter->invalidLinkMode = \Nette\Application\UI\Presenter::INVALID_LINK_EXCEPTION;
 		$container->callInjects($this->__testbench_presenter);
 
+		$postCopy = $post;
+		if (isset($params['do'])) {
+			foreach ($post as $key => $field) {
+				if (is_array($field) && array_key_exists(\Nette\Forms\Form::REQUIRED, $field)) {
+					$post[$key] = $field[0];
+				}
+			}
+		}
+
 		/** @var \Kdyby\FakeSession\Session $session */
 		$session = $this->__testbench_presenter->getSession();
 		$session->setFakeId('testbench.fakeId');
@@ -65,6 +74,15 @@ trait TPresenter
 					/** @var \Nette\Application\UI\Form $form */
 					$form = $this->__testbench_presenter->getComponent($matches[1]);
 					foreach ($form->getControls() as $control) {
+						if (array_key_exists($control->getName(), $postCopy)) {
+							$subvalues = $postCopy[$control->getName()];
+							$rq = \Nette\Forms\Form::REQUIRED;
+							if (is_array($subvalues) && array_key_exists($rq, $subvalues) && $subvalues[$rq]) {
+								if ($control->isRequired() !== TRUE) {
+									Assert::fail("field '{$control->name}' should be defined as required, but it's not");
+								}
+							}
+						}
 						if ($control->hasErrors()) {
 							$errors = '';
 							$counter = 1;

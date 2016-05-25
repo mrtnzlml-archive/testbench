@@ -97,6 +97,17 @@ class PresenterPresenter extends Nette\Application\UI\Presenter
 		return $form;
 	}
 
+	protected function createComponentForm4()
+	{
+		$form = new UI\Form();
+		$form->addText('test'); //should be required, but it's not
+		$form->onSuccess[] = function ($_, $values) {
+			$this->flashMessage(json_encode($values));
+			$this->redirect('this');
+		};
+		return $form;
+	}
+
 	protected function createComponentAjaxForm()
 	{
 		$form = new UI\Form();

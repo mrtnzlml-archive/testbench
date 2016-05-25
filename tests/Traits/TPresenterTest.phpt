@@ -211,6 +211,30 @@ class TPresenterTest extends \Testbench\CustomPresenterTestCase
 		$this->checkSignal('Presenter:default', 'signal');
 	}
 
+	public function testFormEnhanced()
+	{
+		$this->checkForm('Presenter:default', 'form1', [
+			'a' => 'b',
+			'test' => [
+				\Nette\Forms\Form::REQUIRED => TRUE,
+				'value',
+			],
+		], '/x/y');
+		Assert::same(
+			'{"test":"value","error":""}',
+			$this->getPresenter()->getFlashSession()->getIterator()->getArrayCopy()['flash'][0]->message
+		);
+		Assert::exception(function () {
+			$this->checkForm('Presenter:default', 'form4', [
+				'a' => 'b',
+				'test' => [
+					'value',
+					\Nette\Forms\Form::REQUIRED => TRUE,
+				],
+			], '/x/y');
+		}, 'Tester\AssertException', "field 'test' should be defined as required, but it's not");
+	}
+
 }
 
 (new TPresenterTest)->run();
