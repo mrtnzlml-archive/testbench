@@ -67,6 +67,7 @@ trait TPresenter
 		);
 		try {
 			$this->__testbench_httpCode = 200;
+			$this->__testbench_exception = NULL;
 			$response = $this->__testbench_presenter->run($request);
 
 			if (isset($params['do'])) {

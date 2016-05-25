@@ -154,6 +154,10 @@ class TPresenterTest extends \Testbench\CustomPresenterTestCase
 
 	public function testForm()
 	{
+		$this->checkForm('Presenter:default', 'form1', [
+			'test' => 'test',
+		], '/x/y');
+
 		Assert::exception(function () {
 			$this->checkForm('Presenter:default', 'form1', []);
 		}, 'Tester\AssertException', "field 'test' returned this error(s):\n  - This field is required.");
@@ -165,9 +169,11 @@ class TPresenterTest extends \Testbench\CustomPresenterTestCase
 			]);
 		}, 'Tester\AssertException', "FORM ERROR");
 
-		$this->checkForm('Presenter:default', 'form1', [
-			'test' => 'test',
-		]);
+		Assert::exception(function() {
+			$this->checkForm('Presenter:default', 'form1', [
+				'test' => 'test',
+			]); //missing path
+		}, 'Tester\AssertException');
 	}
 
 	public function testFormDifferentDestination()
