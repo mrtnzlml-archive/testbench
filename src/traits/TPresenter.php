@@ -125,7 +125,7 @@ trait TPresenter
 			Assert::type('Nette\Application\Responses\TextResponse', $response);
 			Assert::type('Nette\Application\UI\ITemplate', $response->getSource());
 
-			$dom = @\Tester\DomQuery::fromHtml($response->getSource()); // @ - not valid HTML
+			$dom = \Tester\DomQuery::fromHtml($response->getSource());
 			Assert::true($dom->has('html'));
 			Assert::true($dom->has('title'));
 			Assert::true($dom->has('body'));
@@ -295,10 +295,11 @@ trait TPresenter
 			Assert::type('Nette\Application\Responses\TextResponse', $response);
 			Assert::type('Nette\Application\UI\ITemplate', $response->getSource());
 
-			$dom = @\Tester\DomQuery::fromHtml($response->getSource()); // @ - not valid HTML
-			Assert::true($dom->has('urlset'));
-			Assert::true($dom->has('url'));
-			Assert::true($dom->has('loc'));
+			$xml = \Tester\DomQuery::fromXml($response->getSource());
+			Assert::same('urlset', $xml->getName(), 'root element is');
+			$url = $xml->children();
+			Assert::same('url', $url->getName(), 'child of urlset');
+			Assert::same('loc', $url->children()->getName(), 'child of url');
 		}
 		return $response;
 	}

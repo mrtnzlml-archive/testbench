@@ -16,6 +16,11 @@ class TPresenterTest extends \Testbench\CustomPresenterTestCase
 	public function testClassicRender()
 	{
 		$this->checkAction('Presenter:default');
+
+		//FIXME: how to?
+		//Assert::error(function () {
+		//	$this->checkAction('Presenter:variabledoesntexist');
+		//}, E_NOTICE, 'Undefined variable: doesnexist');
 	}
 
 	public function testClassicRenderShort()
@@ -169,7 +174,7 @@ class TPresenterTest extends \Testbench\CustomPresenterTestCase
 			]);
 		}, 'Tester\AssertException', "FORM ERROR");
 
-		Assert::exception(function() {
+		Assert::exception(function () {
 			$this->checkForm('Presenter:default', 'form1', [
 				'test' => 'test',
 			]); //missing path
