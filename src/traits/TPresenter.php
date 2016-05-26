@@ -201,6 +201,18 @@ trait TPresenter
 	}
 
 	/**
+	 * @param $destination
+	 * @param array $scheme what is expected
+	 * @param array $params
+	 * @param array $post
+	 */
+	public function checkJsonScheme($destination, array $scheme, $params = [], $post = [])
+	{
+		$response = $this->checkJson($destination, $params, $post);
+		Assert::same($scheme, $response->getPayload());
+	}
+
+	/**
 	 * @param string $destination
 	 * @param string $formName
 	 * @param array $post

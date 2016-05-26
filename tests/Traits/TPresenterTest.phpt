@@ -87,7 +87,14 @@ class TPresenterTest extends \Testbench\CustomPresenterTestCase
 
 	public function testJsonOutput()
 	{
-		$this->checkJson('Presenter:json');
+		$this->checkJsonScheme('Presenter:json', [
+			'string' => [
+				1234 => [],
+			],
+		]);
+		Assert::exception(function () {
+			$this->checkJsonScheme('Presenter:json', ['string']);
+		}, 'Tester\AssertException');
 	}
 
 	public function testRss()

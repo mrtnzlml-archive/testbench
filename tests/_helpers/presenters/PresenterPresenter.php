@@ -10,7 +10,11 @@ class PresenterPresenter extends Nette\Application\UI\Presenter
 
 	public function actionJson()
 	{
-		$this->sendResponse(new \Nette\Application\Responses\JsonResponse(['OK']));
+		$this->sendResponse(new \Nette\Application\Responses\JsonResponse([
+			'string' => [
+				1234 => [],
+			],
+		]));
 	}
 
 	public function renderDefault()
