@@ -18,9 +18,9 @@ trait TPresenter
 	private $__testbench_ajaxMode = FALSE;
 
 	/**
-	 * @param string $destination
-	 * @param array $params
-	 * @param array $post
+	 * @param string $destination fully qualified presenter name (module:module:presenter)
+	 * @param array $params provided to the presenter usually via URL
+	 * @param array $post provided to the presenter via POST
 	 *
 	 * @return \Nette\Application\IResponse
 	 * @throws \Exception
@@ -109,9 +109,9 @@ trait TPresenter
 	}
 
 	/**
-	 * @param string $destination
-	 * @param array $params
-	 * @param array $post
+	 * @param string $destination fully qualified presenter name (module:module:presenter)
+	 * @param array $params provided to the presenter usually via URL
+	 * @param array $post provided to the presenter via POST
 	 *
 	 * @return \Nette\Application\Responses\TextResponse
 	 * @throws \Exception
@@ -149,10 +149,10 @@ trait TPresenter
 	}
 
 	/**
-	 * @param string $destination
+	 * @param string $destination fully qualified presenter name (module:module:presenter)
 	 * @param string $path
-	 * @param array $params
-	 * @param array $post
+	 * @param array $params provided to the presenter usually via URL
+	 * @param array $post provided to the presenter via POST
 	 *
 	 * @return \Nette\Application\Responses\RedirectResponse
 	 * @throws \Exception
@@ -181,9 +181,9 @@ trait TPresenter
 	}
 
 	/**
-	 * @param string $destination
-	 * @param array $params
-	 * @param array $post
+	 * @param string $destination fully qualified presenter name (module:module:presenter)
+	 * @param array $params provided to the presenter usually via URL
+	 * @param array $post provided to the presenter via POST
 	 *
 	 * @return \Nette\Application\Responses\JsonResponse
 	 * @throws \Exception
@@ -201,10 +201,10 @@ trait TPresenter
 	}
 
 	/**
-	 * @param $destination
+	 * @param $destination fully qualified presenter name (module:module:presenter)
 	 * @param array $scheme what is expected
-	 * @param array $params
-	 * @param array $post
+	 * @param array $params provided to the presenter usually via URL
+	 * @param array $post provided to the presenter via POST
 	 */
 	public function checkJsonScheme($destination, array $scheme, $params = [], $post = [])
 	{
@@ -213,9 +213,9 @@ trait TPresenter
 	}
 
 	/**
-	 * @param string $destination
+	 * @param string $destination fully qualified presenter name (module:module:presenter)
 	 * @param string $formName
-	 * @param array $post
+	 * @param array $post provided to the presenter via POST
 	 * @param string|boolean $path Path after redirect or FALSE if it's form without redirect
 	 *
 	 * @return \Nette\Application\Responses\RedirectResponse
@@ -242,6 +242,15 @@ trait TPresenter
 		}
 	}
 
+	/**
+	 * @param string $destination fully qualified presenter name (module:module:presenter)
+	 * @param $formName
+	 * @param array $post provided to the presenter via POST
+	 * @param string|bool $path
+	 *
+	 * @return \Nette\Application\IResponse
+	 * @throws \Exception
+	 */
 	protected function checkAjaxForm($destination, $formName, $post = [], $path = FALSE)
 	{
 		if (is_string($path)) {
@@ -264,9 +273,9 @@ trait TPresenter
 	}
 
 	/**
-	 * @param string $destination
-	 * @param array $params
-	 * @param array $post
+	 * @param string $destination fully qualified presenter name (module:module:presenter)
+	 * @param array $params provided to the presenter usually via URL
+	 * @param array $post provided to the presenter via POST
 	 *
 	 * @return \Nette\Application\Responses\TextResponse
 	 * @throws \Exception
@@ -291,9 +300,9 @@ trait TPresenter
 	}
 
 	/**
-	 * @param string $destination
-	 * @param array $params
-	 * @param array $post
+	 * @param string $destination fully qualified presenter name (module:module:presenter)
+	 * @param array $params provided to the presenter usually via URL
+	 * @param array $post provided to the presenter via POST
 	 *
 	 * @return \Nette\Application\Responses\TextResponse
 	 * @throws \Exception
