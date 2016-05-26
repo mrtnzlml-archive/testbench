@@ -269,11 +269,11 @@ trait TPresenter
 			Assert::type('Nette\Application\UI\ITemplate', $response->getSource());
 
 			$dom = \Tester\DomQuery::fromXml($response->getSource());
-			Assert::true($dom->has('rss'));
-			Assert::true($dom->has('channel'));
-			Assert::true($dom->has('title'));
-			Assert::true($dom->has('link'));
-			Assert::true($dom->has('item'));
+			Assert::true($dom->has('rss'), "missing 'rss' element");
+			Assert::true($dom->has('channel'), "missing 'channel' element");
+			Assert::true($dom->has('title'), "missing 'title' element");
+			Assert::true($dom->has('link'), "missing 'link' element");
+			Assert::true($dom->has('item'), "missing 'item' element");
 		}
 		return $response;
 	}
@@ -298,8 +298,8 @@ trait TPresenter
 			$xml = \Tester\DomQuery::fromXml($response->getSource());
 			Assert::same('urlset', $xml->getName(), 'root element is');
 			$url = $xml->children();
-			Assert::same('url', $url->getName(), 'child of urlset');
-			Assert::same('loc', $url->children()->getName(), 'child of url');
+			Assert::same('url', $url->getName(), "child of 'urlset'");
+			Assert::same('loc', $url->children()->getName(), "child of 'url'");
 		}
 		return $response;
 	}
