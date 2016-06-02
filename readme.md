@@ -101,5 +101,5 @@ Look at the tests in this project. You'll see how to use it properly. There are 
 - [Testbench\TCompiledContainer](https://github.com/mrtnzlml/testbench/wiki/Testbench%5CTCompiledContainer)
 - [Testbench\TComponent](https://github.com/mrtnzlml/testbench/wiki/Testbench%5CTComponent)
 - [Testbench\TDoctrine](https://github.com/mrtnzlml/testbench/wiki/Testbench%5CTDoctrine)
-- Testbench\TNetteDatabase
+- [Testbench\TNetteDatabase](https://github.com/mrtnzlml/testbench/wiki/Testbench%5CTNetteDatabase)
 - [Testbench\TPresenter](https://github.com/mrtnzlml/testbench/wiki/Testbench%5CTPresenter)
