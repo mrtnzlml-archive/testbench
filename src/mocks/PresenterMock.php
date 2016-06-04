@@ -36,16 +36,10 @@ class PresenterMock extends \Nette\Application\UI\Presenter
 		return FALSE;
 	}
 
-	/**
-	 * @deprecated
-	 */
-	public function link($destination, $args = [])
+	protected function handleInvalidLink(\Nette\Application\UI\InvalidLinkException $e)
 	{
-		if (!is_array($args)) {
-			$args = array_slice(func_get_args(), 1);
-		}
-		array_unshift($args, $destination);
-		return 'plink:' . strtr(json_encode($args), '"', "'");
+		$this->invalidLinkMode = $this::INVALID_LINK_EXCEPTION;
+		parent::handleInvalidLink($e);
 	}
 
 }

@@ -23,6 +23,7 @@ trait TComponent
 		}
 		if (!$this->__testbench_presenterMock) {
 			$this->__testbench_presenterMock = __testbench_getService('Testbench\PresenterMock');
+			$this->__testbench_presenterMock->invalidLinkMode = \Nette\Application\UI\Presenter::INVALID_LINK_EXCEPTION;
 			$container = \Testbench\ContainerFactory::create(FALSE);
 			$container->callInjects($this->__testbench_presenterMock);
 		}

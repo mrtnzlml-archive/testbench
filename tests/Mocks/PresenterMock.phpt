@@ -6,27 +6,20 @@ use Tester\Assert;
 
 require __DIR__ . '/../bootstrap.php';
 
-$latte = new \Latte\Engine;
-$latte->setLoader(new \Latte\Loaders\StringLoader);
-\Nette\Bridges\ApplicationLatte\UIMacros::install($latte->getCompiler());
+$mock = new \Testbench\PresenterMock;
 
-$params['_control'] = new \Testbench\PresenterMock;
+Assert::false($mock->isAjax());
 
-$renderToString = function ($name, array $params = []) use ($latte) {
-	return strtr($latte->renderToString($name, $params), ['&#039;' => "'"]);
-};
+Assert::exception(function () use ($mock) {
+	$mock->link('Inva:lid');
+	Assert::same(\Nette\Application\UI\Presenter::INVALID_LINK_EXCEPTION, $mock->invalidLinkMode);
+}, 'Nette\InvalidStateException');
 
-Assert::match(
-	"<a href=\"plink:['data!',10]\"></a>",
-	$renderToString('<a n:href="data! 10"></a>', $params)
-);
+Assert::exception(function () use ($mock) {
+	$mock->afterRender();
+}, 'Nette\Application\AbortException');
 
-Assert::match(
-	"<a href=\"plink:{'0':'data!#hash','1':10,'a':20,'b':30}\"></a>",
-	$renderToString('<a n:href="data!#hash 10, a => 20, \'b\' => 30"></a>', $params)
-);
-
-Assert::match(
-	"<a href=\"plink:['Homepage:']\"></a>",
-	$renderToString('<a n:href="Homepage:"></a>', $params)
-);
+$mock->loadState(['__terminate' => TRUE]);
+Assert::exception(function () use ($mock) {
+	$mock->startup();
+}, 'Nette\Application\AbortException');
