@@ -42,11 +42,13 @@ class TCompiledContainerTest extends \Tester\TestCase
 		}, 'E_NOTICE', 'Undefined index: test');
 
 		$refreshedContainer = $this->refreshContainer([
-			'test' => [
-				'xxx' => ['yyy'],
-			],
+			'extensions' => ['test' => 'Testbench\FakeExtension'],
+			'services' => ['test' => 'Testbench\FakeExtension'],
+			'test' => ['xxx' => ['yyy']],
 		]);
 		Assert::same(['xxx' => ['yyy']], $refreshedContainer->parameters['test']);
+		Assert::type('Testbench\FakeExtension', $extension = $refreshedContainer->getService('test'));
+		Assert::true($extension::$tested);
 
 		Assert::notSame($container, $refreshedContainer);
 	}

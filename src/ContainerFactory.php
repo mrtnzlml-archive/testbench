@@ -24,7 +24,8 @@ class ContainerFactory extends \Nette\Object
 			$configurator = new \Nette\Configurator();
 			$configurator->addParameters($config);
 
-			$configurator->onCompile[] = function (\Nette\Configurator $configurator, \Nette\DI\Compiler $compiler) {
+			$configurator->onCompile[] = function (\Nette\Configurator $configurator, \Nette\DI\Compiler $compiler) use ($config) {
+				$compiler->addConfig($config);
 				$compiler->addExtension('testbench', new \Testbench\TestbenchExtension);
 				self::registerAdditionalExtension($compiler, 'fakeSession', new \Kdyby\FakeSession\DI\FakeSessionExtension);
 				if (class_exists('Kdyby\Console\DI\ConsoleExtension')) {

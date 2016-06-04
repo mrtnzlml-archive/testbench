@@ -21,7 +21,6 @@ trait TCompiledContainer
 		return \Testbench\ContainerFactory::create(TRUE, $config);
 	}
 
-	//FIXME: should be in TCompiledContainer?
 	protected function changeRunLevel($testSpeed = \Testbench::FINE)
 	{
 		if ((int)getenv('RUNLEVEL') < $testSpeed) {
