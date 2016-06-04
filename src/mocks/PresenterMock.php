@@ -36,6 +36,9 @@ class PresenterMock extends \Nette\Application\UI\Presenter
 		return FALSE;
 	}
 
+	/**
+	 * @deprecated
+	 */
 	public function link($destination, $args = [])
 	{
 		if (!is_array($args)) {

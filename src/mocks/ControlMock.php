@@ -2,6 +2,9 @@
 
 namespace Testbench;
 
+/**
+ * @deprecated
+ */
 class ControlMock extends \Nette\ComponentModel\Component
 {
 

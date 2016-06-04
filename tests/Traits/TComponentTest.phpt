@@ -16,7 +16,7 @@ class TComponentTest extends \Tester\TestCase
 
 	public function testAttachToPresenter()
 	{
-		$control = new \Testbench\ControlMock;
+		$control = new \Component;
 		Assert::exception(function () use ($control) {
 			$control->lookup('Nette\Application\IPresenter');
 		}, 'Nette\InvalidStateException', "Component '' is not attached to 'Nette\\Application\\IPresenter'.");
