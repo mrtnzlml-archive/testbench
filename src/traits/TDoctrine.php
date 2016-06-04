@@ -80,7 +80,7 @@ trait TDoctrine
 
 		if (isset($container->parameters['testbench']['sqls'])) {
 			foreach ($container->parameters['testbench']['sqls'] as $file) {
-				\Kdyby\Doctrine\Helpers::loadFromFile($db, $file);
+				\Kdyby\Doctrine\Dbal\BatchImport\Helpers::loadFromFile($db, $file);
 			}
 		}
 

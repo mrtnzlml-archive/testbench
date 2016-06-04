@@ -27,7 +27,9 @@
     "nette/forms": ">=2.2.0",
     "nette/robot-loader": ">=2.2.0",
     "tracy/tracy": ">=2.2.0",
-    "kdyby/doctrine": ">=2.0.0",
+    "kdyby/doctrine": "dev-master",
+    "kdyby/doctrine-cache": "dev-master",
+    "kdyby/doctrine-dbal-batchimport": "dev-master",
     "nette/database": ">=2.2.0"
   },
   "autoload": {
@@ -46,5 +48,6 @@
   "suggest": {
     "kdyby/doctrine": "Allows enhanced database tests using Doctrine",
     "nette/database": "Allows enhanced database tests using Nette\\Database"
-  }
+  },
+  "minimum-stability": "RC"
 }

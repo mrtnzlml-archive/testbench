@@ -49,7 +49,8 @@ class ContainerFactory extends \Nette\Object
 	private static function registerAdditionalExtension(\Nette\DI\Compiler $compiler, $name, $newExtension)
 	{
 		$extensions = [];
-		foreach (isset($compiler->config['extensions']) ? $compiler->config['extensions'] : [] as $extension) {
+		$config = $compiler->getConfig();
+		foreach (isset($config['extensions']) ? $config['extensions'] : [] as $extension) {
 			if (is_string($extension)) {
 				$extensions[] = $extension;
 			} elseif ($extension instanceof \Nette\DI\Statement) {
