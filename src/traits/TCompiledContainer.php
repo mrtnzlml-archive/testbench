@@ -16,9 +16,9 @@ trait TCompiledContainer
 		return $this->getContainer()->getByType($class);
 	}
 
-	protected function refreshContainer()
+	protected function refreshContainer($config = [])
 	{
-		return \Testbench\ContainerFactory::create(TRUE);
+		return \Testbench\ContainerFactory::create(TRUE, $config);
 	}
 
 	//FIXME: should be in TCompiledContainer?

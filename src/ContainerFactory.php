@@ -18,10 +18,11 @@ class ContainerFactory extends \Nette\Object
 	/**
 	 * @return \Nette\DI\Container
 	 */
-	final public static function create($new = FALSE)
+	final public static function create($new = FALSE, $config = [])
 	{
 		if ($new || self::$container === NULL) {
 			$configurator = new \Nette\Configurator();
+			$configurator->addParameters($config);
 
 			$configurator->onCompile[] = function (\Nette\Configurator $configurator, \Nette\DI\Compiler $compiler) {
 				$compiler->addExtension('testbench', new \Testbench\TestbenchExtension);

@@ -34,6 +34,23 @@ class TCompiledContainerTest extends \Tester\TestCase
 		Assert::notSame($container, $refreshedContainer);
 	}
 
+	public function testRefreshContainerWithConfig()
+	{
+		$container = $this->getContainer();
+		Assert::error(function () use ($container) {
+			$container->parameters['test'];
+		}, 'E_NOTICE', 'Undefined index: test');
+
+		$refreshedContainer = $this->refreshContainer([
+			'test' => [
+				'xxx' => ['yyy'],
+			],
+		]);
+		Assert::same(['xxx' => ['yyy']], $refreshedContainer->parameters['test']);
+
+		Assert::notSame($container, $refreshedContainer);
+	}
+
 	public function testRunLevels()
 	{
 		putenv('RUNLEVEL=0');
