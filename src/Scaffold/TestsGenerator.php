@@ -27,6 +27,9 @@ class TestsGenerator
 			if ($service instanceof \Testbench\Mocks\PresenterMock) {
 				continue;
 			}
+			if ($service instanceof \KdybyModule\CliPresenter) { //Oh, Kdyby! :-(
+				continue;
+			}
 
 			$rc = new \ReflectionClass($service);
 			$renderPrefix = $service->formatActionMethod('') . '|' . $service->formatRenderMethod('');
