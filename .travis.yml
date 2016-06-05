@@ -28,5 +28,9 @@ before_script:
 script:
   - src/run-tests
 
+after_failure:
+  # Print *.actual content
+  - for i in $(find tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done
+
 notifications:
   email: false
