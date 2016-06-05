@@ -27,6 +27,9 @@ before_script:
 
 script:
   - src/run-tests
+  - php tests/Scaffold/GenerateStructure.php
+  - php tests/_temp/scaffold/PresenterPresenter.phpt
+  - php tests/_temp/scaffold/ModuleModule/PresenterPresenter.phpt
 
 after_failure:
   # Print *.actual content

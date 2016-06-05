@@ -154,10 +154,12 @@ class TestsGenerator
 			\Nette\Utils\FileSystem::write($outputFolder . '/' . $testFileName . '.phpt', $generatedTest);
 			\Nette\Utils\FileSystem::createDir($outputFolder . '/_temp');
 
+			$runner = new \Testbench\Runner;
+			$pathToVendor = $runner->getRelativePath($outputFolder . '/bootstrap.php', $runner->findVendorDirectory());
 			\Nette\Utils\FileSystem::write($outputFolder . '/bootstrap.php', <<<BOOTSTRAP
 <?php
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+require __DIR__ . '/{$pathToVendor}autoload.php';
 
 Testbench\Bootstrap::setup(__DIR__ . '/_temp', function (Nette\Configurator \$configurator) {
 	\$configurator->addParameters([
