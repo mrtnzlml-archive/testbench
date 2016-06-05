@@ -1,6 +1,6 @@
 <?php
 
-namespace Test;
+namespace Tests\Traits;
 
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Tester\Assert;

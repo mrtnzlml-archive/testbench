@@ -1,6 +1,6 @@
 <?php
 
-namespace Test;
+namespace Tests\Traits;
 
 use Tester\Assert;
 use Tester\Dumper;

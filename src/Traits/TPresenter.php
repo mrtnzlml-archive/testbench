@@ -36,7 +36,7 @@ trait TPresenter
 		$container->removeService('httpRequest');
 		$headers = $this->__testbench_ajaxMode ? ['X-Requested-With' => 'XMLHttpRequest'] : [];
 		$url = new \Nette\Http\UrlScript($container->parameters['testbench']['url']);
-		$container->addService('httpRequest', new HttpRequestMock($url, $params, $post, [], [], $headers));
+		$container->addService('httpRequest', new Mocks\HttpRequestMock($url, $params, $post, [], [], $headers));
 		$presenterFactory = $container->getByType('Nette\Application\IPresenterFactory');
 		$class = $presenterFactory->getPresenterClass($presenter);
 		$this->__testbench_presenter = $container->createInstance($class);
@@ -59,7 +59,7 @@ trait TPresenter
 		$session->getSection('Nette\Forms\Controls\CsrfProtection')->token = 'testbench.fakeToken';
 		$post = $post + ['_token_' => 'goVdCQ1jk0UQuVArz15RzkW6vpDU9YqTRILjE=']; //CSRF magic! ¯\_(ツ)_/¯
 
-		$request = new ApplicationRequestMock(
+		$request = new Mocks\ApplicationRequestMock(
 			$presenter,
 			$post ? 'POST' : 'GET',
 			['action' => $action] + $params,
@@ -201,7 +201,7 @@ trait TPresenter
 	}
 
 	/**
-	 * @param $destination fully qualified presenter name (module:module:presenter)
+	 * @param string $destination fully qualified presenter name (module:module:presenter)
 	 * @param array $scheme what is expected
 	 * @param array $params provided to the presenter usually via URL
 	 * @param array $post provided to the presenter via POST

@@ -2,6 +2,6 @@
 
 namespace Testbench;
 
-class CustomPresenterMock extends PresenterMock
+class CustomPresenterMock extends Mocks\PresenterMock
 {
 }

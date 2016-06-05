@@ -1,6 +1,6 @@
 <?php
 
-namespace Ant\Tests\Latte;
+namespace Tests\Mocks;
 
 use Tester\Assert;
 
@@ -10,7 +10,7 @@ $latte = new \Latte\Engine;
 $latte->setLoader(new \Latte\Loaders\StringLoader);
 \Nette\Bridges\ApplicationLatte\UIMacros::install($latte->getCompiler());
 
-$params['_control'] = $mock = new \Testbench\PresenterMock;
+$params['_control'] = $mock = new \Testbench\Mocks\PresenterMock;
 
 Assert::false($mock->isAjax());
 

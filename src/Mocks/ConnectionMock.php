@@ -1,6 +1,6 @@
 <?php
 
-namespace Testbench;
+namespace Testbench\Mocks;
 
 /**
  * @method onConnect(ConnectionMock $self)

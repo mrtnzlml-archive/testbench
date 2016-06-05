@@ -1,6 +1,6 @@
 <?php
 
-namespace Testbench;
+namespace Testbench\Mocks;
 
 class ApplicationRequestMock extends \Nette\Application\Request
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Test;
+namespace Tests\Traits;
 
 use Nette\Database\Drivers\MySqlDriver;
 use Tester\Assert;

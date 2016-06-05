@@ -1,6 +1,6 @@
 <?php
 
-namespace Test;
+namespace Tests\Issues;
 
 require __DIR__ . '/../bootstrap.php';
 

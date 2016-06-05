@@ -23,9 +23,9 @@ trait TDoctrine
 
 		$container = \Testbench\ContainerFactory::create(FALSE);
 
-		/** @var ConnectionMock $db */
+		/** @var Mocks\ConnectionMock $db */
 		$db = $container->getByType('Doctrine\DBAL\Connection');
-		if (!$db instanceof ConnectionMock) {
+		if (!$db instanceof Mocks\ConnectionMock) {
 			$serviceNames = $container->findByType('Doctrine\DBAL\Connection');
 			throw new \LogicException(sprintf(
 				'The service %s should be instance of Ant\Tests\ConnectionMock, to allow lazy schema initialization.',
@@ -33,7 +33,7 @@ trait TDoctrine
 			));
 		}
 
-		$db->onConnect[] = function (ConnectionMock $db) use ($container) {
+		$db->onConnect[] = function (Mocks\ConnectionMock $db) use ($container) {
 			if ($this->__testbench_databaseName !== NULL) {
 				return;
 			}
@@ -71,7 +71,7 @@ trait TDoctrine
 	}
 
 	/** @internal */
-	private function setupDatabase(ConnectionMock $db, $container)
+	private function setupDatabase(Mocks\ConnectionMock $db, $container)
 	{
 		$this->__testbench_databaseName = 'db_tests_' . getmypid();
 
@@ -90,7 +90,7 @@ trait TDoctrine
 	}
 
 	/** @internal */
-	private function createDatabase(ConnectionMock $db)
+	private function createDatabase(Mocks\ConnectionMock $db)
 	{
 		$db->exec("CREATE DATABASE {$this->__testbench_databaseName}");
 		if ($db->getDatabasePlatform() instanceof MySqlPlatform) {
@@ -101,7 +101,7 @@ trait TDoctrine
 	}
 
 	/** @internal */
-	private function dropDatabase(ConnectionMock $db)
+	private function dropDatabase(Mocks\ConnectionMock $db)
 	{
 		if (!$db->getDatabasePlatform() instanceof MySqlPlatform) {
 			$this->connectToDatabase($db);
@@ -110,7 +110,7 @@ trait TDoctrine
 	}
 
 	/** @internal */
-	private function connectToDatabase(ConnectionMock $db, $databaseName = NULL)
+	private function connectToDatabase(Mocks\ConnectionMock $db, $databaseName = NULL)
 	{
 		//connect to an existing database other than $this->_databaseName
 		if ($databaseName === NULL) {

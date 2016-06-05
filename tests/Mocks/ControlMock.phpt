@@ -1,6 +1,6 @@
 <?php
 
-namespace Ant\Tests\Latte;
+namespace Tests\Mocks;
 
 use Tester\Assert;
 
@@ -10,7 +10,7 @@ $latte = new \Latte\Engine;
 $latte->setLoader(new \Latte\Loaders\StringLoader);
 \Nette\Bridges\ApplicationLatte\UIMacros::install($latte->getCompiler());
 
-$params['_control'] = new \Testbench\ControlMock;
+$params['_control'] = new \Testbench\Mocks\ControlMock;
 Assert::type('Nette\Application\UI\Control', $params['_control']);
 
 Assert::match(

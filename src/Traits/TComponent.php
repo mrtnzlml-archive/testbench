@@ -21,17 +21,17 @@ trait TComponent
 		}
 		if (!$this->__testbench_presenterMock) {
 			$container = \Testbench\ContainerFactory::create(FALSE);
-			$this->__testbench_presenterMock = $container->getByType('Testbench\PresenterMock');
+			$this->__testbench_presenterMock = $container->getByType('Testbench\Mocks\PresenterMock');
 			$container->callInjects($this->__testbench_presenterMock);
 		}
-		$this->__testbench_presenterMock->onStartup[] = function (PresenterMock $presenter) use ($component, $name) {
+		$this->__testbench_presenterMock->onStartup[] = function (Mocks\PresenterMock $presenter) use ($component, $name) {
 			try {
 				$presenter->removeComponent($component);
 			} catch (\Nette\InvalidArgumentException $exc) {
 			}
 			$presenter->addComponent($component, $name);
 		};
-		$this->__testbench_presenterMock->run(new ApplicationRequestMock);
+		$this->__testbench_presenterMock->run(new Mocks\ApplicationRequestMock);
 	}
 
 	protected function checkRenderOutput(IComponent $control, $expected)

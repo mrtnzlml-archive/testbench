@@ -24,7 +24,7 @@ class TestsGenerator
 		foreach ($presenters as $presenter) {
 			/** @var \Nette\Application\UI\Presenter $service */
 			$service = $container->getService($presenter);
-			if ($service instanceof \Testbench\PresenterMock) {
+			if ($service instanceof \Testbench\Mocks\PresenterMock) {
 				continue;
 			}
 

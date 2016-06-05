@@ -31,8 +31,14 @@
     "nette/database": ">=2.2.0"
   },
   "autoload": {
-    "classmap": [
-      "src/"
+    "psr-4": {
+      "Testbench\\": [
+        "src/",
+        "src/Traits/"
+      ]
+    },
+    "files": [
+      "src/Testbench.php"
     ]
   },
   "autoload-dev": {

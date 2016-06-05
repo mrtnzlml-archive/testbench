@@ -18,11 +18,11 @@ class TestbenchExtension extends \Nette\DI\CompilerExtension
 		/** @var \Nette\DI\CompilerExtension $extension */
 		foreach ($this->compiler->getExtensions('Kdyby\Doctrine\DI\OrmExtension') as $extension) {
 			if (array_intersect_key($extension->config, $connectionSectionKeys)) {
-				$extension->config['wrapperClass'] = 'Testbench\ConnectionMock';
+				$extension->config['wrapperClass'] = 'Testbench\Mocks\ConnectionMock';
 			} else {
 				foreach ($extension->config as $sectionName => $sectionConfig) {
 					if (is_array($sectionConfig) && array_intersect_key($sectionConfig, $connectionSectionKeys)) {
-						$extension->config[$sectionName]['wrapperClass'] = 'Testbench\ConnectionMock';
+						$extension->config[$sectionName]['wrapperClass'] = 'Testbench\Mocks\ConnectionMock';
 					}
 				}
 			}
@@ -41,7 +41,7 @@ class TestbenchExtension extends \Nette\DI\CompilerExtension
 			$builder->removeDefinition($this->prefix('presenterMock'));
 			$builder->addDefinition($this->prefix('presenterMock'))->setClass($mockReplacement);
 		} else {
-			$builder->addDefinition($this->prefix('presenterMock'))->setClass('Testbench\PresenterMock');
+			$builder->addDefinition($this->prefix('presenterMock'))->setClass('Testbench\Mocks\PresenterMock');
 		}
 	}
 

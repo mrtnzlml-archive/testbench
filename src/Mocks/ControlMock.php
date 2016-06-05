@@ -1,6 +1,6 @@
 <?php
 
-namespace Testbench;
+namespace Testbench\Mocks;
 
 class ControlMock extends \Nette\Application\UI\Control
 {
