@@ -11,7 +11,7 @@ $latte->setLoader(new \Latte\Loaders\StringLoader);
 \Nette\Bridges\ApplicationLatte\UIMacros::install($latte->getCompiler());
 
 $params['_control'] = new \Testbench\ControlMock;
-Assert::type(\Nette\Application\UI\Control::class, $params['_control']);
+Assert::type('Nette\Application\UI\Control', $params['_control']);
 
 Assert::match(
 	'<a href="link|data!(0=10)"></a>',
