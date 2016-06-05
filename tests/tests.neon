@@ -2,6 +2,10 @@
 # http://nette.org/security-warning
 
 
+application:
+	scanDirs: %testsDir%/_helpers
+
+
 doctrine:
 	default:
 		dbname: testbench_initial
