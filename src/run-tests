@@ -2,7 +2,6 @@
 <?php
 
 require __DIR__ . '/Runner.php';
-require __DIR__ . '/Runner.php';
 $runner = new \Testbench\Runner;
 
 $vendorDir = $runner->findVendorDirectory();
