@@ -4,8 +4,6 @@ namespace Testbench;
 
 use Nette\ComponentModel\IComponent;
 
-require_once __DIR__ . '/../Helpers.php';
-
 trait TComponent
 {
 
@@ -22,8 +20,8 @@ trait TComponent
 			}
 		}
 		if (!$this->__testbench_presenterMock) {
-			$this->__testbench_presenterMock = __testbench_getService('Testbench\PresenterMock');
 			$container = \Testbench\ContainerFactory::create(FALSE);
+			$this->__testbench_presenterMock = $container->getByType('Testbench\PresenterMock');
 			$container->callInjects($this->__testbench_presenterMock);
 		}
 		$this->__testbench_presenterMock->onStartup[] = function (PresenterMock $presenter) use ($component, $name) {
