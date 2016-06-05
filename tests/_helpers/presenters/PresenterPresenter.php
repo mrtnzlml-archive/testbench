@@ -71,8 +71,8 @@ class PresenterPresenter extends Nette\Application\UI\Presenter
 		$form->addText('test')->setRequired();
 		$form->addText('error');
 		$form->onSuccess[] = function (UI\Form $form, $values) {
-			if (!empty($values->error)) {
-				$form->addError($values->error);
+			if (!empty($values->error) && $values->error !== '###') { //scaffold
+				$form->addError('Intended error: ' . $values->error);
 			}
 			$this->flashMessage(json_encode($values));
 			$this->redirect('this');

@@ -7,6 +7,23 @@ class Runner
 
 	public function prepareArguments(array $args, $testsDir)
 	{
+		$scaffold = array_search('--scaffold', $args);
+		if ($scaffold !== FALSE) {
+			if (!isset($args[$scaffold + 1])) {
+				die("Error: specify scaffold output folder like this: '--scaffold <outputDir>'\n");
+			}
+			$scaffoldDir = $args[$scaffold + 1];
+			rtrim($scaffoldDir, DIRECTORY_SEPARATOR);
+			if (count(glob("$scaffoldDir/*")) !== 0) {
+				die("Error: please use different empty folder - I don't want to destroy your work\n");
+			}
+			require dirname(__DIR__) . '/tests/bootstrap.php';
+			$scaffold = new \Testbench\Scaffold\TestsGenerator;
+			$scaffold->generateTests($scaffoldDir);
+			\Tester\Environment::$checkAssertions = FALSE;
+			die("Tests generated to the folder '$scaffoldDir'\n");
+		}
+
 		//Resolve tests dir from command line input
 		$pathToTests = NULL;
 		$position = 0;
@@ -67,6 +84,22 @@ class Runner
 			$args[] = $testsDir;
 		}
 		return $args;
+	}
+
+	public function findVendorDirectory()
+	{
+		$recursionLimit = 10;
+		$findVendor = function ($dirName = 'vendor/bin', $dir = __DIR__) use (&$findVendor, &$recursionLimit) {
+			if (!$recursionLimit--) {
+				throw new \Exception('Cannot find vendor directory.');
+			}
+			$found = $dir . "/$dirName";
+			if (is_dir($found) || is_file($found)) {
+				return dirname($found);
+			}
+			return $findVendor($dirName, dirname($dir));
+		};
+		return $findVendor();
 	}
 
 }

@@ -179,7 +179,7 @@ class TPresenterTest extends \Testbench\CustomPresenterTestCase
 				'test' => 'test',
 				'error' => 'FORM ERROR',
 			]);
-		}, 'Tester\AssertException', "FORM ERROR");
+		}, 'Tester\AssertException', "Intended error: FORM ERROR");
 
 		Assert::exception(function () {
 			$this->checkForm('Presenter:default', 'form1', [

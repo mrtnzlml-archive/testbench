@@ -1,23 +1,15 @@
 #!/usr/bin/env php
 <?php
 
-$recursionLimit = 10;
-$findVendor = function ($dirName = 'vendor/bin', $dir = __DIR__) use (&$findVendor, &$recursionLimit) {
-	if (!$recursionLimit--) {
-		throw new \Exception('Cannot find vendor directory.');
-	}
-	$found = $dir . "/$dirName";
-	if (is_dir($found) || is_file($found)) {
-		return dirname($found);
-	}
-	return $findVendor($dirName, dirname($dir));
-};
-$vendorDir = $findVendor();
+require __DIR__ . '/Runner.php';
+require __DIR__ . '/Runner.php';
+$runner = new \Testbench\Runner;
+
+$vendorDir = $runner->findVendorDirectory();
 $testsDir = dirname($vendorDir) . '/tests';
 
-require __DIR__ . '/Runner.php';
 $script = array_shift($_SERVER['argv']);
-$_SERVER['argv'] = (new \Testbench\Runner)->prepareArguments($_SERVER['argv'], $testsDir);
+$_SERVER['argv'] = $runner->prepareArguments($_SERVER['argv'], $testsDir);
 array_unshift($_SERVER['argv'], $script);
 
 echo "TESTBENCH edition\n";
