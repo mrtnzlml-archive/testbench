@@ -11,6 +11,7 @@ $latte->setLoader(new \Latte\Loaders\StringLoader);
 \Nette\Bridges\ApplicationLatte\UIMacros::install($latte->getCompiler());
 
 $params['_control'] = $mock = new \Testbench\Mocks\PresenterMock;
+Assert::type('Testbench\Mocks\PresenterMock', new \Testbench\PresenterMock);
 
 Assert::false($mock->isAjax());
 

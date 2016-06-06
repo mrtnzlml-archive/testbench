@@ -12,6 +12,7 @@ $latte->setLoader(new \Latte\Loaders\StringLoader);
 
 $params['_control'] = new \Testbench\Mocks\ControlMock;
 Assert::type('Nette\Application\UI\Control', $params['_control']);
+Assert::type('Nette\Application\UI\Control', new \Testbench\ControlMock); //BC
 
 Assert::match(
 	'<a href="link|data!(0=10)"></a>',
