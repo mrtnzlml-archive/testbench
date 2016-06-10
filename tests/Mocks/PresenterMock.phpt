@@ -12,17 +12,21 @@ $latte->setLoader(new \Latte\Loaders\StringLoader);
 
 $params['_control'] = new \Testbench\PresenterMock;
 
+$renderToString = function ($template, $params = []) use ($latte) {
+	return strtr($latte->renderToString($template, $params), ['&#039;' => "'"]);
+};
+
 Assert::match(
 	"<a href=\"plink:['data!',10]\"></a>",
-	$latte->renderToString('<a n:href="data! 10"></a>', $params)
+	$renderToString('<a n:href="data! 10"></a>', $params)
 );
 
 Assert::match(
 	"<a href=\"plink:{'0':'data!#hash','1':10,'a':20,'b':30}\"></a>",
-	$latte->renderToString('<a n:href="data!#hash 10, a => 20, \'b\' => 30"></a>', $params)
+	$renderToString('<a n:href="data!#hash 10, a => 20, \'b\' => 30"></a>', $params)
 );
 
 Assert::match(
 	"<a href=\"plink:['Homepage:']\"></a>",
-	$latte->renderToString('<a n:href="Homepage:"></a>', $params)
+	$renderToString('<a n:href="Homepage:"></a>', $params)
 );
