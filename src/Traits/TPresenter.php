@@ -125,7 +125,8 @@ trait TPresenter
 			Assert::type('Nette\Application\Responses\TextResponse', $response);
 			Assert::type('Nette\Application\UI\ITemplate', $response->getSource());
 
-			$dom = \Tester\DomQuery::fromHtml($response->getSource());
+			$html = (string)$response->getSource();
+			$dom = \Tester\DomQuery::fromHtml($html);
 			Assert::true($dom->has('html'), "missing 'html' tag");
 			Assert::true($dom->has('title'), "missing 'title' tag");
 			Assert::true($dom->has('body'), "missing 'body' tag");

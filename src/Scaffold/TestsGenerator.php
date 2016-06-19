@@ -72,7 +72,7 @@ class TestsGenerator
 			$testClass = new PhpGenerator\ClassType($testClassName);
 			$testClass->setExtends('\Tester\TestCase');
 			$testClass->addTrait('\Testbench\TPresenter');
-			$testClass->addDocument('@testCase');
+			$testClass->addComment('@testCase');
 
 			foreach ($this->renderMethods as $testMethod => $testMethodType) {
 				$generatedMethod = $testClass->addMethod('test' . ucfirst($testMethod));

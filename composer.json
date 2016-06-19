@@ -1,4 +1,10 @@
 {
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/mrtnzlml/Events"
+    }
+  ],
   "name": "mrtnzlml/testbench",
   "description": "Simple integration testing tool for Nette Framework applications",
   "type": "library",
@@ -30,6 +36,7 @@
     "kdyby/doctrine": "dev-master",
     "kdyby/doctrine-cache": "dev-master",
     "kdyby/doctrine-dbal-batchimport": "dev-master",
+    "kdyby/events": "dev-patch-1 as 3.0.x-dev",
     "nette/database": ">=2.2.0"
   },
   "autoload": {
