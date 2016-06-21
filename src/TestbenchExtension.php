@@ -2,11 +2,13 @@
 
 namespace Testbench;
 
-class TestbenchExtension extends \Nette\DI\CompilerExtension
+class TestbenchExtension extends \Mrtnzlml\CompilerExtension
 {
 
 	public function loadConfiguration()
 	{
+		$this->addConfig(__DIR__ . '/config.neon');
+
 		$builder = $this->compiler->getContainerBuilder();
 		$testbenchConfig = $this->getConfig();
 		if (!isset($testbenchConfig['url'])) {

@@ -33,7 +33,7 @@ class TDoctrineTest extends \Tester\TestCase
 
 	public function testDatabaseCreation()
 	{
-		/** @var \Testbench\ConnectionMock $connection */
+		/** @var \Testbench\Mocks\ConnectionMock $connection */
 		$connection = $this->getEntityManager()->getConnection();
 		if ($connection->getDatabasePlatform() instanceof MySqlPlatform) {
 			Assert::match('testbench_initial', $connection->getDatabase());
@@ -45,7 +45,7 @@ class TDoctrineTest extends \Tester\TestCase
 
 	public function testDatabaseSqls()
 	{
-		/** @var \Testbench\ConnectionMock $connection */
+		/** @var \Testbench\Mocks\ConnectionMock $connection */
 		$connection = $this->getEntityManager()->getConnection();
 		$result = $connection->query('SELECT * FROM table_1')->fetchAll();
 		if ($connection->getDatabasePlatform() instanceof MySqlPlatform) {
@@ -63,6 +63,14 @@ class TDoctrineTest extends \Tester\TestCase
 			], $result);
 			Assert::same('db_tests_' . getmypid(), $connection->getDatabase());
 		}
+	}
+
+	public function testDatabaseConnectionReplacementInApp()
+	{
+		/** @var \Kdyby\Doctrine\EntityManager $em */
+		$em = $this->getService(\Kdyby\Doctrine\EntityManager::class);
+		new \DoctrineComponentWithDatabaseAccess($em); //tests inside
+		//app is not using onConnect from Testbench but it has to connect to the mock database
 	}
 
 }

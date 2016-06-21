@@ -26,7 +26,7 @@ class TNetteDatabaseTest extends \Tester\TestCase
 		\Tester\Environment::$checkAssertions = FALSE;
 	}
 
-	public function testEntityManager()
+	public function testContext()
 	{
 		Assert::type('Nette\Database\Context', $this->getContext());
 	}
@@ -62,6 +62,14 @@ class TNetteDatabaseTest extends \Tester\TestCase
 		} else {
 			Assert::same('db_tests_' . getmypid(), $matches[1]);
 		}
+	}
+
+	public function testDatabaseConnectionReplacementInApp()
+	{
+		/** @var \Nette\Database\Context $context */
+		$context = $this->getService(\Nette\Database\Context::class);
+		new \NDBTComponentWithDatabaseAccess($context); //tests inside
+		//app is not using onConnect from Testbench but it has to connect to the mock database
 	}
 
 }
