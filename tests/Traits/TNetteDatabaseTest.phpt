@@ -68,7 +68,7 @@ class TNetteDatabaseTest extends \Tester\TestCase
 	{
 		/** @var \Nette\Database\Context $context */
 		$context = $this->getService(\Nette\Database\Context::class);
-		new \NDBTComponentWithDatabaseAccess($context); //tests inside
+		new \NdbComponentWithDatabaseAccess($context); //tests inside
 		//app is not using onConnect from Testbench but it has to connect to the mock database
 	}
 

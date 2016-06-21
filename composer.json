@@ -26,9 +26,7 @@
     "nette/di": ">=2.2.0",
     "nette/tester": ">=1.2.0",
     "kdyby/fake-session": "^2.0",
-    "kdyby/events": "dev-patch-1 as 3.0.x-dev",
-    "nette/security": "^2.3",
-    "mrtnzlml/compiler-extension": "^1.0"
+    "nette/security": "^2.3"
   },
   "require-dev": {
     "latte/latte": ">=2.2.0",
@@ -38,6 +36,7 @@
     "kdyby/doctrine": "dev-master",
     "kdyby/doctrine-cache": "dev-master",
     "kdyby/doctrine-dbal-batchimport": "dev-master",
+    "kdyby/events": "dev-patch-1 as 3.0.x-dev",
     "nette/database": ">=2.2.0"
   },
   "autoload": {
@@ -61,6 +60,7 @@
   ],
   "suggest": {
     "kdyby/doctrine": "Allows enhanced database tests using Doctrine",
+    "kdyby/doctrine-dbal-batchimport": "Allows SQL scripts import for Doctrine (required with kdyby/doctrine)",
     "nette/database": "Allows enhanced database tests using Nette\\Database"
   },
   "minimum-stability": "RC"

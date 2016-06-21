@@ -2,7 +2,7 @@
 
 use Tester\Assert;
 
-class NDBTComponentWithDatabaseAccess extends \Nette\Application\UI\Control
+class NdbComponentWithDatabaseAccess extends \Nette\Application\UI\Control
 {
 
 	public function __construct(\Nette\Database\Context $context)
