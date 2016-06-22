@@ -8,24 +8,24 @@ class Runner
 	public function prepareArguments(array $args, $testsDir)
 	{
 		//Scaffold
-		$scaffold = array_search('--scaffold', $args);
-		if ($scaffold !== FALSE) {
-			if (!isset($args[$scaffold + 1])) {
-				die("Error: specify scaffold output folder like this: '--scaffold <bootstrap.php>'\n");
-			}
-			$scaffoldBootstrap = $args[$scaffold + 1];
-			$scaffoldDir = dirname($scaffoldBootstrap);
-			rtrim($scaffoldDir, DIRECTORY_SEPARATOR);
-			if (count(glob("$scaffoldDir/*")) !== 0) {
+//		$scaffold = array_search('--scaffold', $args);
+//		if ($scaffold !== FALSE) {
+//			if (!isset($args[$scaffold + 1])) {
+//				die("Error: specify scaffold output folder like this: '--scaffold <bootstrap.php>'\n");
+//			}
+//			$scaffoldBootstrap = $args[$scaffold + 1];
+//			$scaffoldDir = dirname($scaffoldBootstrap);
+//			rtrim($scaffoldDir, DIRECTORY_SEPARATOR);
+//			if (count(glob("$scaffoldDir/*")) !== 0) {
 //				die("Error: please use different empty folder - I don't want to destroy your work\n");
-			}
-			require $scaffoldBootstrap; //FIXME: špatný přístup (předávat jen NEON?)
-			\Nette\Utils\FileSystem::createDir($scaffoldDir . '/_temp');
-			$scaffold = new \Testbench\Scaffold\TestsGenerator;
-			$scaffold->generateTests($scaffoldDir);
-			\Tester\Environment::$checkAssertions = FALSE;
-			die("Tests generated to the folder '$scaffoldDir'\n");
-		}
+//			}
+//			require $scaffoldBootstrap; //FIXME: špatný přístup (předávat jen NEON?)
+//			\Nette\Utils\FileSystem::createDir($scaffoldDir . '/_temp');
+//			$scaffold = new \Testbench\Scaffold\TestsGenerator;
+//			$scaffold->generateTests($scaffoldDir);
+//			\Tester\Environment::$checkAssertions = FALSE;
+//			die("Tests generated to the folder '$scaffoldDir'\n");
+//		}
 
 		//Resolve tests dir from command line input
 		$pathToTests = NULL;
