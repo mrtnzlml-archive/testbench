@@ -158,26 +158,6 @@ class TestsGenerator
 			$testFileName = preg_replace('~\\\~', DIRECTORY_SEPARATOR, get_class($service));
 			\Nette\Utils\FileSystem::write($outputFolder . '/' . $testFileName . '.phpt', $generatedTest);
 			\Nette\Utils\FileSystem::createDir($outputFolder . '/_temp');
-
-			$runner = new \Testbench\Runner;
-			$pathToVendor = $runner->getRelativePath(realpath($outputFolder . '/bootstrap.php'), $runner->findVendorDirectory() . '/autoload.php');
-			\Nette\Utils\FileSystem::write($outputFolder . '/bootstrap.php', <<<BOOTSTRAP
-<?php
-
-require __DIR__ . '/{$pathToVendor}';
-
-Testbench\Bootstrap::setup(__DIR__ . '/_temp', function (Nette\Configurator \$configurator) {
-	\$configurator->addParameters([
-		//'appDir' => __DIR__ . '/../src',
-		//'testsDir' => __DIR__,
-	]);
-
-	\$configurator->addConfig(__DIR__ . '/tests.neon');
-});
-
-BOOTSTRAP
-			);
-
 			\Nette\Utils\FileSystem::write($outputFolder . '/tests.neon', <<<'NEON'
 # WARNING: it is CRITICAL that this file & directory are NOT accessible directly via a web browser!
 # http://nette.org/security-warning

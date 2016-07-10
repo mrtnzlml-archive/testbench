@@ -39,11 +39,6 @@ class TestsGenerator extends \Tester\TestCase
 		Assert::true(is_dir($this->output . '/_temp'));
 	}
 
-	public function testBootstrap()
-	{
-		Assert::matchFile(__DIR__ . '/Bootstrap.expected', file_get_contents($this->output . '/bootstrap.php'));
-	}
-
 	public function testNeon()
 	{
 		Assert::matchFile(__DIR__ . '/Neon.expected', file_get_contents($this->output . '/tests.neon'));
