@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/mrtnzlml/testbench.svg?branch=master)](https://travis-ci.org/mrtnzlml/testbench)
 
-Tested against PHP 5.4, 5.5, 5.6 and 7.0. Please read [this wiki](https://github.com/mrtnzlml/testbench/wiki).
+Tested against PHP 5.6 and 7.0. Please read [this wiki](https://github.com/mrtnzlml/testbench/wiki).
 
 Heavily inspired by these GitHub projects:
 - [Kdyby](https://github.com/Kdyby/TesterExtras), [Librette](https://github.com/librette), [Nette](https://github.com/nette) tests

@@ -1,10 +1,4 @@
 {
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/mrtnzlml/Events"
-    }
-  ],
   "name": "mrtnzlml/testbench",
   "description": "Simple integration testing tool for Nette Framework applications",
   "type": "library",
@@ -20,25 +14,25 @@
     }
   ],
   "require": {
-    "php": ">=5.4.0",
-    "nette/application": ">=2.2.0",
-    "nette/bootstrap": ">=2.2.0",
-    "nette/di": ">=2.2.0",
-    "nette/tester": ">=1.2.0",
-    "nette/security": "^2.3",
+    "php": ">=5.6.0",
+    "nette/application": "^2.4",
+    "nette/bootstrap": "^2.4",
+    "nette/di": "^2.4",
+    "nette/tester": "^1.7",
+    "nette/security": "^2.4",
     "nette/utils": "^2.4",
     "kdyby/fake-session": "^2.0"
   },
   "require-dev": {
-    "latte/latte": ">=2.2.0",
-    "nette/forms": ">=2.2.0",
-    "nette/robot-loader": ">=2.2.0",
-    "tracy/tracy": ">=2.2.0",
-    "kdyby/doctrine": "dev-master",
-    "kdyby/doctrine-cache": "dev-master",
+    "latte/latte": "^2.4",
+    "nette/forms": "^2.4",
+    "nette/robot-loader": "^2.4",
+    "tracy/tracy": "^2.4",
+    "kdyby/doctrine": "^3.1",
+    "kdyby/doctrine-cache": "^2.5",
     "kdyby/doctrine-dbal-batchimport": "dev-master",
-    "kdyby/events": "dev-patch-1 as 3.0.x-dev",
-    "nette/database": ">=2.2.0"
+    "kdyby/events": "^3.0",
+    "nette/database": "^2.4"
   },
   "autoload": {
     "psr-4": {
@@ -63,6 +57,5 @@
     "kdyby/doctrine": "Allows enhanced database tests using Doctrine",
     "kdyby/doctrine-dbal-batchimport": "Allows SQL scripts import for Doctrine (required with kdyby/doctrine)",
     "nette/database": "Allows enhanced database tests using Nette\\Database"
-  },
-  "minimum-stability": "RC"
+  }
 }
