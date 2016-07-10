@@ -28,6 +28,9 @@ class Bootstrap
 		}
 
 		$_ENV = $_GET = $_POST = $_FILES = [];
+
+		$_SERVER['HTTP_USER_AGENT'] = 'Awesome Browser';
+		$_SERVER['REMOTE_ADDR'] = '11.22.33.44';
 	}
 
 }
