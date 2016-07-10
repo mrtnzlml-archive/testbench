@@ -17,7 +17,7 @@ class NetteDatabaseConnectionMock extends \Nette\Database\Connection implements 
 	{
 		$container = \Testbench\ContainerFactory::create(FALSE);
 		$this->onConnect[] = function (NetteDatabaseConnectionMock $connection) use ($container) {
-			if ($this->__testbench_databaseName !== NULL) { //already initialized
+			if ($this->__testbench_databaseName !== NULL) { //already initialized (needed for pgsql)
 				return;
 			}
 			try {
@@ -90,8 +90,6 @@ class NetteDatabaseConnectionMock extends \Nette\Database\Connection implements 
 				$databaseName = $config['dbname'];
 			} elseif ($connection->getSupplementalDriver() instanceof PgSqlDriver) {
 				$databaseName = 'postgres';
-			} elseif ($connection->getSupplementalDriver() instanceof MySqlDriver) {
-				$databaseName = 'information_schema';
 			} else {
 				throw new \LogicException('You should setup existing database name using testbench:dbname option.');
 			}
@@ -106,7 +104,6 @@ class NetteDatabaseConnectionMock extends \Nette\Database\Connection implements 
 
 		$options = $dbr->getProperty('options');
 		$options->setAccessible(TRUE);
-		$options->setValue($connection, $options->getValue($connection) + ['lazy' => TRUE]);
 		$options = $options->getValue($connection);
 
 		$connection->disconnect();

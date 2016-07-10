@@ -20,7 +20,7 @@ class TNetteDatabaseTest extends \Tester\TestCase
 	{
 		$container = $this->getContainer();
 		$db = $container->getByType('Nette\Database\Connection');
-		$db->onConnect[] = function () use ($container) {
+		$db->onConnect[] = function () {
 			Assert::fail('\Nette\Database\Connection::$onConnect event should not be called if you do NOT need database');
 		};
 		\Tester\Environment::$checkAssertions = FALSE;
@@ -35,12 +35,15 @@ class TNetteDatabaseTest extends \Tester\TestCase
 	{
 		/** @var \Nette\Database\Connection $connection */
 		$connection = $this->getContext()->getConnection();
-		preg_match('~.*dbname=([a-z0-9_-]+)~i', $connection->getDsn(), $matches);
+		$returnActualDatabaseName = function () use ($connection) { //getSupplementalDriver is performing first connect (behaves lazy)
+			preg_match('~.*dbname=([a-z0-9_-]+)~i', $connection->getDsn(), $matches);
+			return $matches[1];
+		};
 		if ($connection->getSupplementalDriver() instanceof MySqlDriver) {
-			Assert::match('testbench_initial', $matches[1]);
+			Assert::match('testbench_initial', $returnActualDatabaseName());
 			Assert::match('db_tests_' . getmypid(), $connection->query('SELECT DATABASE();')->fetchPairs()[0]);
 		} else {
-			Assert::same('db_tests_' . getmypid(), $matches[1]);
+			Assert::same('db_tests_' . getmypid(), $returnActualDatabaseName());
 		}
 	}
 

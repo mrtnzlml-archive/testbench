@@ -20,7 +20,7 @@ class TDoctrineTest extends \Tester\TestCase
 	{
 		$container = $this->getContainer();
 		$db = $container->getByType('Doctrine\DBAL\Connection');
-		$db->onConnect[] = function () use ($container) {
+		$db->onConnect[] = function () {
 			Assert::fail('\Testbench\ConnectionMock::$onConnect event should not be called if you do NOT need database');
 		};
 		\Tester\Environment::$checkAssertions = FALSE;
@@ -33,7 +33,7 @@ class TDoctrineTest extends \Tester\TestCase
 
 	public function testDatabaseCreation()
 	{
-		/** @var \Testbench\Mocks\ConnectionMock $connection */
+		/** @var \Testbench\Mocks\DoctrineConnectionMock $connection */
 		$connection = $this->getEntityManager()->getConnection();
 		if ($connection->getDatabasePlatform() instanceof MySqlPlatform) {
 			Assert::match('testbench_initial', $connection->getDatabase());
@@ -45,7 +45,7 @@ class TDoctrineTest extends \Tester\TestCase
 
 	public function testDatabaseSqls()
 	{
-		/** @var \Testbench\Mocks\ConnectionMock $connection */
+		/** @var \Testbench\Mocks\DoctrineConnectionMock $connection */
 		$connection = $this->getEntityManager()->getConnection();
 		$result = $connection->query('SELECT * FROM table_1')->fetchAll();
 		if ($connection->getDatabasePlatform() instanceof MySqlPlatform) {

@@ -67,7 +67,7 @@ class TestbenchExtension extends \Nette\DI\CompilerExtension
 						$extensionConfig['dsn'],
 						$extensionConfig['user'],
 						$extensionConfig['password'],
-						$extensionConfig['options'],
+						$extensionConfig['options'] + ['lazy' => TRUE],
 					]);
 			} else {
 				foreach ($extension->config as $sectionName => $sectionConfig) {
@@ -77,7 +77,7 @@ class TestbenchExtension extends \Nette\DI\CompilerExtension
 							$sectionConfig['dsn'],
 							$sectionConfig['user'],
 							$sectionConfig['password'],
-							$sectionConfig['options'],
+							$sectionConfig['options'] + ['lazy' => TRUE],
 						]);
 				}
 			}

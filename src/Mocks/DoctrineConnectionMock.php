@@ -32,7 +32,7 @@ class DoctrineConnectionMock extends \Kdyby\Doctrine\Connection implements \Test
 	) {
 		$container = \Testbench\ContainerFactory::create(FALSE);
 		$this->onConnect[] = function (DoctrineConnectionMock $connection) use ($container) {
-			if ($this->__testbench_databaseName !== NULL) { //already initialized
+			if ($this->__testbench_databaseName !== NULL) { //already initialized (needed for pgsql)
 				return;
 			}
 			try {
