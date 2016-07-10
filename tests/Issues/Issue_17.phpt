@@ -18,9 +18,15 @@ class Issue_17 extends \Tester\TestCase
 	/**
 	 * @dataProvider commentFormParameters
 	 */
-	public function testCommentForm($post, $shouldFail = TRUE)
+	public function testCommentForm($params, $post, $shouldFail = TRUE)
 	{
-		$this->check('Presenter:default', [], $post);
+		if ($shouldFail) {
+			Assert::exception(function () use ($params, $post) {
+				$this->check('Presenter:default', $params, $post);
+			}, 'Tester\AssertException', "field 'test' returned this error(s):\n  - This field is required.");
+		} else {
+			$this->check('Presenter:default', $params, $post);
+		}
 		$errors = $this->getPresenter()->getComponent('form1')->getErrors();
 		if ($shouldFail) {
 			Assert::same(['This field is required.'], $errors);
@@ -50,8 +56,8 @@ class Issue_17 extends \Tester\TestCase
 	public function commentFormParameters()
 	{
 		return [
-			[['test' => NULL, 'do' => 'form1-submit'], TRUE],
-			[['test' => 'NOT NULL', 'do' => 'form1-submit'], FALSE],
+			[['do' => 'form1-submit'], ['test' => NULL], TRUE],
+			[['do' => 'form1-submit'], ['test' => 'NOT NULL'], FALSE],
 		];
 	}
 
