@@ -28,6 +28,10 @@ class TestsGenerator extends \Tester\TestCase
 			__DIR__ . '/ModulePresenter.expected',
 			file_get_contents($this->output . '/ModuleModule/PresenterPresenter.phpt')
 		);
+		Assert::matchFile(
+			__DIR__ . '/ScaffoldPresenter.expected',
+			file_get_contents($this->output . '/ScaffoldPresenter.phpt')
+		);
 	}
 
 	public function testSupportFiles()

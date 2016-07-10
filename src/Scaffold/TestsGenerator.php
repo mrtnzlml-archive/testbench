@@ -39,13 +39,13 @@ class TestsGenerator
 				$methodName = $method->getName();
 				if (preg_match("~^({$renderPrefix})[a-z0-9]+~i", $methodName)) {
 					try {
-						$service->$methodName();
+						$args = $this->tryCall($service, $methodName, $service->getParameters());
 						if (preg_match('~.*rss.*~i', $methodName)) {
 							$this->renderMethods[$methodName] = 'rss';
 						} elseif (preg_match('~.*sitemap.*~i', $methodName)) {
 							$this->renderMethods[$methodName] = 'sitemap';
 						} else {
-							$this->renderMethods[$methodName] = 'action';
+							$this->renderMethods[$methodName] = ['action', $args];
 						}
 					} catch (\Nette\Application\AbortException $exc) {
 						$this->renderMethods[$methodName] = ['action', $this->getResponse($service)];
@@ -98,7 +98,12 @@ class TestsGenerator
 						} elseif ($extra instanceof \Nette\Application\Responses\JsonResponse) {
 							$generatedMethod->addBody('$this->checkJson(?);', [$destination]);
 						} else {
-							$generatedMethod->addBody('$this->checkAction(?);', [$destination]);
+							if($extra) {
+								$generatedMethod->addBody('//FIXME: parameters may not be correct');
+								$generatedMethod->addBody('$this->checkAction(?, ?);', [$destination, $extra]);
+							} else {
+								$generatedMethod->addBody('$this->checkAction(?);', [$destination]);
+							}
 						}
 						break;
 					case 'exception':
@@ -206,6 +211,35 @@ NEON
 		$property = new \ReflectionProperty(get_parent_class($service), 'response');
 		$property->setAccessible(TRUE);
 		return $property->getValue($service);
+	}
+
+	/**
+	 * Calls public method if exists.
+	 *
+	 * @param  string
+	 * @param  array
+	 *
+	 * @return bool FALSE if method doesn't exist or array of args
+	 */
+	private function tryCall($class, $method, array $params)
+	{
+		$rc = new \Nette\Application\UI\ComponentReflection($class);
+		if ($rc->hasMethod($method)) {
+			$rm = $rc->getMethod($method);
+			if ($rm->isPublic() && !$rm->isAbstract() && !$rm->isStatic()) {
+				$args = [];
+				foreach ($rm->getParameters() as $parameter) {
+					if ($parameter->isOptional()) {
+						$args[$parameter->getName()] = $parameter->getDefaultValue();
+					} else {
+						$args[$parameter->getName()] = NULL;
+					}
+				}
+				$rm->invokeArgs($class, $rc->combineArgs($rm, $params));
+				return $args;
+			}
+		}
+		return FALSE;
 	}
 
 }

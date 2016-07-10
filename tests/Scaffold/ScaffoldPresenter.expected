@@ -1,0 +1,28 @@
+<?php
+
+namespace Tests;
+
+use Tester\Assert;
+
+require __DIR__ . '/bootstrap.php';
+
+/**
+ * @testCase
+ */
+class ScaffoldPresenterTest extends \Tester\TestCase
+{
+	use \Testbench\TPresenter;
+
+
+	public function testRenderDefault()
+	{
+		//FIXME: parameters may not be correct
+		$this->checkAction('Scaffold:default', [
+			'variable' => NULL,
+			'optional' => 'optionalValue',
+		]);
+	}
+
+}
+
+(new ScaffoldPresenterTest)->run();

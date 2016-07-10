@@ -10,26 +10,6 @@ class Runner
 		$args = new \Nette\Iterators\CachingIterator($args);
 		$parameters = [];
 
-		//Scaffold
-//		$scaffold = array_search('--scaffold', $args);
-//		if ($scaffold !== FALSE) {
-//			if (!isset($args[$scaffold + 1])) {
-//				die("Error: specify scaffold output folder like this: '--scaffold <bootstrap.php>'\n");
-//			}
-//			$scaffoldBootstrap = $args[$scaffold + 1];
-//			$scaffoldDir = dirname($scaffoldBootstrap);
-//			rtrim($scaffoldDir, DIRECTORY_SEPARATOR);
-//			if (count(glob("$scaffoldDir/*")) !== 0) {
-//				die("Error: please use different empty folder - I don't want to destroy your work\n");
-//			}
-//			require $scaffoldBootstrap; //FIXME: špatný přístup (předávat jen NEON?)
-//			\Nette\Utils\FileSystem::createDir($scaffoldDir . '/_temp');
-//			$scaffold = new \Testbench\Scaffold\TestsGenerator;
-//			$scaffold->generateTests($scaffoldDir);
-//			\Tester\Environment::$checkAssertions = FALSE;
-//			die("Tests generated to the folder '$scaffoldDir'\n");
-//		}
-
 		//Resolve tests dir from command line input
 		$pathToTests = NULL;
 		$environmentVariables = [];
@@ -59,6 +39,29 @@ class Runner
 					$pathToTests = $arg;
 				}
 			}
+		}
+
+		//Scaffold
+		if (array_key_exists('--scaffold', $parameters)) {
+			if (!isset($parameters['--scaffold'])) {
+				die("Error: specify tests bootstrap for scaffold like this: '--scaffold <bootstrap.php>'\n");
+			}
+			$scaffoldBootstrap = $parameters['--scaffold'];
+			$scaffoldDir = dirname($scaffoldBootstrap);
+			rtrim($scaffoldDir, DIRECTORY_SEPARATOR);
+			$outputFolderContent = glob("$scaffoldDir/*");
+			if (($key = array_search($scaffoldBootstrap, $outputFolderContent)) !== FALSE) {
+				unset($outputFolderContent[$key]);
+			}
+			if (count($outputFolderContent) !== 0) {
+				die("Error: please use different empty folder - I don't want to destroy your work\n");
+			}
+			require $scaffoldBootstrap;
+			\Nette\Utils\FileSystem::createDir($scaffoldDir . '/_temp');
+			$scaffold = new \Testbench\Scaffold\TestsGenerator;
+			$scaffold->generateTests($scaffoldDir);
+			\Tester\Environment::$checkAssertions = FALSE;
+			die("Tests generated to the folder '$scaffoldDir'\n");
 		}
 
 		//Specify PHP interpreter to run
