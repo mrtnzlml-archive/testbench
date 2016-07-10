@@ -94,7 +94,7 @@ class NetteDatabaseConnectionMock extends \Nette\Database\Connection implements 
 
 		$dsn = preg_replace('~dbname=[a-z0-9_-]+~i', "dbname=$databaseName", $connection->getDsn());
 
-		$dbr = $connection->getReflection(); //:-(
+		$dbr = (new \Nette\Reflection\ClassType($connection))->getParentClass(); //:-(
 		$params = $dbr->getProperty('params');
 		$params->setAccessible(TRUE);
 		$params = $params->getValue($connection);

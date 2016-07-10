@@ -71,7 +71,7 @@ class DoctrineConnectionMock extends \Kdyby\Doctrine\Connection implements \Test
 		if ($connection->getDatabasePlatform() instanceof MySqlPlatform) {
 			$connection->exec("USE {$this->__testbench_databaseName}");
 		} else {
-			$this->__testbench_database_connect($connection, $this->__testbench_databaseName);
+			$this->__testbench_database_connect($connection, $container, $this->__testbench_databaseName);
 		}
 	}
 
