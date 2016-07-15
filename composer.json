@@ -18,7 +18,7 @@
     "nette/application": "^2.4",
     "nette/bootstrap": "^2.4",
     "nette/di": "^2.4",
-    "nette/tester": "^1.7",
+    "nette/tester": "2.0.x-dev as v1.7",
     "nette/security": "^2.4",
     "nette/utils": "^2.4",
     "kdyby/fake-session": "^2.0"

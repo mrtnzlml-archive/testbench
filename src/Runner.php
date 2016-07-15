@@ -14,7 +14,7 @@ class Runner
 		$pathToTests = NULL;
 		$environmentVariables = [];
 		foreach ($args as $arg) {
-			if (in_array($arg, ['-s', '--stop-on-fail', '-i', '--info', '-h', '--help'])) { //singles
+			if (in_array($arg, ['-C', '-s', '--stop-on-fail', '-i', '--info', '-h', '--help'])) { //singles
 				$parameters[$arg] = TRUE;
 				continue;
 			}
