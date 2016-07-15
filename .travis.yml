@@ -26,6 +26,7 @@ before_script:
 script:
   - src/run-tests
   - php tests/Scaffold/GenerateStructure.php
+  - cp tests/FakeBootstrapForScaffold.php tests/_temp/scaffold/bootstrap.php
   - php tests/_temp/scaffold/PresenterPresenter.phpt
   - php tests/_temp/scaffold/ModuleModule/PresenterPresenter.phpt
 
