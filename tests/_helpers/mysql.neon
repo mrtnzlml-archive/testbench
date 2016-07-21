@@ -17,6 +17,7 @@ doctrine:
 
 
 testbench:
+	migrations: yes
 	sqls:
 		- %testsDir%/_helpers/sqls/mysql_1.sql
 		- %testsDir%/_helpers/sqls/mysql_2.sql

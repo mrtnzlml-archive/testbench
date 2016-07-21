@@ -15,6 +15,7 @@ doctrine:
 
 
 testbench:
+	migrations: no
 	sqls:
 		- %testsDir%/_helpers/sqls/pgsql_1.sql
 		- %testsDir%/_helpers/sqls/pgsql_2.sql

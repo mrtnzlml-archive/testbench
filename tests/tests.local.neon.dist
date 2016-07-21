@@ -4,6 +4,7 @@
 
 database:
 	dsn: 'mysql:host=127.0.0.1;dbname=testbench_empty'
+	options: [PDO::MYSQL_ATTR_COMPRESS = true]
 
 
 doctrine:
@@ -13,8 +14,19 @@ doctrine:
 	dbname: testbench_empty
 
 
+extensions:
+	migrations: Zenify\DoctrineMigrations\DI\MigrationsExtension
+	- Symnedi\EventDispatcher\DI\EventDispatcherExtension #migrations
+
+
+migrations:
+	directory: %appDir%/../Migrations
+	namespace: Testbench\Migrations
+
+
 testbench:
 	url: http://test.bench/
+	migrations: yes
 	sqls:
 		- %testsDir%/_helpers/sqls/mysql_1.sql
 		- %testsDir%/_helpers/sqls/mysql_2.sql

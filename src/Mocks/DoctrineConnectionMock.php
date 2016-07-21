@@ -52,9 +52,22 @@ class DoctrineConnectionMock extends \Kdyby\Doctrine\Connection implements \Test
 		$this->__testbench_database_drop($connection, $container);
 		$this->__testbench_database_create($connection, $container);
 
-		if (isset($container->parameters['testbench']['sqls'])) {
+		$config = $container->parameters['testbench'];
+
+		if (isset($config['sqls'])) {
 			foreach ($container->parameters['testbench']['sqls'] as $file) {
 				\Kdyby\Doctrine\Dbal\BatchImport\Helpers::loadFromFile($connection, $file);
+			}
+		}
+
+		if (isset($config['migrations']) && $config['migrations'] === TRUE) {
+			if (class_exists(\Zenify\DoctrineMigrations\Configuration\Configuration::class)) {
+				/** @var \Zenify\DoctrineMigrations\Configuration\Configuration $migrationsConfig */
+				$migrationsConfig = $container->getByType(\Zenify\DoctrineMigrations\Configuration\Configuration::class);
+				$migrationsConfig->__construct($container, $connection);
+				$migrationsConfig->registerMigrationsFromDirectory($migrationsConfig->getMigrationsDirectory());
+				$migration = new \Doctrine\DBAL\Migrations\Migration($migrationsConfig);
+				$migration->migrate($migrationsConfig->getLatestVersion());
 			}
 		}
 

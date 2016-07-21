@@ -20,8 +20,7 @@ trait TDoctrine
 				reset($serviceNames)
 			));
 		}
-		$em = $container->getByType('Kdyby\Doctrine\EntityManager');
-		return $em;
+		return $container->getByType('Kdyby\Doctrine\EntityManager');
 	}
 
 }
