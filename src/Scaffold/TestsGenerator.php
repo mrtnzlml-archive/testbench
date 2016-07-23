@@ -39,13 +39,14 @@ class TestsGenerator
 				$methodName = $method->getName();
 				if (preg_match("~^({$renderPrefix})[a-z0-9]+~i", $methodName)) {
 					try {
-						$args = $this->tryCall($service, $methodName, $service->getParameters());
+						$optionalArgs = $this->tryCall($service, $methodName, $service->getParameters(), TRUE);
 						if (preg_match('~.*rss.*~i', $methodName)) {
 							$this->renderMethods[$methodName] = 'rss';
 						} elseif (preg_match('~.*sitemap.*~i', $methodName)) {
 							$this->renderMethods[$methodName] = 'sitemap';
 						} else {
-							$this->renderMethods[$methodName] = ['action', $args];
+							$requiredArgs = $this->tryCall($service, $methodName, $service->getParameters(), FALSE);
+							$this->renderMethods[$methodName] = ['action', [$optionalArgs, $requiredArgs]];
 						}
 					} catch (\Nette\Application\AbortException $exc) {
 						$this->renderMethods[$methodName] = ['action', $this->getResponse($service)];
@@ -53,13 +54,13 @@ class TestsGenerator
 						$this->renderMethods[$methodName] = ['exception', $exc];
 					}
 				}
-				if (preg_match("~^handle[a-z0-9]+~i", $methodName)) {
+				if (preg_match('~^handle[a-z0-9]+~i', $methodName)) {
 					if ($methodName === 'handleInvalidLink') { //internal method
 						continue;
 					}
 					$this->handleMethods[] = $methodName;
 				}
-				if (preg_match("~^createComponent[a-z0-9]+~i", $methodName)) {
+				if (preg_match('~^createComponent[a-z0-9]+~i', $methodName)) {
 					$method->setAccessible(TRUE);
 					$form = $method->invoke($service);
 					if ($form instanceof \Nette\Application\UI\Form) {
@@ -98,9 +99,10 @@ class TestsGenerator
 						} elseif ($extra instanceof \Nette\Application\Responses\JsonResponse) {
 							$generatedMethod->addBody('$this->checkJson(?);', [$destination]);
 						} else {
-							if($extra) {
+							if ($extra[0]) {
 								$generatedMethod->addBody('//FIXME: parameters may not be correct');
-								$generatedMethod->addBody('$this->checkAction(?, ?);', [$destination, $extra]);
+								$generatedMethod->addBody("\$this->checkAction(?, ?);\n", [$destination, $extra[0]]);
+								$generatedMethod->addBody('$this->checkAction(?, ?);', [$destination, $extra[1]]);
 							} else {
 								$generatedMethod->addBody('$this->checkAction(?);', [$destination]);
 							}
@@ -194,14 +196,10 @@ NEON
 	}
 
 	/**
-	 * Calls public method if exists.
-	 *
-	 * @param  string
-	 * @param  array
-	 *
 	 * @return bool FALSE if method doesn't exist or array of args
+	 * @throws \Nette\Application\BadRequestException
 	 */
-	private function tryCall($class, $method, array $params)
+	private function tryCall($class, $method, array $params, $includeOptionals = TRUE)
 	{
 		$rc = new \Nette\Application\UI\ComponentReflection($class);
 		if ($rc->hasMethod($method)) {
@@ -210,7 +208,9 @@ NEON
 				$args = [];
 				foreach ($rm->getParameters() as $parameter) {
 					if ($parameter->isOptional()) {
-						$args[$parameter->getName()] = $parameter->getDefaultValue();
+						if ($includeOptionals) {
+							$args[$parameter->getName()] = $parameter->getDefaultValue();
+						}
 					} else {
 						$args[$parameter->getName()] = NULL;
 					}

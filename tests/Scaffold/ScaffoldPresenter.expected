@@ -20,7 +20,11 @@ class ScaffoldPresenterTest extends \Tester\TestCase
 		$this->checkAction('Scaffold:default', [
 			'variable' => NULL,
 			'optional' => 'optionalValue',
+			'nullable' => NULL,
+			'const' => 'xyz',
 		]);
+
+		$this->checkAction('Scaffold:default', ['variable' => NULL]);
 	}
 
 }
