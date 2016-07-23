@@ -18,13 +18,10 @@ class Runner extends \Tester\TestCase
 	/** @var \Testbench\Runner */
 	private $runner;
 
-	private $os;
-
 	public function setUp()
 	{
 		$this->tempDir = dirname(__DIR__) . '/_temp';
 		$this->runner = new \Testbench\Runner;
-		$this->os = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? 'win' : 'unix';
 		\Tester\Environment::lock('lock_temp_dir', $this->tempDir); //needed for testConfigExists
 	}
 
@@ -33,6 +30,7 @@ class Runner extends \Tester\TestCase
 		Assert::same([
 			'-p', 'php',
 			'-s',
+			'-C',
 			$this->tempDir,
 		], $this->runner->prepareArguments([], $this->tempDir));
 	}
@@ -43,6 +41,7 @@ class Runner extends \Tester\TestCase
 			'ENV=value', //linux environment variable (always first)
 			'-p', 'php',
 			'-s',
+			'-C',
 			$this->tempDir,
 		], $this->runner->prepareArguments(['ENV=value'], $this->tempDir));
 	}
@@ -54,6 +53,7 @@ class Runner extends \Tester\TestCase
 			'-w', 'src/',
 			'-p', 'php',
 			'-s',
+			'-C',
 			$this->tempDir,
 		], $this->runner->prepareArguments(['-w', 'tests/', '-w', 'src/'], $this->tempDir));
 	}
@@ -64,6 +64,7 @@ class Runner extends \Tester\TestCase
 			'-j', '20',
 			'-p', 'php',
 			'-s',
+			'-C',
 			$this->tempDir,
 		], $this->runner->prepareArguments(['-j', '20'], $this->tempDir));
 	}
@@ -73,6 +74,7 @@ class Runner extends \Tester\TestCase
 		Assert::same([
 			'-p', 'php-cgi',
 			'-s',
+			'-C',
 			$this->tempDir,
 		], $this->runner->prepareArguments(['-p', 'php-cgi'], $this->tempDir));
 	}
@@ -95,6 +97,7 @@ class Runner extends \Tester\TestCase
 		Assert::same([
 			'-p', 'php',
 			'-s',
+			'-C',
 			$this->tempDir,
 		], $this->runner->prepareArguments(['--temp', $this->tempDir . '/_temp2'], $this->tempDir));
 	}
@@ -104,12 +107,14 @@ class Runner extends \Tester\TestCase
 		Assert::same([
 			'-p', 'php',
 			'-s',
+			'-C',
 			'path/to/tests',
 		], $this->runner->prepareArguments(['path/to/tests'], $this->tempDir));
 
 		Assert::same($expected = [
 			'-p', 'php-cgi',
 			'-s',
+			'-C',
 			'path/to/tests',
 		], $this->runner->prepareArguments(['-p', 'php-cgi', 'path/to/tests'], $this->tempDir));
 		Assert::same($expected, $this->runner->prepareArguments(['path/to/tests', '-p', 'php-cgi'], $this->tempDir));
@@ -117,6 +122,7 @@ class Runner extends \Tester\TestCase
 		Assert::same([
 			'-s',
 			'-p', 'php-cgi',
+			'-C',
 			'path/to/tests',
 		], $this->runner->prepareArguments(['-s', 'path/to/tests', '-p', 'php-cgi'], $this->tempDir));
 	}
@@ -132,6 +138,7 @@ class Runner extends \Tester\TestCase
 			'-w', 'src/',
 			'-w', 'folder/',
 			'-j', '20',
+			'-C',
 			'path/to/tests',
 		], $this->runner->prepareArguments([
 			'ENV=value',

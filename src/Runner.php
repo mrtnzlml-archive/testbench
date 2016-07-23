@@ -77,8 +77,12 @@ class Runner
 		//Look for php.ini file
 		$os = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? 'win' : 'unix';
 		$iniFile = $testsDir . "/php-$os.ini";
-		if (!array_key_exists('-c', $parameters) && is_file($iniFile)) {
-			$parameters['-c'] = $iniFile;
+		if (!array_key_exists('-c', $parameters)) {
+			if (is_file($iniFile)) {
+				$parameters['-c'] = $iniFile;
+			} else {
+				$parameters['-C'] = TRUE;
+			}
 		}
 
 		//Purge temp directory
