@@ -20,7 +20,9 @@ class Bootstrap
 		self::$onBeforeContainerCreate = $callback;
 
 		umask(0);
-		\Tester\Environment::setup();
+		if (!ob_get_level() > 0) { //\Tester\Environment::setup already called
+			\Tester\Environment::setup();
+		}
 		date_default_timezone_set('Europe/Prague');
 
 		if (class_exists('Tracy\Debugger')) {
