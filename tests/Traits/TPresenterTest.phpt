@@ -17,10 +17,9 @@ class TPresenterTest extends \Testbench\CustomPresenterTestCase
 	{
 		$this->checkAction('Presenter:default');
 
-		//FIXME: how to?
-		//Assert::error(function () {
-		//	$this->checkAction('Presenter:variabledoesntexist');
-		//}, E_NOTICE, 'Undefined variable: doesnexist');
+		Assert::error(function () {
+			$this->checkAction('Presenter:variabledoesntexist');
+		}, E_NOTICE, 'Undefined variable: doesnexist');
 	}
 
 	public function testClassicRenderShort()
