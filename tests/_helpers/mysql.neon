@@ -16,6 +16,16 @@ doctrine:
 		dbname: testbench_initial
 
 
+extensions:
+	migrations: Zenify\DoctrineMigrations\DI\MigrationsExtension
+	- Symnedi\EventDispatcher\DI\EventDispatcherExtension #migrations
+
+
+migrations:
+	directory: %testsDir%/_helpers/Migrations
+	namespace: Testbench\Migrations
+
+
 testbench:
 	migrations: yes
 	sqls:
