@@ -94,8 +94,8 @@ class TestsGenerator
 						break;
 					case 'action':
 						if ($extra instanceof \Nette\Application\Responses\RedirectResponse) {
-							$path = preg_replace('~^https?://([/a-z0-9]+).*~i', '$1', $extra->getUrl());
-							$generatedMethod->addBody('$this->checkRedirect(?, ?);', [$destination, $path]);
+							$url = new \Nette\Http\Url($extra->getUrl());
+							$generatedMethod->addBody('$this->checkRedirect(?, ?);', [$destination, $url->getPath()]);
 						} elseif ($extra instanceof \Nette\Application\Responses\JsonResponse) {
 							$generatedMethod->addBody('$this->checkJson(?);', [$destination]);
 						} else {
@@ -127,24 +127,30 @@ class TestsGenerator
 				$controls = '';
 				/** @var \Nette\Application\UI\Form $form */
 				foreach ($form->getControls() as $control) {
-					if ($control->getName() === '_token_') {
+					if ($control->getName() === '_token_' || $control instanceof \Nette\Forms\Controls\SubmitButton) {
 						continue;
 					}
-					$controls .= "\t'" . $control->getName() . "' => '###', //FIXME: replace with value\n";
+					$value = "'###', //FIXME: replace with value";
+					if ($control instanceof \Nette\Forms\Controls\Checkbox) {
+						$value = 'FALSE';
+					}
+					$controls .= "\t'" . $control->getName() . "' => $value\n";
 				}
 				try {
 					$form->onSuccess($form, $form->getValues());
 					$testClass->addMethod('test' . ucfirst($testMethod))->addBody(
-						"\$this->checkForm(?, ?, [\n" .
-						$controls .
-						"], ?);", [$destination . ':', $action, FALSE]);
+						"\$this->checkForm(?, ?, [\n" . $controls . '], ?);',
+						[$destination . ':', $action, FALSE]
+					);
 				} catch (\Nette\Application\AbortException $exc) {
 					$extra = $this->getResponse($service);
-					$path = $extra ? preg_replace('~^https?://([/a-z0-9]+).*~i', '$1', $extra->getUrl()) : '/';
+					$path = $extra ? (new \Nette\Http\Url($extra->getUrl()))->getPath() : '/';
 					$testClass->addMethod('test' . ucfirst($testMethod))->addBody(
-						"\$this->checkForm(?, ?, [\n" .
-						$controls .
-						"], ?);", [$destination . ':', $action, $path]);
+						"\$this->checkForm(?, ?, [\n" . $controls . '], ?);',
+						[$destination . ':', $action, $path]
+					);
+				} catch (\Exception $exc) {
+					//This sucks but we have to move on - failure is not an option
 				}
 			}
 
