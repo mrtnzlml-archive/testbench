@@ -130,7 +130,11 @@ class TestsGenerator
 					if ($control->getName() === '_token_' || $control instanceof \Nette\Forms\Controls\SubmitButton) {
 						continue;
 					}
-					$controls .= "\t'" . $control->getName() . "' => '###', //FIXME: replace with value\n";
+					$value = "'###', //FIXME: replace with value";
+					if ($control instanceof \Nette\Forms\Controls\Checkbox) {
+						$value = 'FALSE';
+					}
+					$controls .= "\t'" . $control->getName() . "' => $value\n";
 				}
 				try {
 					$form->onSuccess($form, $form->getValues());
