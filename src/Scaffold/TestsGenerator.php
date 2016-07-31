@@ -127,7 +127,7 @@ class TestsGenerator
 				$controls = '';
 				/** @var \Nette\Application\UI\Form $form */
 				foreach ($form->getControls() as $control) {
-					if ($control->getName() === '_token_') {
+					if ($control->getName() === '_token_' || $control instanceof \Nette\Forms\Controls\SubmitButton) {
 						continue;
 					}
 					$controls .= "\t'" . $control->getName() . "' => '###', //FIXME: replace with value\n";
