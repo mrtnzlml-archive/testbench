@@ -135,16 +135,18 @@ class TestsGenerator
 				try {
 					$form->onSuccess($form, $form->getValues());
 					$testClass->addMethod('test' . ucfirst($testMethod))->addBody(
-						"\$this->checkForm(?, ?, [\n" .
-						$controls .
-						"], ?);", [$destination . ':', $action, FALSE]);
+						"\$this->checkForm(?, ?, [\n" . $controls . '], ?);',
+						[$destination . ':', $action, FALSE]
+					);
 				} catch (\Nette\Application\AbortException $exc) {
 					$extra = $this->getResponse($service);
 					$path = $extra ? preg_replace('~^https?://([/a-z0-9]+).*~i', '$1', $extra->getUrl()) : '/';
 					$testClass->addMethod('test' . ucfirst($testMethod))->addBody(
-						"\$this->checkForm(?, ?, [\n" .
-						$controls .
-						"], ?);", [$destination . ':', $action, $path]);
+						"\$this->checkForm(?, ?, [\n" . $controls . '], ?);',
+						[$destination . ':', $action, $path]
+					);
+				} catch (\Exception $exc) {
+					//This sucks but we have to move on - failure is not an option
 				}
 			}
 
