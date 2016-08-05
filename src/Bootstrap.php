@@ -33,6 +33,7 @@ class Bootstrap
 
 		$_SERVER['HTTP_USER_AGENT'] = 'Awesome Browser';
 		$_SERVER['REMOTE_ADDR'] = '11.22.33.44';
+		$_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = 'test.bench';
 	}
 
 }

@@ -94,8 +94,8 @@ class TestsGenerator
 						break;
 					case 'action':
 						if ($extra instanceof \Nette\Application\Responses\RedirectResponse) {
-							$path = preg_replace('~^https?://([/a-z0-9]+).*~i', '$1', $extra->getUrl());
-							$generatedMethod->addBody('$this->checkRedirect(?, ?);', [$destination, $path]);
+							$url = new \Nette\Http\Url($extra->getUrl());
+							$generatedMethod->addBody('$this->checkRedirect(?, ?);', [$destination, $url->getPath()]);
 						} elseif ($extra instanceof \Nette\Application\Responses\JsonResponse) {
 							$generatedMethod->addBody('$this->checkJson(?);', [$destination]);
 						} else {
@@ -144,7 +144,7 @@ class TestsGenerator
 					);
 				} catch (\Nette\Application\AbortException $exc) {
 					$extra = $this->getResponse($service);
-					$path = $extra ? preg_replace('~^https?://([/a-z0-9]+).*~i', '$1', $extra->getUrl()) : '/';
+					$path = $extra ? (new \Nette\Http\Url($extra->getUrl()))->getPath() : '/';
 					$testClass->addMethod('test' . ucfirst($testMethod))->addBody(
 						"\$this->checkForm(?, ?, [\n" . $controls . '], ?);',
 						[$destination . ':', $action, $path]
