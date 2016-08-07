@@ -17,6 +17,9 @@ trait TPresenter
 
 	private $__testbench_ajaxMode = FALSE;
 
+	/** @return \Nette\DI\Container */
+	abstract function getDIContainer();
+
 	/**
 	 * @param string $destination fully qualified presenter name (module:module:presenter)
 	 * @param array $params provided to the presenter usually via URL
@@ -32,7 +35,7 @@ trait TPresenter
 		$presenter = substr($destination, 0, $pos);
 		$action = substr($destination, $pos + 1) ?: 'default';
 
-		$container = \Testbench\ContainerFactory::create(FALSE);
+		$container = $this->getDIContainer();
 		$container->removeService('httpRequest');
 		$headers = $this->__testbench_ajaxMode ? ['X-Requested-With' => 'XMLHttpRequest'] : [];
 		$url = new \Nette\Http\UrlScript($container->parameters['testbench']['url']);
@@ -343,7 +346,7 @@ trait TPresenter
 			$identity = new \Nette\Security\Identity($id, $roles, $data);
 		}
 		/** @var \Nette\Security\User $user */
-		$user = \Testbench\ContainerFactory::create(FALSE)->getByType('Nette\Security\User');
+		$user = $this->getDIContainer()->getByType('Nette\Security\User');
 		$user->login($identity);
 		return $user;
 	}
@@ -354,7 +357,7 @@ trait TPresenter
 	protected function logOut()
 	{
 		/** @var \Nette\Security\User $user */
-		$user = \Testbench\ContainerFactory::create(FALSE)->getByType('Nette\Security\User');
+		$user = $this->getDIContainer()->getByType('Nette\Security\User');
 		$user->logout();
 		return $user;
 	}
