@@ -38,11 +38,9 @@ trait TPresenter
 		$url = new \Nette\Http\UrlScript($container->parameters['testbench']['url']);
 		$container->addService('httpRequest', new Mocks\HttpRequestMock($url, $params, $post, [], [], $headers));
 		$presenterFactory = $container->getByType('Nette\Application\IPresenterFactory');
-		$class = $presenterFactory->getPresenterClass($presenter);
-		$this->__testbench_presenter = $container->createInstance($class);
+		$this->__testbench_presenter = $presenterFactory->createPresenter($presenter);
 		$this->__testbench_presenter->autoCanonicalize = FALSE;
 		$this->__testbench_presenter->invalidLinkMode = \Nette\Application\UI\Presenter::INVALID_LINK_EXCEPTION;
-		$container->callInjects($this->__testbench_presenter);
 
 		$postCopy = $post;
 		if (isset($params['do'])) {
