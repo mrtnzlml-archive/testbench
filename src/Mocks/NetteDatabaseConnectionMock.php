@@ -16,16 +16,20 @@ class NetteDatabaseConnectionMock extends \Nette\Database\Connection implements 
 	public function __construct($dsn, $user = NULL, $password = NULL, array $options = NULL)
 	{
 		$container = \Testbench\ContainerFactory::create(FALSE);
-		$this->onConnect[] = function (NetteDatabaseConnectionMock $connection) use ($container) {
-			if ($this->__testbench_databaseName !== NULL) { //already initialized (needed for pgsql)
-				return;
-			}
-			try {
-				$this->__testbench_database_setup($connection, $container);
-			} catch (\Exception $e) {
-				\Tester\Assert::fail($e->getMessage());
-			}
-		};
+
+		if ($container->parameters['testbench']['setupDatabase']) {
+			$this->onConnect[] = function (NetteDatabaseConnectionMock $connection) use ($container) {
+				if ($this->__testbench_databaseName !== NULL) { //already initialized (needed for pgsql)
+					return;
+				}
+				try {
+					$this->__testbench_database_setup($connection, $container);
+				} catch (\Exception $e) {
+					\Tester\Assert::fail($e->getMessage());
+				}
+			};
+		}
+
 		parent::__construct($dsn, $user, $password, $options);
 	}
 
