@@ -75,8 +75,8 @@ class TestbenchExtension extends \Nette\DI\CompilerExtension
 					$builder->getDefinition($definitionName)
 						->setClass('Testbench\Mocks\NetteDatabaseConnectionMock', [
 							$sectionConfig['dsn'],
-							$sectionConfig['user'],
-							$sectionConfig['password'],
+							isset($sectionConfig['user']) ? $sectionConfig['user'] : null,
+							isset($sectionConfig['password']) ? $sectionConfig['password'] : null,
 							isset($extensionConfig['options']) ? ($extensionConfig['options'] + ['lazy' => TRUE]) : [],
 						]);
 				}
