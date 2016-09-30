@@ -80,7 +80,7 @@ class TestbenchExtension extends \Nette\DI\CompilerExtension
 							$sectionConfig['dsn'],
 							isset($sectionConfig['user']) ? $sectionConfig['user'] : null,
 							isset($sectionConfig['password']) ? $sectionConfig['password'] : null,
-							isset($extensionConfig['options']) ? ($extensionConfig['options'] + ['lazy' => TRUE]) : [],
+							isset($sectionConfig['options']) ? ($sectionConfig['options'] + ['lazy' => TRUE]) : [],
 						]);
 				}
 			}
