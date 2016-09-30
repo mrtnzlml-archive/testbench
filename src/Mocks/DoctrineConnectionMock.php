@@ -37,6 +37,11 @@ class DoctrineConnectionMock extends \Kdyby\Doctrine\Connection implements \Test
 			}
 			try {
 				$this->__testbench_database_setup($connection, $container);
+			} catch(\Doctrine\DBAL\Migrations\MigrationException $e) {
+				//don't throw exception if no migration is present
+				if ($e->getCode() != 4) {
+					\Tester\Assert::fail($e->getMessage());
+				}
 			} catch (\Exception $e) {
 				\Tester\Assert::fail($e->getMessage());
 			}
