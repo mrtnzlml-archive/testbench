@@ -150,6 +150,31 @@ trait TPresenter
 	}
 
 	/**
+	 * @param string $destination
+	 * @param string $signal
+	 * @param array $params
+	 * @param array $post
+	 *
+	 * @return \Nette\Application\IResponse
+	 */
+	protected function checkAjaxSignal($destination, $signal, $params = [], $post = [])
+	{
+		$this->__testbench_ajaxMode = TRUE;
+
+		$params += ['do' => $signal];
+
+		$response = $this->check($destination, $params, $post);
+
+		Assert::true($this->__testbench_presenter->isAjax());
+		if (!$this->__testbench_exception) {
+			Assert::same(200, $this->getReturnCode());
+			Assert::type('Nette\Application\Responses\JsonResponse', $response);
+		}
+		$this->__testbench_ajaxMode = FALSE;
+		return $response;
+	}
+
+	/**
 	 * @param string $destination fully qualified presenter name (module:module:presenter)
 	 * @param string $path
 	 * @param array $params provided to the presenter usually via URL
