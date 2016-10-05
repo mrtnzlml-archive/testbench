@@ -37,6 +37,11 @@ class DoctrineConnectionMock extends \Kdyby\Doctrine\Connection implements \Test
 			}
 			try {
 				$this->__testbench_database_setup($connection, $container);
+			} catch(\Doctrine\DBAL\Migrations\MigrationException $e) {
+				//don't throw exception if no migration is present
+				if ($e->getCode() != 4) {
+					\Tester\Assert::fail($e->getMessage());
+				}
 			} catch (\Exception $e) {
 				\Tester\Assert::fail($e->getMessage());
 			}
@@ -54,10 +59,8 @@ class DoctrineConnectionMock extends \Kdyby\Doctrine\Connection implements \Test
 
 		$config = $container->parameters['testbench'];
 
-		if (isset($config['sqls'])) {
-			foreach ($container->parameters['testbench']['sqls'] as $file) {
-				\Kdyby\Doctrine\Dbal\BatchImport\Helpers::loadFromFile($connection, $file);
-			}
+		foreach ($container->parameters['testbench']['sqls'] as $file) {
+			\Kdyby\Doctrine\Dbal\BatchImport\Helpers::loadFromFile($connection, $file);
 		}
 
 		if (isset($config['migrations']) && $config['migrations'] === TRUE) {
@@ -113,9 +116,9 @@ class DoctrineConnectionMock extends \Kdyby\Doctrine\Connection implements \Test
 	{
 		//connect to an existing database other than $this->_databaseName
 		if ($databaseName === NULL) {
-			$config = $container->parameters['testbench'];
-			if (isset($config['dbname'])) {
-				$databaseName = $config['dbname'];
+			$dbName = $container->parameters['testbench']['dbname'];
+			if ($dbName) {
+				$databaseName = $dbName;
 			} elseif ($connection->getDatabasePlatform() instanceof PostgreSqlPlatform) {
 				$databaseName = 'postgres';
 			} else {

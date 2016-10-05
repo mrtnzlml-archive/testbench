@@ -4,15 +4,18 @@ namespace Testbench;
 
 class TestbenchExtension extends \Nette\DI\CompilerExtension
 {
+	private $defaultConfig = [
+		'url' => 'http://test.bench/',
+		'setupDatabase' => true,
+		'sqls' => [],
+		'dbname' => null,
+	];
 
 	public function loadConfiguration()
 	{
 		$builder = $this->compiler->getContainerBuilder();
-		$testbenchConfig = $this->getConfig();
-		if (!isset($testbenchConfig['url'])) {
-			$testbenchConfig['url'] = 'http://test.bench/';
-		}
-		$builder->parameters[$this->name] = $testbenchConfig;
+
+		$builder->parameters[$this->name] = $this->getConfig($this->defaultConfig);
 
 		$this->prepareDoctrine();
 		$this->prepareNetteDatabase($builder);
@@ -65,8 +68,8 @@ class TestbenchExtension extends \Nette\DI\CompilerExtension
 				$builder->getDefinition($definitionName)
 					->setClass('Testbench\Mocks\NetteDatabaseConnectionMock', [
 						$extensionConfig['dsn'],
-						$extensionConfig['user'],
-						$extensionConfig['password'],
+						isset($extensionConfig['user']) ? $extensionConfig['user'] : null,
+						isset($extensionConfig['password']) ? $extensionConfig['password'] : null,
 						isset($extensionConfig['options']) ? ($extensionConfig['options'] + ['lazy' => TRUE]) : [],
 					]);
 			} else {
@@ -75,9 +78,9 @@ class TestbenchExtension extends \Nette\DI\CompilerExtension
 					$builder->getDefinition($definitionName)
 						->setClass('Testbench\Mocks\NetteDatabaseConnectionMock', [
 							$sectionConfig['dsn'],
-							$sectionConfig['user'],
-							$sectionConfig['password'],
-							isset($extensionConfig['options']) ? ($extensionConfig['options'] + ['lazy' => TRUE]) : [],
+							isset($sectionConfig['user']) ? $sectionConfig['user'] : null,
+							isset($sectionConfig['password']) ? $sectionConfig['password'] : null,
+							isset($sectionConfig['options']) ? ($sectionConfig['options'] + ['lazy' => TRUE]) : [],
 						]);
 				}
 			}

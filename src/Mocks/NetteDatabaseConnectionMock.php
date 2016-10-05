@@ -16,16 +16,20 @@ class NetteDatabaseConnectionMock extends \Nette\Database\Connection implements 
 	public function __construct($dsn, $user = NULL, $password = NULL, array $options = NULL)
 	{
 		$container = \Testbench\ContainerFactory::create(FALSE);
-		$this->onConnect[] = function (NetteDatabaseConnectionMock $connection) use ($container) {
-			if ($this->__testbench_databaseName !== NULL) { //already initialized (needed for pgsql)
-				return;
-			}
-			try {
-				$this->__testbench_database_setup($connection, $container);
-			} catch (\Exception $e) {
-				\Tester\Assert::fail($e->getMessage());
-			}
-		};
+
+		if ($container->parameters['testbench']['setupDatabase']) {
+			$this->onConnect[] = function (NetteDatabaseConnectionMock $connection) use ($container) {
+				if ($this->__testbench_databaseName !== NULL) { //already initialized (needed for pgsql)
+					return;
+				}
+				try {
+					$this->__testbench_database_setup($connection, $container);
+				} catch (\Exception $e) {
+					\Tester\Assert::fail($e->getMessage());
+				}
+			};
+		}
+
 		parent::__construct($dsn, $user, $password, $options);
 	}
 
@@ -37,11 +41,9 @@ class NetteDatabaseConnectionMock extends \Nette\Database\Connection implements 
 		$this->__testbench_database_drop($connection, $container);
 		$this->__testbench_database_create($connection, $container);
 
-		if (isset($container->parameters['testbench']['sqls'])) {
-			foreach ($container->parameters['testbench']['sqls'] as $file) {
-				\Nette\Database\Helpers::loadFromFile($connection, $file);
-			}
-		}
+        foreach ($container->parameters['testbench']['sqls'] as $file) {
+            \Nette\Database\Helpers::loadFromFile($connection, $file);
+        }
 
 		register_shutdown_function(function () use ($connection, $container) {
 			$this->__testbench_database_drop($connection, $container);
@@ -85,9 +87,9 @@ class NetteDatabaseConnectionMock extends \Nette\Database\Connection implements 
 	{
 		//connect to an existing database other than $this->_databaseName
 		if ($databaseName === NULL) {
-			$config = $container->parameters['testbench'];
-			if (isset($config['dbname'])) {
-				$databaseName = $config['dbname'];
+			$dbName = $container->parameters['testbench']['dbname'];
+			if ($dbName) {
+				$databaseName = $dbName;
 			} elseif ($connection->getSupplementalDriver() instanceof PgSqlDriver) {
 				$databaseName = 'postgres';
 			} else {
