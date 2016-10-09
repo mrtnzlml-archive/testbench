@@ -47,12 +47,11 @@ class DoctrineConnectionMock extends \Kdyby\Doctrine\Connection implements \Test
 	/** @internal */
 	public function __testbench_database_setup($connection, \Nette\DI\Container $container)
 	{
-		$this->__testbench_databaseName = 'db_tests_' . getmypid();
+		$config = $container->parameters['testbench'];
+		$this->__testbench_databaseName = $config['dbprefix'] . getenv(\Tester\Environment::THREAD);
 
 		$this->__testbench_database_drop($connection, $container);
 		$this->__testbench_database_create($connection, $container);
-
-		$config = $container->parameters['testbench'];
 
 		foreach ($config['sqls'] as $file) {
 			\Kdyby\Doctrine\Dbal\BatchImport\Helpers::loadFromFile($connection, $file);

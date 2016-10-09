@@ -32,12 +32,13 @@ class NetteDatabaseConnectionMock extends \Nette\Database\Connection implements 
 	/** @internal */
 	public function __testbench_database_setup($connection, \Nette\DI\Container $container)
 	{
-		$this->__testbench_databaseName = 'db_tests_' . getmypid();
+		$config = $container->parameters['testbench'];
+		$this->__testbench_databaseName = $config['dbprefix'] . getenv(\Tester\Environment::THREAD);
 
 		$this->__testbench_database_drop($connection, $container);
 		$this->__testbench_database_create($connection, $container);
 
-		foreach ($container->parameters['testbench']['sqls'] as $file) {
+		foreach ($config['sqls'] as $file) {
 			\Nette\Database\Helpers::loadFromFile($connection, $file);
 		}
 

@@ -37,9 +37,9 @@ class TDoctrineTest extends \Tester\TestCase
 		$connection = $this->getEntityManager()->getConnection();
 		if ($connection->getDatabasePlatform() instanceof MySqlPlatform) {
 			Assert::match('testbench_initial', $connection->getDatabase());
-			Assert::match('db_tests_' . getmypid(), $connection->query('SELECT DATABASE();')->fetchColumn());
+			Assert::match('_testbench_' . getenv(\Tester\Environment::THREAD), $connection->query('SELECT DATABASE();')->fetchColumn());
 		} else {
-			Assert::same('db_tests_' . getmypid(), $connection->getDatabase());
+			Assert::same('_testbench_' . getenv(\Tester\Environment::THREAD), $connection->getDatabase());
 		}
 	}
 
@@ -66,7 +66,7 @@ class TDoctrineTest extends \Tester\TestCase
 				['id' => 2, 'column_1' => 'value_1', 'column_2' => 'value_2'],
 				['id' => 3, 'column_1' => 'value_1', 'column_2' => 'value_2'],
 			], $result);
-			Assert::same('db_tests_' . getmypid(), $connection->getDatabase());
+			Assert::same('_testbench_' . getenv(\Tester\Environment::THREAD), $connection->getDatabase());
 		}
 	}
 
