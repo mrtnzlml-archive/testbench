@@ -21,7 +21,19 @@ class NetteDatabaseConnectionMock extends \Nette\Database\Connection implements 
 				return;
 			}
 			try {
-				$this->__testbench_database_setup($connection, $container);
+				$config = $container->parameters['testbench'];
+				if ($config['shareDatabase'] === TRUE) {
+					$registry = new \Testbench\DatabasesRegistry;
+					$dbName = $container->parameters['testbench']['dbprefix'] . getenv(\Tester\Environment::THREAD);
+					if ($registry->registerDatabase($dbName)) {
+						$this->__testbench_database_setup($connection, $container, TRUE);
+					} else {
+						$this->__testbench_databaseName = $dbName;
+						$this->__testbench_database_change($connection, $container);
+					}
+				} else { // always create new test database
+					$this->__testbench_database_setup($connection, $container);
+				}
 			} catch (\Exception $e) {
 				\Tester\Assert::fail($e->getMessage());
 			}
@@ -30,7 +42,7 @@ class NetteDatabaseConnectionMock extends \Nette\Database\Connection implements 
 	}
 
 	/** @internal */
-	public function __testbench_database_setup($connection, \Nette\DI\Container $container)
+	public function __testbench_database_setup($connection, \Nette\DI\Container $container, $persistent = FALSE)
 	{
 		$config = $container->parameters['testbench'];
 		$this->__testbench_databaseName = $config['dbprefix'] . getenv(\Tester\Environment::THREAD);
@@ -42,9 +54,11 @@ class NetteDatabaseConnectionMock extends \Nette\Database\Connection implements 
 			\Nette\Database\Helpers::loadFromFile($connection, $file);
 		}
 
-		register_shutdown_function(function () use ($connection, $container) {
-			$this->__testbench_database_drop($connection, $container);
-		});
+		if ($persistent === FALSE) {
+			register_shutdown_function(function () use ($connection, $container) {
+				$this->__testbench_database_drop($connection, $container);
+			});
+		}
 	}
 
 	/**
@@ -55,6 +69,16 @@ class NetteDatabaseConnectionMock extends \Nette\Database\Connection implements 
 	public function __testbench_database_create($connection, \Nette\DI\Container $container)
 	{
 		$connection->query("CREATE DATABASE {$this->__testbench_databaseName}");
+		$this->__testbench_database_change($connection, $container);
+	}
+
+	/**
+	 * @internal
+	 *
+	 * @param $connection \Nette\Database\Connection
+	 */
+	public function __testbench_database_change($connection, \Nette\DI\Container $container)
+	{
 		if ($connection->getSupplementalDriver() instanceof MySqlDriver) {
 			$connection->query("USE {$this->__testbench_databaseName}");
 		} else {

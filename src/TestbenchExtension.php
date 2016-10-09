@@ -6,9 +6,10 @@ class TestbenchExtension extends \Nette\DI\CompilerExtension
 {
 
 	private $defaults = [
-		'dbname' => NULL,               // custom test database name
+		'dbname' => NULL,               // custom initial test database name (should not be needed)
 		'dbprefix' => '_testbench_',    // database prefix for created tests databases
 		'migrations' => FALSE,          // set TRUE if you want to use Doctrine migrations
+		'shareDatabase' => FALSE,       // should Testbench always create new databases (FALSE) or use shared databases (TRUE)
 		'sqls' => [],                   // sqls you want to import during new test database creation
 		'url' => 'http://test.bench/',  // fake URL for HTTP request mock
 	];

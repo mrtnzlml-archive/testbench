@@ -1,4 +1,4 @@
 tests.local.neon
 _temp/
 **/output/
-tests.log
+databases.testbench
