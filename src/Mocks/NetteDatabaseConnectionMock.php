@@ -37,10 +37,8 @@ class NetteDatabaseConnectionMock extends \Nette\Database\Connection implements 
 		$this->__testbench_database_drop($connection, $container);
 		$this->__testbench_database_create($connection, $container);
 
-		if (isset($container->parameters['testbench']['sqls'])) {
-			foreach ($container->parameters['testbench']['sqls'] as $file) {
-				\Nette\Database\Helpers::loadFromFile($connection, $file);
-			}
+		foreach ($container->parameters['testbench']['sqls'] as $file) {
+			\Nette\Database\Helpers::loadFromFile($connection, $file);
 		}
 
 		register_shutdown_function(function () use ($connection, $container) {
@@ -85,9 +83,9 @@ class NetteDatabaseConnectionMock extends \Nette\Database\Connection implements 
 	{
 		//connect to an existing database other than $this->_databaseName
 		if ($databaseName === NULL) {
-			$config = $container->parameters['testbench'];
-			if (isset($config['dbname'])) {
-				$databaseName = $config['dbname'];
+			$dbname = $container->parameters['testbench']['dbname'];
+			if ($dbname) {
+				$databaseName = $dbname;
 			} elseif ($connection->getSupplementalDriver() instanceof PgSqlDriver) {
 				$databaseName = 'postgres';
 			} else {

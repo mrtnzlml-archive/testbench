@@ -5,18 +5,20 @@ namespace Testbench;
 class TestbenchExtension extends \Nette\DI\CompilerExtension
 {
 
+	private $defaults = [
+		'dbname' => NULL,               // custom test database name
+		'migrations' => FALSE,          // set TRUE if you want to use Doctrine migrations
+		'sqls' => [],                   // sqls you want to import during new test database creation
+		'url' => 'http://test.bench/',  // fake URL for HTTP request mock
+	];
+
 	public function loadConfiguration()
 	{
 		$builder = $this->compiler->getContainerBuilder();
-		$testbenchConfig = $this->getConfig();
-		if (!isset($testbenchConfig['url'])) {
-			$testbenchConfig['url'] = 'http://test.bench/';
-		}
-		$builder->parameters[$this->name] = $testbenchConfig;
+		$builder->parameters[$this->name] = $this->validateConfig($this->defaults);
 
 		$this->prepareDoctrine();
 		$this->prepareNetteDatabase($builder);
-
 		//TODO: $builder->addDefinition($this->prefix('applicationRequestMock'))->setClass('Testbench\ApplicationRequestMock');
 	}
 

@@ -54,13 +54,11 @@ class DoctrineConnectionMock extends \Kdyby\Doctrine\Connection implements \Test
 
 		$config = $container->parameters['testbench'];
 
-		if (isset($config['sqls'])) {
-			foreach ($container->parameters['testbench']['sqls'] as $file) {
-				\Kdyby\Doctrine\Dbal\BatchImport\Helpers::loadFromFile($connection, $file);
-			}
+		foreach ($config['sqls'] as $file) {
+			\Kdyby\Doctrine\Dbal\BatchImport\Helpers::loadFromFile($connection, $file);
 		}
 
-		if (isset($config['migrations']) && $config['migrations'] === TRUE) {
+		if ($config['migrations'] === TRUE) {
 			if (class_exists(\Zenify\DoctrineMigrations\Configuration\Configuration::class)) {
 				/** @var \Zenify\DoctrineMigrations\Configuration\Configuration $migrationsConfig */
 				$migrationsConfig = $container->getByType(\Zenify\DoctrineMigrations\Configuration\Configuration::class);
@@ -113,9 +111,9 @@ class DoctrineConnectionMock extends \Kdyby\Doctrine\Connection implements \Test
 	{
 		//connect to an existing database other than $this->_databaseName
 		if ($databaseName === NULL) {
-			$config = $container->parameters['testbench'];
-			if (isset($config['dbname'])) {
-				$databaseName = $config['dbname'];
+			$dbname = $container->parameters['testbench']['dbname'];
+			if ($dbname) {
+				$databaseName = $dbname;
 			} elseif ($connection->getDatabasePlatform() instanceof PostgreSqlPlatform) {
 				$databaseName = 'postgres';
 			} else {
