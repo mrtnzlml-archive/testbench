@@ -79,7 +79,7 @@ class TestbenchExtension extends \Nette\DI\CompilerExtension
 							$sectionConfig['dsn'],
 							$sectionConfig['user'],
 							$sectionConfig['password'],
-							isset($extensionConfig['options']) ? ($extensionConfig['options'] + ['lazy' => TRUE]) : [],
+							isset($sectionConfig['options']) ? ($sectionConfig['options'] + ['lazy' => TRUE]) : [],
 						]);
 				}
 			}

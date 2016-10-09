@@ -75,6 +75,33 @@ class TNetteDatabaseTest extends \Tester\TestCase
 		//app is not using onConnect from Testbench but it has to connect to the mock database
 	}
 
+	public function testConnectionMockSetup()
+	{
+		/** @var \Testbench\Mocks\NetteDatabaseConnectionMock $connection */
+		$connection = $this->getService(\Testbench\Mocks\NetteDatabaseConnectionMock::class);
+
+		$dbr = (new \Nette\Reflection\ClassType($connection))->getParentClass(); //:-(
+		$params = $dbr->getProperty('params');
+		$params->setAccessible(TRUE);
+		$params = $params->getValue($connection);
+
+		$options = $dbr->getProperty('options');
+		$options->setAccessible(TRUE);
+		$options = $options->getValue($connection);
+
+		Assert::count(3, $params);
+		if ($connection->getSupplementalDriver() instanceof MySqlDriver) {
+			Assert::same('mysql:host=127.0.0.1;dbname=testbench_initial', $params[0]);
+		} else {
+			Assert::same('pgsql:host=127.0.0.1;dbname=testbench_initial', $params[0]);
+		}
+
+		Assert::same([
+			'PDO::MYSQL_ATTR_COMPRESS' => TRUE,
+			'lazy' => TRUE,
+		], $options);
+	}
+
 }
 
 (new TNetteDatabaseTest)->run();
