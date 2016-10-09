@@ -144,4 +144,9 @@ class PresenterPresenter extends Nette\Application\UI\Presenter
 		$this->redirect('this');
 	}
 
+	public function handleAjaxSignal()
+	{
+		$this->sendJson(['ok']);
+	}
+
 }

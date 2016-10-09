@@ -73,6 +73,12 @@ class PresenterPresenterTest extends \Tester\TestCase
 	}
 
 
+	public function testHandleAjaxSignal()
+	{
+		$this->checkSignal('Presenter:', 'ajaxSignal');
+	}
+
+
 	public function testCreateComponentForm1()
 	{
 		$this->checkForm('Presenter:', 'form1', [

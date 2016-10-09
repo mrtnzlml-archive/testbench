@@ -228,6 +228,13 @@ class TPresenterTest extends \Testbench\CustomPresenterTestCase
 		$this->checkSignal('Presenter:default', 'signal');
 	}
 
+	public function testAjaxSignal()
+	{
+		/** @var \Nette\Application\Responses\JsonResponse $response */
+		$response = $this->checkAjaxSignal('Presenter:default', 'ajaxSignal');
+		Assert::same(['ok'], $response->getPayload());
+	}
+
 	public function testFormEnhanced()
 	{
 		$this->checkForm('Presenter:default', 'form1', [
