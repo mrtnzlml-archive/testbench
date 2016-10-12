@@ -126,7 +126,7 @@ trait TPresenter
 			$html = (string)$response->getSource();
 			//DOMDocument doesn't handle HTML tags inside of script tags very well
 			$html = preg_replace('~<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>~', '', $html); //http://stackoverflow.com/a/6660315/3135248
-			$dom = static::fromHtml($html);
+			$dom = @\Tester\DomQuery::fromHtml($html);
 			Assert::true($dom->has('html'), "missing 'html' tag");
 			Assert::true($dom->has('title'), "missing 'title' tag");
 			Assert::true($dom->has('body'), "missing 'body' tag");
@@ -394,35 +394,6 @@ trait TPresenter
 	protected function getException()
 	{
 		return $this->__testbench_exception;
-	}
-
-	/**
-	 * @see \Tester\DomQuery::fromHtml
-	 * @return \Tester\DomQuery
-	 */
-	private static function fromHtml($html)
-	{
-		if (strpos($html, '<') === FALSE) {
-			$html = '<body>' . $html;
-		}
-
-		$html = preg_replace('#<(keygen|source|track|wbr)(?=\s|>)("[^"]*"|\'[^\']*\'|[^"\'>]+)*+(?<!/)>#', '<$1$2 />', $html);
-
-		$dom = new \DOMDocument();
-		$old = libxml_use_internal_errors(TRUE);
-		libxml_clear_errors();
-		$dom->loadHTML($html);
-		$errors = libxml_get_errors();
-		libxml_use_internal_errors($old);
-
-		$re = '#Tag (article|aside|audio|bdi|canvas|data|datalist|figcaption|figure|footer|header|keygen|main|mark'
-			. '|meter|nav|output|progress|rb|rp|rt|rtc|ruby|section|source|svg|template|time|track|video|wbr) invalid#';
-		foreach ($errors as $error) {
-			if (!preg_match($re, $error->message)) {
-				trigger_error(__METHOD__ . ": $error->message on line $error->line.", E_USER_WARNING);
-			}
-		}
-		return simplexml_import_dom($dom, \Tester\DomQuery::class);
 	}
 
 }
