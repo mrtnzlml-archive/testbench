@@ -29,6 +29,10 @@ class TComponentTest extends \Tester\TestCase
 		$control = new \Component;
 		$this->checkRenderOutput($control, '<strong>OK</strong>');
 		$this->checkRenderOutput($control, __DIR__ . '/Component.expected');
+
+		$control = new \ComponentWithParameters();
+		$this->checkRenderOutput($control, '1', [1]);
+		$this->checkRenderOutput($control, '12', [1, 2]);
 	}
 
 	public function testRenderWithExplicitAttach()
