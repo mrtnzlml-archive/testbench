@@ -31,6 +31,27 @@ class TComponentTest extends \Tester\TestCase
 		$this->checkRenderOutput($control, __DIR__ . '/Component.expected');
 	}
 
+	/**
+	 * @see vendor/nette/application/tests/Bridges.Latte/UIMacros.control.2.phpt
+	 */
+	public function testRenderWithParametersNetteCompatibility() {
+		$latte = new \Latte\Engine;
+		$latte->setLoader(new \Latte\Loaders\StringLoader);
+		\Nette\Bridges\ApplicationLatte\UIMacros::install($latte->getCompiler());
+		$latte->addProvider('uiControl', new \ComponentWithParameters);
+
+		Assert::same('["var1"]', $latte->renderToString('{control cwp var1}'));
+		Assert::same('["var1",1,2]', $latte->renderToString('{control cwp var1, 1, 2}'));
+		Assert::same('[{"var1":5,"0":1,"1":2}]', $latte->renderToString('{control cwp var1 => 5, 1, 2}'));
+	}
+
+	public function testRenderWithParameters()
+	{
+		$control = new \ComponentWithParameters;
+		$this->checkRenderOutput($control, '[1]', [1]);
+		$this->checkRenderOutput($control, '[1,"2"]', [1, '2']);
+	}
+
 	public function testRenderWithExplicitAttach()
 	{
 		$this->attachToPresenter($control = new \Component);
