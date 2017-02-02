@@ -16,24 +16,24 @@
   "require": {
     "php": ">=5.6.0",
     "kdyby/fake-session": "^2.0",
-    "nette/application": "^2.4",
-    "nette/bootstrap": "^2.4",
-    "nette/di": "^2.4",
+    "nette/application": "^2.4 || ^v3.0",
+    "nette/bootstrap": "^2.4 || ^v3.0",
+    "nette/di": "^2.4 || ^v3.0",
     "nette/safe-stream": "^2.3",
-    "nette/security": "^2.4",
+    "nette/security": "^2.4 || ^v3.0",
     "nette/tester": "2.0.x-dev as v1.7",
-    "nette/utils": "^2.4"
+    "nette/utils": "^2.4 || ^v3.0"
   },
   "require-dev": {
     "latte/latte": "^2.4",
-    "nette/forms": "^2.4",
-    "nette/robot-loader": "^2.4",
+    "nette/forms": "^2.4 || ^v3.0",
+    "nette/robot-loader": "^2.4 || ^v3.0",
     "tracy/tracy": "^2.4",
     "kdyby/doctrine": "^3.1",
     "kdyby/doctrine-cache": "^2.5",
     "kdyby/doctrine-dbal-batchimport": "dev-master",
     "kdyby/events": "^3.0",
-    "nette/database": "^2.4",
+    "nette/database": "^2.4 || ^v3.0",
     "zenify/doctrine-migrations": "^2.3"
   },
   "autoload": {
