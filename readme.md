@@ -82,9 +82,9 @@ class HomepagePresenterTest extends \Tester\TestCase
 	}
 
 	public function testRenderDefaultModule()
-    {
-        $this->checkAction('Module:Homepage:default');
-    }
+	{
+		$this->checkAction('Module:Homepage:default');
+	}
 
 }
 
