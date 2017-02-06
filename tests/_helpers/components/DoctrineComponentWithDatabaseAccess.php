@@ -14,7 +14,7 @@ class DoctrineComponentWithDatabaseAccess extends \Nette\Application\UI\Control
 		Assert::false($connection->isConnected());
 		Assert::count(1, $connection->onConnect);
 		if ($connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\MySqlPlatform) {
-			Assert::match('testbench_initial', $connection->getDatabase());
+			Assert::match('information_schema', $connection->getDatabase());
 			Assert::match('_testbench_' . getenv(\Tester\Environment::THREAD), $connection->query('SELECT DATABASE();')->fetchColumn());
 		} else {
 			Assert::same('_testbench_' . getenv(\Tester\Environment::THREAD), $connection->getDatabase());

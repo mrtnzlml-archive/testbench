@@ -40,7 +40,7 @@ class TNetteDatabaseTest extends \Tester\TestCase
 			return $matches[1];
 		};
 		if ($connection->getSupplementalDriver() instanceof MySqlDriver) {
-			Assert::match('testbench_initial', $returnActualDatabaseName());
+			Assert::match('information_schema', $returnActualDatabaseName());
 			Assert::match('_testbench_' . getenv(\Tester\Environment::THREAD), $connection->query('SELECT DATABASE();')->fetchPairs()[0]);
 		} else {
 			Assert::same('_testbench_' . getenv(\Tester\Environment::THREAD), $returnActualDatabaseName());
@@ -61,7 +61,7 @@ class TNetteDatabaseTest extends \Tester\TestCase
 		], $result);
 
 		if ($connection->getSupplementalDriver() instanceof MySqlDriver) {
-			Assert::match('testbench_initial', $matches[1]);
+			Assert::match('information_schema', $matches[1]);
 		} else {
 			Assert::same('_testbench_' . getenv(\Tester\Environment::THREAD), $matches[1]);
 		}
@@ -91,9 +91,9 @@ class TNetteDatabaseTest extends \Tester\TestCase
 
 		Assert::count(3, $params);
 		if ($connection->getSupplementalDriver() instanceof MySqlDriver) {
-			Assert::same('mysql:host=127.0.0.1;dbname=testbench_initial', $params[0]);
+			Assert::match('mysql:host=%a%;dbname=information_schema', $params[0]);
 		} else {
-			Assert::same('pgsql:host=127.0.0.1;dbname=testbench_initial', $params[0]);
+			Assert::match('pgsql:host=%a%;dbname=postgres', $params[0]);
 		}
 
 		Assert::same([

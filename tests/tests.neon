@@ -6,11 +6,6 @@ application:
 	scanDirs: %testsDir%/_helpers
 
 
-doctrine:
-	default:
-		dbname: testbench_initial
-
-
 routing:
 	routes:
 		'/x/y[[[/<presenter>]/<action>][/<id>]]': 'Presenter:default'

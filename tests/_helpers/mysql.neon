@@ -1,6 +1,6 @@
 database:
 	default:
-		dsn: 'mysql:host=127.0.0.1;dbname=testbench_initial'
+		dsn: 'mysql:host=127.0.0.1;dbname=information_schema'
 		user: travis
 		password: ''
 		options: [PDO::MYSQL_ATTR_COMPRESS = true]
@@ -10,10 +10,11 @@ doctrine:
 	metadata:
 		App: %appDir%
 	default:
+		host: 127.0.0.1
+		dbname: information_schema
 		driver: pdo_mysql
 		user: travis
 		password: ''
-		dbname: testbench_initial
 
 
 extensions:

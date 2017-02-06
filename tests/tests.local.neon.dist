@@ -3,15 +3,16 @@
 
 
 database:
-	dsn: 'mysql:host=127.0.0.1;dbname=testbench_empty'
+	dsn: 'mysql:host=127.0.0.1;dbname=information_schema'
 	options: [PDO::MYSQL_ATTR_COMPRESS = true]
 
 
 doctrine:
-	driver: pdo_mysql #pdo_pgsql
-	user: root #postgres
-	password: '...'
-	dbname: testbench_empty
+	host: 127.0.0.1
+	dbname: information_schema
+	driver: pdo_mysql
+	user: root
+	password: root
 
 
 extensions:

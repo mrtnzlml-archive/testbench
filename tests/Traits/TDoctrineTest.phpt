@@ -36,7 +36,7 @@ class TDoctrineTest extends \Tester\TestCase
 		/** @var \Testbench\Mocks\DoctrineConnectionMock $connection */
 		$connection = $this->getEntityManager()->getConnection();
 		if ($connection->getDatabasePlatform() instanceof MySqlPlatform) {
-			Assert::match('testbench_initial', $connection->getDatabase());
+			Assert::match('information_schema', $connection->getDatabase());
 			Assert::match('_testbench_' . getenv(\Tester\Environment::THREAD), $connection->query('SELECT DATABASE();')->fetchColumn());
 		} else {
 			Assert::same('_testbench_' . getenv(\Tester\Environment::THREAD), $connection->getDatabase());
@@ -59,7 +59,7 @@ class TDoctrineTest extends \Tester\TestCase
 					'column_2' => 'from_migration_2',
 				],
 			], $result);
-			Assert::match('testbench_initial', $connection->getDatabase());
+			Assert::match('information_schema', $connection->getDatabase());
 		} else {
 			Assert::same([
 				['id' => 1, 'column_1' => 'value_1', 'column_2' => 'value_2'],

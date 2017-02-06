@@ -15,7 +15,7 @@ class NdbComponentWithDatabaseAccess extends \Nette\Application\UI\Control
 			return $matches[1];
 		};
 		if ($connection->getSupplementalDriver() instanceof \Nette\Database\Drivers\MySqlDriver) {
-			Assert::match('testbench_initial', $returnActualDatabaseName());
+			Assert::match('information_schema', $returnActualDatabaseName());
 			Assert::match('_testbench_' . getenv(\Tester\Environment::THREAD), $connection->query('SELECT DATABASE();')->fetchPairs()[0]);
 		} else {
 			Assert::same('_testbench_' . getenv(\Tester\Environment::THREAD), $returnActualDatabaseName());
