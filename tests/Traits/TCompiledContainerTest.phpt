@@ -4,7 +4,7 @@ namespace Tests\Traits;
 
 use Tester\Assert;
 
-require __DIR__ . '/../bootstrap.php';
+require getenv('BOOTSTRAP');
 
 /**
  * @testCase

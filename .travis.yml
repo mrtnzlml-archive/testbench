@@ -23,7 +23,7 @@ before_script:
   - "sh -c \"if [ '$DB' = 'pgsql' ]; then cp tests/_helpers/pgsql.neon tests/tests.local.neon; fi\""
 
 script:
-  - src/run-tests
+  - src/run-tests --bootstrap tests/bootstrap.php
   - php tests/Scaffold/GenerateStructure.php
   - cp tests/FakeBootstrapForScaffold.php tests/_temp/scaffold/bootstrap.php
   - php tests/_temp/scaffold/PresenterPresenter.phpt

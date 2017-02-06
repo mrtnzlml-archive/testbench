@@ -5,7 +5,7 @@ namespace Tests\Traits;
 use Nette\Database\Drivers\MySqlDriver;
 use Tester\Assert;
 
-require __DIR__ . '/../bootstrap.php';
+require getenv('BOOTSTRAP');
 
 /**
  * @testCase

@@ -105,6 +105,13 @@ class Runner
 			}
 		}
 
+		//Propagate bootstrap file into ENV
+		if (isset($parameters['--bootstrap'])) {
+			$bootstrapFile = realpath($parameters['--bootstrap']);
+			putenv('BOOTSTRAP=' . $bootstrapFile);
+			unset($parameters['--bootstrap']);
+		}
+
 		if ($pathToTests === NULL) {
 			$pathToTests = $testsDir;
 		}

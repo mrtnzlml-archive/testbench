@@ -2,7 +2,7 @@
 
 namespace Tests\Traits;
 
-require __DIR__ . '/../bootstrap.php';
+require getenv('BOOTSTRAP');
 
 /**
  * @testCase

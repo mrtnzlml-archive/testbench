@@ -25,6 +25,11 @@ class Bootstrap extends \Tester\TestCase
 		Assert::same('Europe/Prague', date_default_timezone_get());
 	}
 
+	public function testBootstrapEnvVariable()
+	{
+		Assert::same(realpath(__DIR__ . '/../bootstrap.php'), getenv('BOOTSTRAP'));
+	}
+
 	public function testServerSuperglobalVariable()
 	{
 		Assert::same('Awesome Browser', $_SERVER['HTTP_USER_AGENT']);

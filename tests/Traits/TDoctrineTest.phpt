@@ -5,7 +5,7 @@ namespace Tests\Traits;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Tester\Assert;
 
-require __DIR__ . '/../bootstrap.php';
+require getenv('BOOTSTRAP');
 
 /**
  * @testCase
