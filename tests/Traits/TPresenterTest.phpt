@@ -259,6 +259,13 @@ class TPresenterTest extends \Testbench\CustomPresenterTestCase
 		}, 'Tester\AssertException', "field 'test' should be defined as required, but it's not");
 	}
 
+    public function testUserLoggedIn()
+    {
+        $this->logIn();
+        Assert::true($this->isLoggedIn());
+        $this->logOut();
+        Assert::false($this->isLoggedIn());
+    }
 }
 
 (new TPresenterTest)->run();
