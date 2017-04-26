@@ -373,6 +373,16 @@ trait TPresenter
 	}
 
 	/**
+	 * @return bool
+	 */
+	protected function isUserLoggedIn()
+	{
+		/** @var \Nette\Security\User $user */
+		$user = \Testbench\ContainerFactory::create(FALSE)->getByType('Nette\Security\User');
+		return $user->isLoggedIn();
+	}
+
+	/**
 	 * @return \Nette\Application\UI\Presenter
 	 */
 	protected function getPresenter()
