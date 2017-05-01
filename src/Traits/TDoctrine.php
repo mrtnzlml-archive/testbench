@@ -4,13 +4,16 @@ namespace Testbench;
 
 trait TDoctrine
 {
+	
+	/** @return \Nette\DI\Container */
+	abstract function getDIContainer();
 
 	/**
 	 * @return \Kdyby\Doctrine\EntityManager
 	 */
 	protected function getEntityManager()
 	{
-		$container = \Testbench\ContainerFactory::create(FALSE);
+		$container = $this->getDIContainer();
 		/** @var Mocks\DoctrineConnectionMock $connection */
 		$connection = $container->getByType('Doctrine\DBAL\Connection');
 		if (!$connection instanceof Mocks\DoctrineConnectionMock) {
