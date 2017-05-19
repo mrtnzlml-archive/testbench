@@ -1,3 +1,5 @@
+> At this moment I don't have time, energy and money to maintain this project. But it's a shame so if you depend on this project and you want to become a sponsor or develop it further please don't hesitate to contact me. Otherwise, I am not able to guarantee bright future of this repo... :)
+
 [![Build Status](https://travis-ci.org/mrtnzlml/testbench.svg?branch=master)](https://travis-ci.org/mrtnzlml/testbench)
 
 Tested against PHP 5.6 and 7.0. Please read [this wiki](https://github.com/mrtnzlml/testbench/wiki).
