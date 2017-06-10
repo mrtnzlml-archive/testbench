@@ -112,6 +112,18 @@ class PresenterPresenter extends Nette\Application\UI\Presenter
 		return $form;
 	}
 
+	protected function createComponentFormWithCheckbox()
+	{
+		$form = new \Nette\Application\UI\Form();
+		$form->addCheckbox('hello');
+		$form->addText('test');
+		$form->onSuccess[] = function ($_, $values) {
+			$this->flashMessage(json_encode($values));
+			$this->redirect('this');
+		};
+		return $form;
+	}
+
 	protected function createComponentAjaxForm()
 	{
 		$form = new UI\Form();
