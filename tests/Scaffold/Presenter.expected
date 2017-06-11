@@ -112,6 +112,15 @@ class PresenterPresenterTest extends \Tester\TestCase
 	}
 
 
+	public function testCreateComponentFormWithCheckbox()
+	{
+		$this->checkForm('Presenter:', 'formWithCheckbox', [
+			'hello' => FALSE,
+			'test' => '###', //FIXME: replace with value
+		], '/x/y');
+	}
+
+
 	public function testCreateComponentAjaxForm()
 	{
 		$this->checkForm('Presenter:', 'ajaxForm', [

@@ -132,7 +132,7 @@ class TestsGenerator
 					}
 					$value = "'###', //FIXME: replace with value";
 					if ($control instanceof \Nette\Forms\Controls\Checkbox) {
-						$value = 'FALSE';
+						$value = 'FALSE,';
 					}
 					$controls .= "\t'" . $control->getName() . "' => $value\n";
 				}
