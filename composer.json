@@ -21,7 +21,7 @@
     "nette/di": "^2.4 || ^v3.0",
     "nette/safe-stream": "^2.3",
     "nette/security": "^2.4 || ^v3.0",
-    "nette/tester": "2.0.x-dev as v1.7",
+    "nette/tester": "^2.0",
     "nette/utils": "^2.4 || ^v3.0"
   },
   "require-dev": {
