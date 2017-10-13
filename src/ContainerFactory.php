@@ -5,8 +5,9 @@ namespace Testbench;
 /**
  * @internal
  */
-class ContainerFactory extends \Nette\Object
+class ContainerFactory
 {
+	use \Nette\SmartObject;
 
 	private static $container;
 
