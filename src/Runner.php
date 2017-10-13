@@ -41,29 +41,6 @@ class Runner
 			}
 		}
 
-		//Scaffold
-		if (array_key_exists('--scaffold', $parameters)) {
-			if (!isset($parameters['--scaffold'])) {
-				die("Error: specify tests bootstrap for scaffold like this: '--scaffold <bootstrap.php>'\n");
-			}
-			$scaffoldBootstrap = $parameters['--scaffold'];
-			$scaffoldDir = dirname($scaffoldBootstrap);
-			rtrim($scaffoldDir, DIRECTORY_SEPARATOR);
-			$outputFolderContent = glob("$scaffoldDir/*");
-			if (($key = array_search($scaffoldBootstrap, $outputFolderContent)) !== FALSE) {
-				unset($outputFolderContent[$key]);
-			}
-			if (count($outputFolderContent) !== 0) {
-				die("Error: please use different empty folder - I don't want to destroy your work\n");
-			}
-			require $scaffoldBootstrap;
-			\Nette\Utils\FileSystem::createDir($scaffoldDir . '/_temp');
-			$scaffold = new \Testbench\Scaffold\TestsGenerator;
-			$scaffold->generateTests($scaffoldDir);
-			\Tester\Environment::$checkAssertions = FALSE;
-			die("Tests generated to the folder '$scaffoldDir'\n");
-		}
-
 		//Specify PHP interpreter to run
 		if (!array_key_exists('-p', $parameters)) {
 			$parameters['-p'] = 'php';

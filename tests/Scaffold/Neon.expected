@@ -1,8 +1,0 @@
-# WARNING: it is CRITICAL that this file & directory are NOT accessible directly via a web browser!
-# http://nette.org/security-warning
-
-# (this is just an example)
-
-routing:
-	routes:
-		'/x/y[[[/<presenter>]/<action>][/<id>]]': 'Presenter:default'
