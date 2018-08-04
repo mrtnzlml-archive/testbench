@@ -1,23 +1,35 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Testbench\Mocks;
 
 use Doctrine\Common;
 use Doctrine\DBAL;
+use Doctrine\DBAL\Migrations\Migration;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
+use Kdyby\Doctrine\Connection;
+use Kdyby\Doctrine\Dbal\BatchImport\Helpers;
+use LogicException;
+use Nette\DI\Container;
+use Testbench\ContainerFactory;
+use Testbench\DatabasesRegistry;
+use Testbench\Providers\IDatabaseProvider;
+use Tester\Assert;
+use Tester\Environment;
+use Throwable;
+use Zenify\DoctrineMigrations\Configuration\Configuration;
 
 /**
  * @method onConnect(DoctrineConnectionMock $self)
  */
-class DoctrineConnectionMock extends \Kdyby\Doctrine\Connection implements \Testbench\Providers\IDatabaseProvider
+class DoctrineConnectionMock extends Connection implements IDatabaseProvider
 {
 
 	private $__testbench_databaseName;
 
 	public $onConnect = [];
 
-	public function connect()
+	public function connect(): void
 	{
 		if (parent::connect()) {
 			$this->onConnect($this);
@@ -27,21 +39,22 @@ class DoctrineConnectionMock extends \Kdyby\Doctrine\Connection implements \Test
 	public function __construct(
 		array $params,
 		DBAL\Driver $driver,
-		DBAL\Configuration $config = NULL,
-		Common\EventManager $eventManager = NULL
-	) {
-		$container = \Testbench\ContainerFactory::create(FALSE);
-		$this->onConnect[] = function (DoctrineConnectionMock $connection) use ($container) {
-			if ($this->__testbench_databaseName !== NULL) { //already initialized (needed for pgsql)
+		?DBAL\Configuration $config = null,
+		?Common\EventManager $eventManager = null
+	)
+	{
+		$container = ContainerFactory::create(false);
+		$this->onConnect[] = function (DoctrineConnectionMock $connection) use ($container): void {
+			if ($this->__testbench_databaseName !== null) { //already initialized (needed for pgsql)
 				return;
 			}
 			try {
 				$config = $container->parameters['testbench'];
-				if ($config['shareDatabase'] === TRUE) {
-					$registry = new \Testbench\DatabasesRegistry;
-					$dbName = $container->parameters['testbench']['dbprefix'] . getenv(\Tester\Environment::THREAD);
+				if ($config['shareDatabase'] === true) {
+					$registry = new DatabasesRegistry();
+					$dbName = $container->parameters['testbench']['dbprefix'] . getenv(Environment::THREAD);
 					if ($registry->registerDatabase($dbName)) {
-						$this->__testbench_database_setup($connection, $container, TRUE);
+						$this->__testbench_database_setup($connection, $container, true);
 					} else {
 						$this->__testbench_databaseName = $dbName;
 						$this->__testbench_database_change($connection, $container);
@@ -49,39 +62,39 @@ class DoctrineConnectionMock extends \Kdyby\Doctrine\Connection implements \Test
 				} else { // always create new test database
 					$this->__testbench_database_setup($connection, $container);
 				}
-			} catch (\Exception $e) {
-				\Tester\Assert::fail($e->getMessage());
+			} catch (Throwable $e) {
+				Assert::fail($e->getMessage());
 			}
 		};
 		parent::__construct($params, $driver, $config, $eventManager);
 	}
 
 	/** @internal */
-	public function __testbench_database_setup($connection, \Nette\DI\Container $container, $persistent = FALSE)
+	public function __testbench_database_setup($connection, Container $container, $persistent = false): void
 	{
 		$config = $container->parameters['testbench'];
-		$this->__testbench_databaseName = $config['dbprefix'] . getenv(\Tester\Environment::THREAD);
+		$this->__testbench_databaseName = $config['dbprefix'] . getenv(Environment::THREAD);
 
 		$this->__testbench_database_drop($connection, $container);
 		$this->__testbench_database_create($connection, $container);
 
 		foreach ($config['sqls'] as $file) {
-			\Kdyby\Doctrine\Dbal\BatchImport\Helpers::loadFromFile($connection, $file);
+			Helpers::loadFromFile($connection, $file);
 		}
 
-		if ($config['migrations'] === TRUE) {
-			if (class_exists(\Zenify\DoctrineMigrations\Configuration\Configuration::class)) {
-				/** @var \Zenify\DoctrineMigrations\Configuration\Configuration $migrationsConfig */
-				$migrationsConfig = $container->getByType(\Zenify\DoctrineMigrations\Configuration\Configuration::class);
+		if ($config['migrations'] === true) {
+			if (class_exists(Configuration::class)) {
+				/** @var Configuration $migrationsConfig */
+				$migrationsConfig = $container->getByType(Configuration::class);
 				$migrationsConfig->__construct($container, $connection);
 				$migrationsConfig->registerMigrationsFromDirectory($migrationsConfig->getMigrationsDirectory());
-				$migration = new \Doctrine\DBAL\Migrations\Migration($migrationsConfig);
+				$migration = new Migration($migrationsConfig);
 				$migration->migrate($migrationsConfig->getLatestVersion());
 			}
 		}
 
-		if ($persistent === FALSE) {
-			register_shutdown_function(function () use ($connection, $container) {
+		if ($persistent === false) {
+			register_shutdown_function(function () use ($connection, $container): void {
 				$this->__testbench_database_drop($connection, $container);
 			});
 		}
@@ -89,10 +102,9 @@ class DoctrineConnectionMock extends \Kdyby\Doctrine\Connection implements \Test
 
 	/**
 	 * @internal
-	 *
 	 * @param $connection \Kdyby\Doctrine\Connection
 	 */
-	public function __testbench_database_create($connection, \Nette\DI\Container $container)
+	public function __testbench_database_create($connection, Container $container): void
 	{
 		$connection->exec("CREATE DATABASE {$this->__testbench_databaseName}");
 		$this->__testbench_database_change($connection, $container);
@@ -100,10 +112,9 @@ class DoctrineConnectionMock extends \Kdyby\Doctrine\Connection implements \Test
 
 	/**
 	 * @internal
-	 *
 	 * @param $connection \Kdyby\Doctrine\Connection
 	 */
-	public function __testbench_database_change($connection, \Nette\DI\Container $container)
+	public function __testbench_database_change($connection, Container $container): void
 	{
 		if ($connection->getDatabasePlatform() instanceof MySqlPlatform) {
 			$connection->exec("USE {$this->__testbench_databaseName}");
@@ -114,10 +125,9 @@ class DoctrineConnectionMock extends \Kdyby\Doctrine\Connection implements \Test
 
 	/**
 	 * @internal
-	 *
 	 * @param $connection \Kdyby\Doctrine\Connection
 	 */
-	public function __testbench_database_drop($connection, \Nette\DI\Container $container)
+	public function __testbench_database_drop($connection, Container $container): void
 	{
 		if (!$connection->getDatabasePlatform() instanceof MySqlPlatform) {
 			$this->__testbench_database_connect($connection, $container);
@@ -127,20 +137,19 @@ class DoctrineConnectionMock extends \Kdyby\Doctrine\Connection implements \Test
 
 	/**
 	 * @internal
-	 *
 	 * @param $connection \Kdyby\Doctrine\Connection
 	 */
-	public function __testbench_database_connect($connection, \Nette\DI\Container $container, $databaseName = NULL)
+	public function __testbench_database_connect($connection, Container $container, $databaseName = null): void
 	{
 		//connect to an existing database other than $this->_databaseName
-		if ($databaseName === NULL) {
+		if ($databaseName === null) {
 			$dbname = $container->parameters['testbench']['dbname'];
 			if ($dbname) {
 				$databaseName = $dbname;
 			} elseif ($connection->getDatabasePlatform() instanceof PostgreSqlPlatform) {
 				$databaseName = 'postgres';
 			} else {
-				throw new \LogicException('You should setup existing database name using testbench:dbname option.');
+				throw new LogicException('You should setup existing database name using testbench:dbname option.');
 			}
 		}
 

@@ -1,14 +1,17 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Testbench;
+
+use Nette\DI\Container;
+use Testbench;
+use Tester\Environment;
 
 trait TCompiledContainer
 {
 
-	/** @return \Nette\DI\Container */
-	protected function getContainer()
+	protected function getContainer(): Container
 	{
-		return \Testbench\ContainerFactory::create(FALSE);
+		return ContainerFactory::create(false);
 	}
 
 	protected function getService($class)
@@ -18,27 +21,27 @@ trait TCompiledContainer
 
 	protected function refreshContainer($config = [])
 	{
-		return \Testbench\ContainerFactory::create(TRUE, $config);
+		return ContainerFactory::create(true, $config);
 	}
 
-	protected function changeRunLevel($testSpeed = \Testbench::FINE)
+	protected function changeRunLevel($testSpeed = Testbench::FINE): void
 	{
-		if ((int)getenv('RUNLEVEL') < $testSpeed) {
-			\Tester\Environment::skip(
-				"Required runlevel '$testSpeed' but current runlevel is '" . (int)getenv('RUNLEVEL') . "' (higher runlevel means slower tests)\n" .
+		if ((int) getenv('RUNLEVEL') < $testSpeed) {
+			Environment::skip(
+				"Required runlevel '$testSpeed' but current runlevel is '" . (int) getenv('RUNLEVEL') . "' (higher runlevel means slower tests)\n" .
 				"You can run this test with environment variable: 'RUNLEVEL=$testSpeed vendor/bin/run-tests ...'\n"
 			);
 		}
 	}
 
-	protected function markTestAsSlow($really = TRUE)
+	protected function markTestAsSlow($really = true): void
 	{
-		$this->changeRunLevel($really ? \Testbench::FINE : \Testbench::QUICK);
+		$this->changeRunLevel($really ? Testbench::FINE : Testbench::QUICK);
 	}
 
-	protected function markTestAsVerySlow($really = TRUE)
+	protected function markTestAsVerySlow($really = true): void
 	{
-		$this->changeRunLevel($really ? \Testbench::SLOW : \Testbench::QUICK);
+		$this->changeRunLevel($really ? Testbench::SLOW : Testbench::QUICK);
 	}
 
 }

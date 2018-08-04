@@ -1,17 +1,19 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Testbench;
 
 use Nette\ComponentModel\IComponent;
+use Nette\InvalidArgumentException;
+use Tester\Assert;
 
 trait TComponent
 {
 
 	private $__testbench_presenterMock;
 
-	protected function attachToPresenter(IComponent $component, $name = NULL)
+	protected function attachToPresenter(IComponent $component, $name = null): void
 	{
-		if ($name === NULL) {
+		if ($name === null) {
 			if (!$name = $component->getName()) {
 				$name = $component->getReflection()->getShortName();
 				if (preg_match('~class@anonymous.*~', $name)) {
@@ -20,21 +22,21 @@ trait TComponent
 			}
 		}
 		if (!$this->__testbench_presenterMock) {
-			$container = \Testbench\ContainerFactory::create(FALSE);
+			$container = ContainerFactory::create(false);
 			$this->__testbench_presenterMock = $container->getByType('Testbench\Mocks\PresenterMock');
 			$container->callInjects($this->__testbench_presenterMock);
 		}
-		$this->__testbench_presenterMock->onStartup[] = function (Mocks\PresenterMock $presenter) use ($component, $name) {
+		$this->__testbench_presenterMock->onStartup[] = function (Mocks\PresenterMock $presenter) use ($component, $name): void {
 			try {
 				$presenter->removeComponent($component);
-			} catch (\Nette\InvalidArgumentException $exc) {
+			} catch (InvalidArgumentException $exc) {
 			}
 			$presenter->addComponent($component, $name);
 		};
-		$this->__testbench_presenterMock->run(new Mocks\ApplicationRequestMock);
+		$this->__testbench_presenterMock->run(new Mocks\ApplicationRequestMock());
 	}
 
-	protected function checkRenderOutput(IComponent $control, $expected, array $renderParameters = [])
+	protected function checkRenderOutput(IComponent $control, $expected, array $renderParameters = []): void
 	{
 		if (!$control->getParent()) {
 			$this->attachToPresenter($control);
@@ -42,9 +44,9 @@ trait TComponent
 		ob_start();
 		$control->render(...$renderParameters);
 		if (is_file($expected)) {
-			\Tester\Assert::matchFile($expected, ob_get_clean());
+			Assert::matchFile($expected, ob_get_clean());
 		} else {
-			\Tester\Assert::match($expected, ob_get_clean());
+			Assert::match($expected, ob_get_clean());
 		}
 	}
 
