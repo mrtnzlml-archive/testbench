@@ -14,17 +14,18 @@
     }
   ],
   "require": {
-    "php": ">=5.6.0",
-    "kdyby/fake-session": "^2.0",
-    "nette/application": "^2.4 || ^v3.0",
-    "nette/bootstrap": "^2.4 || ^v3.0",
-    "nette/di": "^2.4 || ^v3.0",
-    "nette/safe-stream": "^2.3",
-    "nette/security": "^2.4 || ^v3.0",
-    "nette/tester": "^2.0",
-    "nette/utils": "^2.4 || ^v3.0"
+    "php": ">=7.1",
+    "kdyby/fake-session": "^2.0.0",
+    "nette/application": "^2.4.12 || ^3.0",
+    "nette/bootstrap": "^2.4.6 || ^3.0",
+    "nette/di": "^2.4.13 || ^3.0",
+    "nette/safe-stream": "^2.3.3",
+    "nette/security": "^2.4.3 || ^3.0",
+    "nette/tester": "^2.0.2",
+    "nette/utils": "^2.5.2 || ^v3.0"
   },
   "require-dev": {
+    "ninjify/qa": "^0.8.0",
     "latte/latte": "^2.4",
     "nette/forms": "^2.4 || ^v3.0",
     "nette/robot-loader": "^2.4 || ^v3.0",
@@ -36,6 +37,8 @@
     "nette/database": "^2.4 || ^v3.0",
     "zenify/doctrine-migrations": "^2.3"
   },
+  "prefer-stable": true,
+  "minimum-stability": "dev",
   "autoload": {
     "psr-4": {
       "Testbench\\": [
@@ -53,12 +56,31 @@
     ]
   },
   "bin": [
-    "src/run-tests"
+    "bin/testbench"
   ],
   "suggest": {
     "kdyby/doctrine": "Allows enhanced database tests using Doctrine",
     "kdyby/doctrine-dbal-batchimport": "Allows SQL scripts import for Doctrine (required with kdyby/doctrine)",
     "nette/database": "Allows enhanced database tests using Nette\\Database",
     "zenify/doctrine-migrations": "Migrate database to the fresh state"
+  },
+  "scripts": {
+    "qa": [
+      "linter src tests",
+      "codesniffer src tests"
+    ],
+    "phpstan-install": [
+      "mkdir -p temp/phpstan",
+      "composer require -d temp/phpstan phpstan/phpstan:0.10",
+      "composer require -d temp/phpstan phpstan/phpstan-nette:0.10"
+    ],
+    "phpstan": [
+      "temp/phpstan/vendor/bin/phpstan analyse -l max -c phpstan.neon src"
+    ]
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-develop": "3.0.x-dev"
+    }
   }
 }

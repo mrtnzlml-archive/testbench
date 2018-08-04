@@ -1,4 +1,11 @@
-.idea/
-vendor/
+# IDE
+/.idea
 
-composer.lock
+# Composer
+/vendor
+/composer.lock
+
+# Tests
+/tests/*.log
+/tests/tmp
+/tests/coverage.html

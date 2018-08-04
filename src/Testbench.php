@@ -1,11 +1,11 @@
-<?php
+<?php declare(strict_types = 1);
 
 class Testbench
 {
 
-	const QUICK = 0;
-	const FINE = 5;
-	const SLOW = 10;
+	public const QUICK = 0;
+	public const FINE = 5;
+	public const SLOW = 10;
 
 }
 

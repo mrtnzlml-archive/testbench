@@ -1,21 +1,21 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Testbench;
+
+use Kdyby\Doctrine\EntityManager;
+use LogicException;
 
 trait TDoctrine
 {
 
-	/**
-	 * @return \Kdyby\Doctrine\EntityManager
-	 */
-	protected function getEntityManager()
+	protected function getEntityManager(): EntityManager
 	{
-		$container = \Testbench\ContainerFactory::create(FALSE);
+		$container = ContainerFactory::create(false);
 		/** @var Mocks\DoctrineConnectionMock $connection */
 		$connection = $container->getByType('Doctrine\DBAL\Connection');
 		if (!$connection instanceof Mocks\DoctrineConnectionMock) {
 			$serviceNames = $container->findByType('Doctrine\DBAL\Connection');
-			throw new \LogicException(sprintf(
+			throw new LogicException(sprintf(
 				'The service %s should be instance of Testbench\Mocks\DoctrineConnectionMock, to allow lazy schema initialization.',
 				reset($serviceNames)
 			));

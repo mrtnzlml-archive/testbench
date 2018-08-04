@@ -1,6 +1,9 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Testbench;
+
+use Tester\Environment;
+use Tracy\Debugger;
 
 class Bootstrap
 {
@@ -10,7 +13,7 @@ class Bootstrap
 	/** @var callable */
 	public static $onBeforeContainerCreate;
 
-	public static function setup($tempDir, $callback = NULL)
+	public static function setup($tempDir, $callback = null): void
 	{
 		if (!class_exists('Tester\Assert')) {
 			echo "Install Nette Tester using `composer update --dev`\n";
@@ -21,12 +24,12 @@ class Bootstrap
 
 		umask(0);
 		if (!ob_get_level() > 0) { //\Tester\Environment::setup already called
-			\Tester\Environment::setup();
+			Environment::setup();
 		}
 		date_default_timezone_set('Europe/Prague');
 
 		if (class_exists('Tracy\Debugger')) {
-			\Tracy\Debugger::$logDirectory = self::$tempDir;
+			Debugger::$logDirectory = self::$tempDir;
 		}
 
 		$_ENV = $_GET = $_POST = $_FILES = [];

@@ -1,15 +1,16 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Testbench\Mocks;
 
 use Nette\Http;
+use Nette\Http\Request;
 
-class HttpRequestMock extends \Nette\Http\Request
+class HttpRequestMock extends Request
 {
 
 	public function __construct(
-		Http\UrlScript $url = NULL,
-		$query = NULL,
+		?Http\UrlScript $url = null,
+		$query = null,
 		$post = [],
 		$files = [],
 		$cookies = [],
@@ -17,15 +18,16 @@ class HttpRequestMock extends \Nette\Http\Request
 		$method = PHP_SAPI,
 		$remoteAddress = '127.0.0.1',
 		$remoteHost = '127.0.0.1',
-		$rawBodyCallback = NULL
-	) {
+		$rawBodyCallback = null
+	)
+	{
 		$url = $url ?: new Http\UrlScript('http://test.bench/');
-		if ($query !== NULL) {
+		if ($query !== null) {
 			$url->setQuery($query);
 		}
 		parent::__construct(
 			$url,
-			NULL, //deprecated
+			null, //deprecated
 			$post,
 			$files,
 			$cookies,

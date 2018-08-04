@@ -1,39 +1,42 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Testbench\Mocks;
+
+use Nette\Application\Request;
+use Nette\Application\UI\Presenter;
 
 /**
  * @method onStartup(PresenterMock $this)
  */
-class PresenterMock extends \Nette\Application\UI\Presenter
+class PresenterMock extends Presenter
 {
 
 	/** @var callable[] */
 	public $onStartup = [];
 
-	public function run(\Nette\Application\Request $request)
+	public function run(Request $request)
 	{
-		$this->autoCanonicalize = FALSE;
+		$this->autoCanonicalize = false;
 		return parent::run($request);
 	}
 
-	public function startup()
+	public function startup(): void
 	{
-		if ($this->getParameter('__terminate') === TRUE) {
+		if ($this->getParameter('__terminate') === true) {
 			$this->terminate();
 		}
 		parent::startup();
 		$this->onStartup($this);
 	}
 
-	public function afterRender()
+	public function afterRender(): void
 	{
 		$this->terminate();
 	}
 
 	public function isAjax()
 	{
-		return FALSE;
+		return false;
 	}
 
 	public function link($destination, $args = [])
@@ -41,7 +44,7 @@ class PresenterMock extends \Nette\Application\UI\Presenter
 		if (!is_array($args)) {
 			$args = array_slice(func_get_args(), 1);
 		}
-		$params = urldecode(http_build_query($args, NULL, ', '));
+		$params = urldecode(http_build_query($args, null, ', '));
 		$params = $params ? "($params)" : '';
 		return "plink|$destination$params";
 	}

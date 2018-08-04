@@ -1,8 +1,10 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Testbench\Mocks;
 
-class ControlMock extends \Nette\Application\UI\Control
+use Nette\Application\UI\Control;
+
+class ControlMock extends Control
 {
 
 	public function link($destination, $args = [])
@@ -10,7 +12,7 @@ class ControlMock extends \Nette\Application\UI\Control
 		if (!is_array($args)) {
 			$args = array_slice(func_get_args(), 1);
 		}
-		$params = urldecode(http_build_query($args, NULL, ', '));
+		$params = urldecode(http_build_query($args, null, ', '));
 		$params = $params ? "($params)" : '';
 		return "link|$destination$params";
 	}
